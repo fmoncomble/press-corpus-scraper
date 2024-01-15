@@ -2,7 +2,7 @@
 	"manifest_version": 2,
 	"name": "Figaro Extractor",
 
-	"version": "0.1",
+	"version": "0.1.1",
 
 	"description": "Extraire et télécharger des articles du Figaro",
 	"homepage_url": "https://github.com/fmoncomble/Figaro_extractor",
