@@ -1,5 +1,10 @@
 # ![icon-48](https://github.com/fmoncomble/Figaro_extractor/assets/59739627/22593db5-a498-45f6-bb10-799ca73249a2) Figaro_extractor
 Une extension pour extraire et télécharger des articles du Figaro à des fins de fouille textuelle.
+### Citer ce programme
+Si vous utilisez cette extension pour vos travaux de recherche, merci de la référencer de la façon suivante :  
+  
+Moncomble, F. (2024). *Figaro_Extractor* (Version 0.1) [JavaScript]. Arras, France : Université d’Artois. Disponible à l'adresse : https://github.com/fmoncomble/Figaro_extractor
+
 
 ## Installation
 ### Firefox
