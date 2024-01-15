@@ -11,14 +11,10 @@
 		"96": "icons/icon-96.png"
 	},
 
-	"web_accessible_resources": [
-		"content_scripts/articles-abonnes.html"
-	],
-
 	"permissions": ["activeTab", "downloads", "storage", "*://*.lefigaro.fr/*"],
 	
 	"background": {
-    "scripts": ["background.js", "jszip.min.js", "content_scripts/infinite-scroll.pkgd.min.js"],
+    "scripts": ["background.js", "jszip.min.js"],
     "persistent": false
 	},
 	

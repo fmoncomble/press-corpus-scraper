@@ -11,15 +11,11 @@
 		"96": "icons/icon-96.png"
 	},
 
-	"web_accessible_resources": [
-		"content_scripts/articles-abonnes.html"
-	],
-
 	"permissions": ["activeTab", "downloads", "storage", "*://*.lefigaro.fr/*"],
-	
+
 	"background": {
-    "scripts": ["background.js", "jszip.min.js", "content_scripts/infinite-scroll.pkgd.min.js"],
-    "persistent": false
+	  "page": "background.html",
+	  "persistent": false
 	},
 	
 	"content_scripts": [
@@ -28,11 +24,5 @@
 			"js": ["content_scripts/content.js"],
 			"css": ["content_scripts/content.css"]
 		}
-	],
-	
-	"browser_specific_settings": {
-    	"gecko": {
-    	  "update_url": "https://github.com/fmoncomble/Figaro_extractor/releases/latest/download/update_manifest.json"
-	    }
-	}
+	]
 }
