@@ -192,7 +192,7 @@ async function performExtractAndSave(url) {
                             );
                         }
 
-                        const subhed = subhedDiv.textContent;
+                        let subhed = subhedDiv.textContent;
 
                         let textElements = Array.from(
                             bodyDiv.querySelectorAll(
@@ -222,11 +222,9 @@ async function performExtractAndSave(url) {
                             seeAlso
                         );
 
-                        const text = textElements
+                        let text = textElements
                             .map((textElement) =>
-                                textElement.textContent
-                                    .trim()
-                                    .replaceAll('&', 'et')
+                                textElement.textContent.trim()
                             )
                             .join('\n\n');
 
@@ -271,7 +269,14 @@ async function performExtractAndSave(url) {
 
                         if (selectedFormat === 'xml') {
                             extension = '.xml';
-                            fileContent = `<text author="${author}" title="${titleDiv.textContent}" date="${date}">\n<ref target="${url}">Link to original document</ref><lb></lb><lb></lb>\n\n${subhed}\n\n${text}\n</text>`;
+                            const title = titleDiv.textContent
+                                .replaceAll('"', '&quot;')
+                                .replaceAll('&', '&amp;');
+                            subhed = subhed.replaceAll('&', '&amp;');
+                            text = text
+                                .replaceAll('&', '&amp;')
+                                .replaceAll('\n', '<lb></lb>')
+                            fileContent = `<text author="${author}" title="${title} date="${date}">\n<ref target="${url}">Link to original document</ref><lb></lb><lb></lb>${subhed}<lb></lb><lb></lb>${text}\n</text>`;
                         }
 
                         let baseFileName = `${date}_${author
