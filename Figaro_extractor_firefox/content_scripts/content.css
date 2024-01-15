@@ -58,6 +58,7 @@ fieldset {
     border-color: #4a90e2 !important;
     padding: 10px !important;
     vertical-align: middle;
+	text-transform: none;
 }
 
 legend {
