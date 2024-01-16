@@ -1,34 +1,34 @@
 {
-	"manifest_version": 2,
-	"name": "Figaro Extractor",
+    "manifest_version": 2,
+    "name": "Figaro Extractor",
 
-	"version": "0.1.2",
+    "version": "0.1.3",
 
-	"description": "Extraire et télécharger des articles du Figaro",
-	"homepage_url": "https://github.com/fmoncomble/Figaro_extractor",
-	"icons": {
-		"48": "icons/icon-48.png",
-		"96": "icons/icon-96.png"
-	},
+    "description": "Extraire et télécharger des articles du Figaro",
+    "homepage_url": "https://github.com/fmoncomble/Figaro_extractor",
+    "icons": {
+        "48": "icons/icon-48.png",
+        "96": "icons/icon-96.png"
+    },
 
-	"permissions": ["activeTab", "downloads", "storage", "*://*.lefigaro.fr/*"],
-	
-	"background": {
-    "scripts": ["background.js", "jszip.min.js"],
-    "persistent": false
-	},
-	
-	"content_scripts": [
-		{
-			"matches": ["https://recherche.lefigaro.fr/recherche*"],
-			"js": ["content_scripts/content.js"],
-			"css": ["content_scripts/content.css"]
-		}
-	],
-	
-	"browser_specific_settings": {
-    	"gecko": {
-    	  "update_url": "https://github.com/fmoncomble/Figaro_extractor/releases/latest/download/update_manifest.json"
-	    }
-	}
+    "permissions": ["activeTab", "downloads", "storage", "*://*.lefigaro.fr/*"],
+
+    "background": {
+        "scripts": ["background.js", "jszip.min.js"],
+        "persistent": false
+    },
+
+    "content_scripts": [
+        {
+            "matches": ["https://recherche.lefigaro.fr/recherche*"],
+            "js": ["content_scripts/content.js"],
+            "css": ["content_scripts/content.css"]
+        }
+    ],
+
+    "browser_specific_settings": {
+        "gecko": {
+            "update_url": "https://github.com/fmoncomble/Figaro_extractor/releases/latest/download/update_manifest.json"
+        }
+    }
 }

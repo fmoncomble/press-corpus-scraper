@@ -18,6 +18,13 @@ const fieldset = document.createElement('fieldset');
 fieldset.textContent = 'Extraire et télécharger les articles au format désiré';
 anchor.appendChild(fieldset);
 
+const legend = document.createElement('legend');
+const legendText = document.createElement('div');
+legendText.classList.add('legend-text');
+legendText.textContent = 'Figaro extractor';
+legend.appendChild(legendText);
+fieldset.appendChild(legend);
+
 const extractButtonsContainer = document.createElement('div');
 extractButtonsContainer.style.display = 'inline';
 
@@ -137,13 +144,15 @@ extractButton.addEventListener('click', () => {
             extractButtonsContainer.style.display = 'inline';
 
             if (response.success) {
-                // Display the number of downloaded articles
+                // Display number and selection of downloaded articles
                 downloadedFilesContainer.style.display = 'block';
-                downloadedFilesContainer.textContent = `\nFini !\n\n${
-                    response.downloadedFiles.length
-                } article(s) téléchargé(s) :\n${response.downloadedFiles
+                downloadedFilesContainer.textContent = `\nFini !\n\n${response.downloadedFiles.length} article(s) téléchargé(s) :\n`;
+                const downloadedFilesList = document.createElement('div');
+                downloadedFilesList.style.fontWeight = 'normal';
+                downloadedFilesList.textContent = `${response.downloadedFiles
                     .slice(0, 20)
                     .join(', ')}...\n`;
+                downloadedFilesContainer.appendChild(downloadedFilesList);
                 let fileTotal = response.downloadedFiles.length;
                 // Display the number of premium articles skipped
                 if (response.skippedFiles.length >= 1) {
@@ -184,8 +193,8 @@ extractButton.addEventListener('click', () => {
                         try {
                             const skippedArticleItem =
                                 document.createElement('li');
-                            skippedArticleItem.style.listStyleType = 'disc'
-							skippedArticleItem.style.marginLeft = '2em';
+                            skippedArticleItem.style.listStyleType = 'disc';
+                            skippedArticleItem.style.marginLeft = '2em';
                             const skippedArticleLink =
                                 document.createElement('a');
                             skippedArticleLink.setAttribute('href', articleUrl);
@@ -266,12 +275,12 @@ extractButton.addEventListener('click', () => {
                         'article-list-container'
                     );
                     errorFilesLinksContainer.style.display = 'none';
-					const errorArticleList = response.errorFiles;
+                    const errorArticleList = response.errorFiles;
                     errorArticleList.forEach((errorFileUrl) => {
                         console.log('Error file URL: ' + errorFileUrl);
                         const errorFileItem = document.createElement('li');
                         errorFileItem.style.listStyleType = 'disc';
-						errorFileItem.style.marginLeft = '2em';
+                        errorFileItem.style.marginLeft = '2em';
                         const errorFileLink = document.createElement('a');
                         errorFileLink.classList.add('error-file-link');
                         errorFileLink.setAttribute('href', errorFileUrl);
@@ -280,7 +289,7 @@ extractButton.addEventListener('click', () => {
                         errorFileItem.appendChild(errorFileLink);
                         errorFilesLinksContainer.appendChild(errorFileItem);
                     });
-					errorFilesContainer.appendChild(errorFilesLinksContainer);
+                    errorFilesContainer.appendChild(errorFilesLinksContainer);
 
                     showErrorListButton.addEventListener('click', function () {
                         errorFilesLinksContainer.style.display = 'block';

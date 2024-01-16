@@ -53,7 +53,7 @@ async function performExtractAndSave(url) {
     const fetchedUrls = new Set();
 
     const zip = new JSZip();
-    const addedFileNames = new Set(); // To track added file names
+    const addedFileNames = new Set();
     const skippedFiles = new Set();
     const errorFiles = new Set();
 
@@ -73,6 +73,19 @@ async function performExtractAndSave(url) {
             const resultsNumber = Number(resultsNumberString);
             const resultsPageNumber = Math.ceil(resultsNumber / 20);
 
+            let articleList = doc.querySelector('div.articles');
+            if (!articleList) {
+                throw new Error('Article list not found');
+            }
+
+            const articles = articleList.querySelectorAll(
+                'article.fig-profil'
+            );
+            if (articles.length === 0) {
+                console.log('Last article reached');
+                break loop;
+            }
+
             function sendRange() {
                 console.log('sendRange function invoked');
                 let currentTab;
@@ -88,24 +101,13 @@ async function performExtractAndSave(url) {
                             pageNo,
                             resultsPageNumber,
                         });
+                        pageNo += 1;
                     }
                 );
             }
 
             sendRange();
 
-            let articleList = doc.querySelector('div.articles');
-            if (!articleList) {
-                throw new Error('Article list not found');
-            }
-
-            const articles = articleList.querySelectorAll(
-                'article.fig-profil.fig-profil-mtpd'
-            );
-            if (articles.length === 0) {
-                console.log('Last article reached');
-                break loop;
-            }
             const urls = Array.from(articles).map(
                 (p) => new URL(p.querySelector('a').getAttribute('href')).href
             );
@@ -275,8 +277,8 @@ async function performExtractAndSave(url) {
                             subhed = subhed.replaceAll('&', '&amp;');
                             text = text
                                 .replaceAll('&', '&amp;')
-                                .replaceAll('\n', '<lb></lb>')
-                            fileContent = `<text author="${author}" title="${title} date="${date}">\n<ref target="${url}">Link to original document</ref><lb></lb><lb></lb>${subhed}<lb></lb><lb></lb>${text}\n</text>`;
+                                .replaceAll('\n', '<lb></lb>');
+                            fileContent = `<text author="${author}" title="${title}" date="${date}">\n<ref target="${url}">Link to original document</ref><lb></lb><lb></lb>\n\n${subhed}<lb></lb><lb></lb>\n\n${text}\n</text>`;
                         }
 
                         let baseFileName = `${date}_${author
@@ -347,7 +349,6 @@ async function getNextPageUrl(nextUrl) {
         return null;
     }
     console.log('Next page found: ' + nextPageUrl);
-    pageNo += 1;
     return nextPageUrl;
 }
 

@@ -16,64 +16,74 @@ button {
 }
 
 .show-article-list-button {
-	display: block;
-	cursor: pointer;
+    display: block;
+    cursor: pointer;
 }
 
 .hide-article-list-button {
-	display: none;
-	cursor: pointer;
+    display: none;
+    cursor: pointer;
 }
 
 .show-article-list-button,
 .hide-article-list-button {
-	color: #163860;
+    color: #163860;
+	transition: color ease-out 0.3s;
 }
 
 .show-article-list-button:hover,
 .hide-article-list-button:hover {
-	color: #4a90e2;
+    color: #4a90e2;
 }
 
-
 .list-container {
-	border-radius: 5px;
-	background-color: rgba(0, 0, 0, 0.2);
-	margin-left: 1em;
-	margin-right: 1em;
-	padding: 0.5em;
+    border-radius: 5px;
+    background-color: rgba(0, 0, 0, 0.2);
+    margin-left: 1em;
+    margin-right: 1em;
+    padding: 0.5em;
 }
 
 .article-list-container {
-	color: #000;
-	font-weight: normal;
+    color: #000;
+    font-weight: normal;
 }
 
 fieldset {
-    background-color: #f0f0f0;
-    width: auto !important;
-    height: auto !important;
-    border: solid 1px !important;
-    border-radius: 10px;
-    border-color: #4a90e2 !important;
-    padding: 10px !important;
-    vertical-align: middle;
-    text-transform: none;
+	background-color: #f0f0f0;
+	width: auto !important;
+	height: auto !important;
+	border: solid 1px !important;
+	border-radius: 0.5em;
+	border-color: #4a90e2 !important;
+	margin: 5px 0 !important;
+	padding: 10px !important;
+	vertical-align: middle;
+	text-transform: none;
 }
 
 legend {
-    background-color: #f0f0f0;
-    border: solid 1px;
-    border-radius: 10px;
-    border-color: #4a90e2;
-    padding: 10px !important;
+	background: linear-gradient(#1679b9, #184c77);
+	border-radius: 0.5em;
+	border-color: #4a90e2;
+	padding: 5px !important;
+	color: white;
+	vertical-align: middle;
+	display: inline;
+}
+
+.legend-text {
+	text-align: center;
+	margin-left: 5px;
+	font-family: "noto-serif", "serif";
+	margin-right: 5px;
 }
 
 .fileList {
     font-family: sans-serif;
     font-size: small;
     font-weight: bold;
-	text-transform: none;
+    text-transform: none;
     color: green;
 }
 
@@ -81,7 +91,7 @@ legend {
     font-family: sans-serif;
     font-size: small;
     font-weight: bold;
-	text-transform: none;
+    text-transform: none;
     display: inline;
     margin-left: 1em;
     vertical-align: middle;
