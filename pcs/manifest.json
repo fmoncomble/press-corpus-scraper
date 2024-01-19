@@ -1,0 +1,45 @@
+{
+    "manifest_version": 2,
+    "name": "Press corpus scraper",
+
+    "version": "0.1.4",
+
+    "description": "Extraire et télécharger des articles de presse",
+    "homepage_url": "https://github.com/fmoncomble/press_corpus_scraper",
+    "icons": {
+        "48": "icons/icon-48.png",
+        "96": "icons/icon-96.png"
+    },
+
+    "permissions": [
+        "activeTab",
+        "downloads",
+        "storage",
+        "*://*.lefigaro.fr/*",
+        "*://*.lemonde.fr/*"
+    ],
+
+    "background": {
+        "page": "background.html",
+        "persistent": false
+    },
+
+    "content_scripts": [
+        {
+            "matches": ["https://recherche.lefigaro.fr/recherche*"],
+            "js": ["content_scripts/figaro.js"],
+            "css": ["content_scripts/figaro.css"]
+        },
+        {
+            "matches": ["https://www.lemonde.fr/recherche/?*"],
+            "js": ["content_scripts/lemonde.js"],
+            "css": ["content_scripts/lemonde.css"]
+        }
+    ],
+
+    "browser_specific_settings": {
+        "gecko": {
+            "update_url": "https://github.com/fmoncomble/press-corpus-scraper/releases/latest/download/update_manifest.json"
+        }
+    }
+}

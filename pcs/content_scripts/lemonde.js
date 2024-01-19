@@ -1,5 +1,4 @@
-// contentScript.js
-console.log('Figaro content script injected');
+console.log('Le Monde PCM script injected');
 
 if (document.readyState !== 'loading') {
     console.log('Page ready, firing function');
@@ -11,17 +10,75 @@ if (document.readyState !== 'loading') {
     });
 }
 
-// Inject the button into the page
-const anchor = document.querySelector('.resultats');
+// Début du code à modifier pour chaque site de presse //
+
+// Titre du journal
+const paperName = 'Le_Monde';
+
+// Point d'ancrage de l'interface d'extraction
+const anchor = document.querySelector('.search__form-container');
+
+// Structure de la page de résultats
+
+// Contenant des termes de recherche
+const searchTermContainerDef = 'input.input.input__search';
+// Node du nombre de résultats
+const resultsNumberContainerDef = null;
+// Nombre de résultats par page
+const resultsNumberPerPageDef = null;
+// Nombre de pages
+const paginationContainer = document.querySelector('section.river__pagination');
+let lastPageButton;
+let pagesNumber = 1;
+if (paginationContainer) {
+    lastPageButton = paginationContainer.lastElementChild;
+    pagesNumber = lastPageButton.textContent;
+}
+// Node contenant la liste des résultats de recherche
+const articleListDef =
+    'div.page__content.river.river--rubrique.river--search, section.js-river-search';
+// Nodes contenant chaque résultat
+const articlesDef = 'section.teaser.teaser--inline-picture  ';
+// Logique de pagination : bouton 'suivant'
+const nextButtonDef = null;
+// Logique de pagination : numéro de page
+const nextPageDef = true;
+
+// Structure des articles
+
+// Node de la bannière "Réservé aux abonnés"
+const premiumBannerDef = 'span.icon__premium:not(.icon--outside-simple';
+// Si la bannière se situe dans l'en-tête d'article : node de l'en-tête
+const articleHeaderDef = '.article__header';
+// Node du titre
+const titleDivDef = 'h1';
+// Node du chapô
+const subhedDivDef = 'p.article__desc';
+// Node du corps de l'article
+const bodyDivDef = 'article.article__content';
+// Node du nom de l'auteur.e
+const authorElementDef = 'span.meta__author';
+// Logique de date
+const dateLogic = 'url';
+// Construction de la date
+const dateElementDef = null;
+const dateAttributeDef = null;
+// Elément date de secours
+const dateStringDef = 'Publié';
+// Eléments textuels à inclure
+const textElementsDef = '.article__paragraph, h2';
+// Éléments textuels à exclure
+const exclElementsDef = null;
 
 const fieldset = document.createElement('fieldset');
+fieldset.classList.add('pcm-ui');
 fieldset.textContent = 'Extraire et télécharger les articles au format désiré';
 anchor.appendChild(fieldset);
 
 const legend = document.createElement('legend');
 const legendText = document.createElement('div');
 legendText.classList.add('legend-text');
-legendText.textContent = 'Figaro extractor';
+legendText.textContent = 'Le Monde corpus scraper';
 legend.appendChild(legendText);
 fieldset.appendChild(legend);
 
@@ -31,6 +88,7 @@ extractButtonsContainer.style.display = 'inline';
 let selectedFormat = 'txt';
 
 const select = document.createElement('select');
+select.classList.add('pcm-ui');
 const txt = new Option('TXT', 'txt');
 const xml = new Option('XML', 'xml');
 select.appendChild(txt);
@@ -44,6 +102,7 @@ select.addEventListener('change', function () {
 });
 
 const extractButton = document.createElement('button');
+extractButton.classList.add('pcm-ui');
 extractButton.id = 'extractButton';
 extractButton.textContent = 'Extraire';
 
@@ -58,7 +117,7 @@ abortButton.textContent = 'Annuler';
 abortButton.addEventListener('click', () => {
     console.log('Abort button clicked');
     abortButton.textContent = 'Annulation en cours...';
-    browser.runtime.sendMessage(
+    chrome.runtime.sendMessage(
         {
             action: 'abortExtraction',
         },
@@ -86,10 +145,11 @@ extractionMessage.id = 'extractionMessage';
 extractionMessage.textContent = 'Extraction lancée...';
 extractionContainer.appendChild(extractionMessage);
 
+// Function to update the range of results being processed
 function updateRange() {
     console.log('updateRange function invoked');
     let port;
-    browser.runtime.onConnect.addListener(connect);
+    chrome.runtime.onConnect.addListener(connect);
     function connect(p) {
         port = p;
         console.assert(port.name === 'backgroundjs');
@@ -98,7 +158,7 @@ function updateRange() {
             if (msg) {
                 console.log('Message from background: ', msg);
                 console.log('Updating range');
-                extractionMessage.textContent = `Extraction de la page ${msg.pageNo} sur ${msg.resultsPageNumber} au format ${selectedFormat}...`;
+                extractionMessage.textContent = `Extraction de la page ${msg.pageNo} sur ${pagesNumber} au format ${selectedFormat}...`;
             } else {
                 console.error('No message from background');
             }
@@ -120,25 +180,47 @@ extractButton.addEventListener('click', () => {
 
     // Show the extraction container
     extractionContainer.style.display = 'block';
+    fieldset.style.cursor = 'wait';
     downloadedFilesContainer.textContent = '';
     downloadedFilesContainer.style.display = 'none';
 
-    browser.runtime.sendMessage(
+    chrome.runtime.sendMessage(
         {
             action: 'performExtraction',
             url: window.location.href,
             format: selectedFormat,
+            paperName: paperName,
+            searchTermContainerDef: searchTermContainerDef,
+            resultsNumberContainerDef: resultsNumberContainerDef,
+            resultsNumberPerPageDef: resultsNumberPerPageDef,
+            articleListDef: articleListDef,
+            articlesDef: articlesDef,
+            articleHeaderDef: articleHeaderDef,
+            premiumBannerDef: premiumBannerDef,
+            titleDivDef: titleDivDef,
+            subhedDivDef: subhedDivDef,
+            bodyDivDef: bodyDivDef,
+            authorElementDef: authorElementDef,
+            dateLogic: dateLogic,
+            dateElementDef: dateElementDef,
+            dateAttributeDef: dateAttributeDef,
+            dateStringDef: dateStringDef,
+            textElementsDef: textElementsDef,
+            exclElementsDef: exclElementsDef,
+            nextPageDef: nextPageDef,
+            nextButtonDef: nextButtonDef,
         },
         (response) => {
             console.log('Response object:', response); // Log the entire response object
 
             // Hide the extraction container
             extractionContainer.style.display = 'none';
-            extractionMessage.textContent = 'Launching extraction...';
+            extractionMessage.textContent = 'Extraction lancée...';
+            fieldset.style.cursor = '';
 
             // Reset abort button
             abortButton.style.display = 'none';
-            abortButton.textContent = 'Abort';
+            abortButton.textContent = 'Annuler';
 
             // Restore extraction buttons
             extractButtonsContainer.style.display = 'inline';
@@ -154,6 +236,7 @@ extractButton.addEventListener('click', () => {
                     .join(', ')}...\n`;
                 downloadedFilesContainer.appendChild(downloadedFilesList);
                 let fileTotal = response.downloadedFiles.length;
+
                 // Display the number of premium articles skipped
                 if (response.skippedFiles.length >= 1) {
                     const skippedFilesWrapper = document.createElement('div');
@@ -187,9 +270,10 @@ extractButton.addEventListener('click', () => {
                         skippedFilesLinksContainer
                     );
                     const skippedArticleList = response.skippedFiles;
-                    skippedArticleList.forEach(async (articleUrl) => {
-                        console.log('skipped URL: ' + articleUrl);
-
+                    const skippedTitleList = response.skippedTitles;
+                    for (let i = 0; i < skippedArticleList.length; i++) {
+                        let skippedArticleUrl = skippedArticleList[i];
+                        console.log('skipped URL: ' + skippedArticleUrl);
                         try {
                             const skippedArticleItem =
                                 document.createElement('li');
@@ -197,37 +281,31 @@ extractButton.addEventListener('click', () => {
                             skippedArticleItem.style.marginLeft = '2em';
                             const skippedArticleLink =
                                 document.createElement('a');
-                            skippedArticleLink.setAttribute('href', articleUrl);
+                            skippedArticleLink.classList.add('skipped-link');
+                            skippedArticleLink.setAttribute(
+                                'href',
+                                skippedArticleUrl
+                            );
                             skippedArticleLink.setAttribute('target', '_blank');
                             skippedArticleItem.appendChild(skippedArticleLink);
-                            const response = await fetch(articleUrl);
-                            const html = await response.text();
-
-                            const parser = new DOMParser();
-                            const doc = parser.parseFromString(
-                                html,
-                                'text/html'
-                            );
-
-                            const titleElement = doc.querySelector('h1');
-                            if (titleElement) {
-                                const title = titleElement.textContent;
-                                skippedArticleLink.textContent = title + '\n';
-                            } else {
-                                skippedArticleLink.textContent = 'Untitled\n';
+                            if (skippedArticleUrl.startsWith('http:')) {
+                                skippedArticleUrl = skippedArticleUrl.replace(
+                                    'http',
+                                    'https'
+                                );
                             }
-
+                            skippedArticleLink.textContent =
+                                skippedTitleList[i];
                             skippedFilesLinksContainer.appendChild(
                                 skippedArticleItem
                             );
                         } catch (error) {
                             console.error(
-                                'Error fetching or parsing the article:',
+                                'Error creating skipped list item: ',
                                 error
                             );
                         }
-                    });
-
+                    }
                     showSkippedListButton.addEventListener(
                         'click',
                         function () {
@@ -246,6 +324,7 @@ extractButton.addEventListener('click', () => {
                     );
                     fileTotal += response.skippedFiles.length;
                 }
+
                 // Display the number of results in error
                 if (response.errorFiles.length >= 1) {
                     const errorFilesWrapper = document.createElement('div');
@@ -276,19 +355,23 @@ extractButton.addEventListener('click', () => {
                     );
                     errorFilesLinksContainer.style.display = 'none';
                     const errorArticleList = response.errorFiles;
-                    errorArticleList.forEach((errorFileUrl) => {
-                        console.log('Error file URL: ' + errorFileUrl);
+                    console.log('Error article list: ', errorArticleList);
+                    const errorMessageList = response.errorMessages;
+                    console.log('Error message list: ', errorMessageList);
+                    for (let i = 0; i < errorArticleList.length; i++) {
+                        console.log('Error file URL: ' + errorArticleList[i]);
                         const errorFileItem = document.createElement('li');
                         errorFileItem.style.listStyleType = 'disc';
                         errorFileItem.style.marginLeft = '2em';
                         const errorFileLink = document.createElement('a');
                         errorFileLink.classList.add('error-file-link');
-                        errorFileLink.setAttribute('href', errorFileUrl);
+                        errorFileLink.setAttribute('href', errorArticleList[i]);
                         errorFileLink.setAttribute('target', '_blank');
-                        errorFileLink.textContent = errorFileUrl + '\n';
+                        errorFileLink.textContent =
+                            errorArticleList[i] + errorMessageList[i] + '\n';
                         errorFileItem.appendChild(errorFileLink);
                         errorFilesLinksContainer.appendChild(errorFileItem);
-                    });
+                    }
                     errorFilesContainer.appendChild(errorFilesLinksContainer);
 
                     showErrorListButton.addEventListener('click', function () {
@@ -303,24 +386,29 @@ extractButton.addEventListener('click', () => {
                     });
                     fileTotal += response.errorFiles.length;
                 }
+
+                // Display total number of results processed
+                const totalFilesContainer = document.createElement('div');
+                totalFilesContainer.textContent = `\n${fileTotal} résultats traités.`;
+                downloadedFilesContainer.appendChild(totalFilesContainer);
+
                 // Calculate and display the number of lost results
-                const resultsNumberContainer = document.querySelector(
-                    'div.resultats div.facettes__nombre'
-                );
-                const resultsNumberString = resultsNumberContainer.textContent
-                    .replace('résultats', '')
-                    .trim();
-                const resultsNumber = Number(resultsNumberString);
-                if (fileTotal < resultsNumber) {
-                    const fileDiff = resultsNumber - fileTotal;
-                    const lostFilesContainer = document.createElement('div');
-                    lostFilesContainer.style.color = 'blue';
-                    lostFilesContainer.textContent = `\n${fileDiff} résultat(s) introuvable(s)... 👀`;
-                    downloadedFilesContainer.appendChild(lostFilesContainer);
-                }
+                // const resultsNumberContainer = document.querySelector(
+                //     'div.resultats div.facettes__nombre'
+                // );
+                // const resultsNumberString = resultsNumberContainer.textContent
+                //     .replace('résultats', '')
+                //     .trim();
+                // const resultsNumber = Number(resultsNumberString);
+                // if (fileTotal < resultsNumber) {
+                //     const fileDiff = resultsNumber - fileTotal;
+                //     const lostFilesContainer = document.createElement('div');
+                //     lostFilesContainer.style.color = 'blue';
+                //     lostFilesContainer.textContent = `\n${fileDiff} résultat(s) introuvable(s)... 👀`;
+                //     downloadedFilesContainer.appendChild(lostFilesContainer);
+                // }
             } else {
                 console.error('Error:', response.error);
-                // Handle error
             }
         }
     );

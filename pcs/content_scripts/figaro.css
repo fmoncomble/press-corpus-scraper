@@ -9,10 +9,20 @@ select {
     pointer-events: auto;
     margin-right: 10px !important;
     float: right;
+    transition: background-color ease-out 0.3s;
+}
+
+button:hover,
+select:hover {
+    background-color: #3a87df;
 }
 
 button {
     cursor: pointer;
+}
+
+select:focus-visible {
+    outline: none;
 }
 
 .show-article-list-button {
@@ -28,7 +38,7 @@ button {
 .show-article-list-button,
 .hide-article-list-button {
     color: #163860;
-	transition: color ease-out 0.3s;
+    transition: color ease-out 0.3s;
 }
 
 .show-article-list-button:hover,
@@ -49,34 +59,39 @@ button {
     font-weight: normal;
 }
 
+.error-file-link:hover,
+.skipped-link:hover {
+    text-decoration: underline;
+}
+
 fieldset {
-	background-color: #f0f0f0;
-	width: auto !important;
-	height: auto !important;
-	border: solid 1px !important;
-	border-radius: 0.5em;
-	border-color: #4a90e2 !important;
-	margin: 5px 0 !important;
-	padding: 10px !important;
-	vertical-align: middle;
-	text-transform: none;
+    background-color: #f0f0f0;
+    width: auto !important;
+    height: auto !important;
+    border: solid 1px !important;
+    border-radius: 0.5em;
+    border-color: #4a90e2 !important;
+    margin: 5px 0 !important;
+    padding: 10px !important;
+    vertical-align: middle;
+    text-transform: none;
 }
 
 legend {
-	background: linear-gradient(#1679b9, #184c77);
-	border-radius: 0.5em;
-	border-color: #4a90e2;
-	padding: 5px !important;
-	color: white;
-	vertical-align: middle;
-	display: inline;
+    background: linear-gradient(#1679b9, #184c77);
+    border-radius: 0.5em;
+    border-color: #4a90e2;
+    padding: 5px !important;
+    color: white;
+    vertical-align: middle;
+    display: inline;
 }
 
 .legend-text {
-	text-align: center;
-	margin-left: 5px;
-	font-family: "noto-serif", "serif";
-	margin-right: 5px;
+    text-align: center;
+    margin-left: 5px;
+    font-family: 'noto-serif', 'serif';
+    margin-right: 5px;
 }
 
 .fileList {
@@ -112,6 +127,11 @@ legend {
     background-color: #e60000;
     color: white;
     display: none;
+    transition: background-color ease-out 0.3s;
+}
+
+.abort-button:hover {
+    background-color: #cc0000;
 }
 
 @keyframes spin {
