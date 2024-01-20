@@ -1,4 +1,4 @@
-console.log('Figaro PCM script injected');
+console.log('Figaro PCS script injected');
 
 if (document.readyState !== 'loading') {
     console.log('Page ready, firing function');
@@ -10,20 +10,28 @@ if (document.readyState !== 'loading') {
     });
 }
 
-// Début du code à modifier pour chaque site de presse //
+// -------- Début du code à modifier pour chaque site de presse -------- //
 
+// Pour les valeurs non existantes, indiquer 'null' (sans guillemets)
+
+// Indiquer le titre du journal
+const paperName = 'Le Figaro';
+
+// Identifier le point d'insertion de l'encadré de l'extension
 // Point d'ancrage de l'interface d'extraction
 const anchor = document.querySelector('.resultats');
 
-// Structure de la page de résultats
+// --- Structure de la page de résultats --- //
 
-// Contenant des termes de recherche
+// Indiquer entre guillemets simples les éléments (tag, class et/ou id) pertinents de la structure HTML de la page. S'ils n'existent pas ou ne sont pas utiles, indiquer 'null' (sans guillemets)
+
+// Où retrouver les termes de recherche
 const searchTermContainerDef = 'input.recherche__input';
-// Node du nombre de résultats
+// S'il est présent : élément contenant le nombre total de résultats
 const resultsNumberContainerDef = 'div.resultats div.facettes__nombre';
-// Nombre de résultats par page
+// S'il est pertinent : nombre de résultats par page
 const resultsNumberPerPageDef = 20;
-// Nombre de pages
+// S'il est présent sur la page (ex. boutons de pagination en bas de la page) : nombre total de pages de résultats. Sinon, passer les lignes suivantes en commentaire (les faire précéder de deux barres obliques //)
 // const paginationContainer = document.querySelector('section.river__pagination');
 // let lastPageButton;
 // let pagesNumber = 1;
@@ -31,45 +39,50 @@ const resultsNumberPerPageDef = 20;
 //     lastPageButton = paginationContainer.lastElementChild;
 //     pagesNumber = lastPageButton.textContent;
 // }
-// Node contenant la liste des résultats de recherche
+// Elément contenant la liste des résultats de recherche
 const articleListDef = 'div.articles';
-// Nodes contenant chaque résultat
+// Elément contenant chaque résultat
 const articlesDef = 'article.fig-profil';
-// Logique de pagination : bouton 'suivant'
-const nextButtonDef = null;
-// Logique de pagination : numéro de page
+// Logique de pagination : si les pages sont numérotées dans l'URL (généralement à partir de la 2e page de résultats, ex. https://www.journal.fr/recherche/?keywords&page=2), indiquer 'true', sinon 'false' (sans guillemets)
 const nextPageDef = true;
+// Logique de pagination : si les pages ne sont pas numérotées dans l'URL, identifier le bouton permettant de passer à la page suivante
+const nextButtonDef = null;
 
-// Structure des articles
+// --- Structure des pages d'articles --- //
 
-// Node de la bannière "Réservé aux abonnés"
+// Pour les articles réservés aux abonné.e.s : élément de la bannière "Réservé aux abonnés"
 const premiumBannerDef = 'div.fig-premium-mark-article';
-// Si la bannière se situe dans l'en-tête d'article : node de l'en-tête
+// Si la bannière se situe dans l'en-tête d'article : élément de l'en-tête
 const articleHeaderDef = null;
-// Node du titre
+// Elément du titre de l'article
 const titleDivDef = 'h1';
-// Node du chapô
+// Elément du chapô
 const subhedDivDef = 'p[class*="standfirst"], .chapo, .text-xl';
-// Node du corps de l'article
+// Elément du corps de l'article
 const bodyDivDef =
     'div.fig-content-body, div.stack, div.block.content, div.article-body';
-// Node du nom de l'auteur.e
+// Elément du nom de l'auteur.e
 const authorElementDef =
     'div.authors, span[class*="authors"], .info-pub div span';
-// Logique de date
+// Logique de date : 
+// - si la date est présente dans l'URL (ex. https://www.journal.fr/2024/01/20/titre-de-larticle), indiquer 'url' ;
+// - si la date n'est pas présente dans l'URL mais dans un élément HTML de la page, indiquer 'node'. S'il existe, privilégier un élément contenant la date au format ISO (commençant par AAAA-MM-JJ).
 const dateLogic = 'node';
-// Construction de la date
+// Si la logique de date est 'node', indiquer l'élément où se trouve la date. Si elle est codée comme attribut d'un élément (ex. <time datetime='AAAA-MM-JJTHH:MM:SS'>), préciser également le nom de l'attribut.
 const dateElementDef = 'time';
 const dateAttributeDef = 'datetime';
-// Elément date de secours
+// Logique de date de secours : indiquer un mot-clef permettant de trouver la date de l'article dans la page
 const dateStringDef = 'Publié';
-// Eléments textuels à inclure
+// Eléments textuels à inclure (paragraphes de texte, sous-titres, etc.)
 const textElementsDef = 'p:not(.fig-crosslinking):not(.fig-body-link), h2';
-// Éléments textuels à exclure
+// Éléments textuels à exclure (le cas échéant, publicités, liens vers d'autres contenus, etc. partageant les mêmes identifiants que les éléments à inclure) sous forme d'array de contenus de texte (ex. ['LIRE AUSSI', 'VOIR AUSSI']).
 const readAlso = 'LIRE AUSSI';
 const seeAlso = 'VOIR AUSSI';
 const exclElementsDef = [readAlso, seeAlso];
 
+// ------------- Fin du code à modifier ----------------------------//
+
+// ------------- Ne rien modifier sous cette ligne ---------------- //
 const fieldset = document.createElement('fieldset');
 fieldset.textContent = 'Extraire et télécharger les articles au format désiré';
 anchor.appendChild(fieldset);
@@ -77,7 +90,7 @@ anchor.appendChild(fieldset);
 const legend = document.createElement('legend');
 const legendText = document.createElement('div');
 legendText.classList.add('legend-text');
-legendText.textContent = 'Le Figaro corpus scraper';
+legendText.textContent = `${paperName} corpus scraper`;
 legend.appendChild(legendText);
 fieldset.appendChild(legend);
 
@@ -185,6 +198,7 @@ extractButton.addEventListener('click', () => {
             action: 'performExtraction',
             url: window.location.href,
             format: selectedFormat,
+            paperName: paperName,
             searchTermContainerDef: searchTermContainerDef,
             resultsNumberContainerDef: resultsNumberContainerDef,
             resultsNumberPerPageDef: resultsNumberPerPageDef,

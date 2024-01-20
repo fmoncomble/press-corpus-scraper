@@ -494,7 +494,7 @@ async function performExtractAndSave(url) {
 
     const searchTerm = doc.querySelector(searchTermContainerDef).value.trim();
 
-    const zipFileName = `${paperName}_${searchTerm.replace(
+    const zipFileName = `${paperName.replaceAll(/\s/g, '_')}_${searchTerm.replace(
         /\s/,
         '_'
     )}_${selectedFormat}_archive.zip`;
