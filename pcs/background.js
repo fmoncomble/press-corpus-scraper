@@ -68,15 +68,15 @@ async function performExtractAndSave(url) {
     const parser = new DOMParser();
     let nextUrl;
     console.log(
-        'Next page logic? ' +
+        'Pagination logic: page number? ' +
             nextPageDef +
-            ' Next button logic? ' +
+            ' Next button? ' +
             nextButtonDef
     );
     if (nextPageDef) {
         const queryString = url.split('?')[1];
         if (queryString) {
-            console.log('Query string = ' + queryString);
+            console.log('Query string = ' + queryString + '. Appending page number');
             nextUrl = url + '&page=' + pageNo;
         } else if (!queryString) {
             console.log('No existing query string, creating');
@@ -183,26 +183,42 @@ async function performExtractAndSave(url) {
                         console.log('Title div: ', titleDiv);
                         if (!titleDiv) {
                             errorMessage =
-                                ' (' +
+                                '< ' +
                                 url.substring(0, 20) +
-                                '... ne constitue pas un article.)';
+                                '... > n’est pas un article.';
                             errorFiles.push(url);
                             errorMessages.push(errorMessage);
-                            console.error(url + errorMessage);
+                            console.error(errorMessage, url + ' n’a pas de titre.');
                             throw errorMessage;
                         }
 
                         const articleHeader =
                             contentDoc.querySelector(articleHeaderDef);
-                        console.log('Article header: ', articleHeader);
+                        console.log(
+                            'Premium banner element definition: ',
+                            premiumBannerDef
+                        );
                         let premiumBanner;
                         if (articleHeader) {
+                            console.log('Article header: ', articleHeader);
                             premiumBanner =
                                 articleHeader.querySelector(premiumBannerDef);
-                            console.log(
-                                'Premium banner found in header: ',
-                                premiumBanner
-                            );
+                            if (premiumBanner) {
+                                console.log(
+                                    'Premium banner found in header: ',
+                                    premiumBanner
+                                );
+                            } else {
+                                console.log(
+                                    'No premium banner in header, trying elsewhere'
+                                );
+                                premiumBanner =
+                                    contentDoc.querySelector(premiumBannerDef);
+                                console.log(
+                                    'Premium banner found in doc: ',
+                                    premiumBanner
+                                );
+                            }
                         } else if (!articleHeader) {
                             premiumBanner =
                                 contentDoc.querySelector(premiumBannerDef);
@@ -213,14 +229,18 @@ async function performExtractAndSave(url) {
                         }
                         if (premiumBanner) {
                             console.log(
-                                '« ' +
+                                '“' +
                                     url +
-                                    ' »' +
+                                    '”' +
                                     ' is a premium article, skipping'
                             );
                             skippedFiles.push(url);
                             skippedTitles.push(titleDiv.textContent);
                             return;
+                        } else {
+                            console.log(
+                                'No premium banner, continuing extraction'
+                            );
                         }
 
                         const subhedDiv =
@@ -243,9 +263,10 @@ async function performExtractAndSave(url) {
 
                         if (!bodyDiv) {
                             errorMessage =
-                                ' (' +
-                                titleDiv.textContent.substring(0, 25) +
-                                '... ne contient pas de texte.)';
+                                '“' +
+                                titleDiv.textContent.trim() +
+                                '...” n’est pas un article.';
+                            console.error(errorMessage, url + ' ne contient pas de texte.');
                             errorFiles.push(url);
                             errorMessages.push(errorMessage);
                             throw errorMessage;
@@ -452,7 +473,8 @@ async function performExtractAndSave(url) {
 
                         let baseFileName = `${date}_${author
                             .replaceAll(/\p{P}/gu, '')
-                            .replaceAll(/\s+/g, '_')}${extension}`;
+                            .replaceAll(/\s+/g, '_')
+                            .substring(0, 20)}${extension}`;
                         let index = 1;
 
                         // Append a number to the file name to make it unique
@@ -479,10 +501,6 @@ async function performExtractAndSave(url) {
                 nextUrl = await getNextPageUrl(nextUrl);
                 console.log('Next page URL = ' + nextUrl);
             }
-            // else if (nextButtonDef) {
-            //     nextUrl = await turnPage(nextUrl);
-            //     console.log('Next page URL = ' + nextUrl);
-            // }
         } catch (error) {
             console.error('Error: ' + error);
         }
@@ -494,10 +512,10 @@ async function performExtractAndSave(url) {
 
     const searchTerm = doc.querySelector(searchTermContainerDef).value.trim();
 
-    const zipFileName = `${paperName.replaceAll(/\s/g, '_')}_${searchTerm.replace(
-        /\s/,
+    const zipFileName = `${paperName.replaceAll(
+        /\s/g,
         '_'
-    )}_${selectedFormat}_archive.zip`;
+    )}_${searchTerm.replace(/\s/, '_')}_${selectedFormat}_archive.zip`;
 
     await downloadZip(zipBlob, zipFileName);
 
@@ -516,6 +534,7 @@ async function getNextPageUrl(nextUrl) {
     const newPageNo = currentPageNo + 1;
     const nextPageUrl = urlParts[0] + 'page=' + newPageNo;
     const response = await fetch(nextPageUrl);
+    console.log('Next page fetch OK? ', response.ok)
     if (response.redirected || !response.ok) {
         console.log('Last page reached');
         return null;
@@ -523,11 +542,6 @@ async function getNextPageUrl(nextUrl) {
     console.log('Next page found: ' + nextPageUrl);
     return nextPageUrl;
 }
-
-// async function turnPage(nextUrl) {
-//     const nextButton = doc.querySelector(nextButtonDef);
-//     nextButton.click();
-// }
 
 async function downloadZip(zipBlob, zipFileName) {
     return new Promise((resolve, reject) => {

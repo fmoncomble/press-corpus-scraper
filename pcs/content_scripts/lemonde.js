@@ -17,8 +17,9 @@ if (document.readyState !== 'loading') {
 // Indiquer le titre du journal
 const paperName = 'Le Monde';
 
-// Identifier le point d'insertion de l'encadré de l'extension
+// Désigner le point d'insertion de l'encadré de l'extension
 const anchor = document.querySelector('.search__form-container');
+
 
 // --- Structure de la page de résultats --- //
 
@@ -30,10 +31,10 @@ const searchTermContainerDef = 'input.input.input__search';
 const resultsNumberContainerDef = null;
 // S'il est pertinent : nombre de résultats par page
 const resultsNumberPerPageDef = null;
-// S'il est présent sur la page (ex. boutons de pagination en bas de la page) : nombre total de pages de résultats. Sinon, passer les lignes suivantes en commentaire (les faire précéder de deux barres obliques //)
+let pagesNumber; // S'il est présent sur la page (ex. boutons de pagination en bas de la page) : nombre total de pages de résultats. Sinon, passer les lignes suivantes en commentaire (les faire précéder de deux barres obliques //)
+pagesNumber = 1;
 const paginationContainer = document.querySelector('section.river__pagination');
 let lastPageButton;
-let pagesNumber = 1;
 if (paginationContainer) {
     lastPageButton = paginationContainer.lastElementChild;
     pagesNumber = lastPageButton.textContent;
@@ -43,23 +44,24 @@ const articleListDef =
     'div.page__content.river.river--rubrique.river--search, section.js-river-search';
 // Elément contenant chaque résultat
 const articlesDef = 'section.teaser.teaser--inline-picture  ';
-// Logique de pagination : si les pages sont numérotées dans l'URL (généralement à partir de la 2e page de résultats, ex. https://www.journal.fr/recherche/?keywords&page=1), indiquer 'true', sinon 'false' (sans guillemets)
+// Logique de pagination : si les pages sont numérotées dans l'URL (parfois seulement à partir de la 2e page de résultats, ex. https://www.journal.fr/recherche/?keywords=termes%20de%20recherche&page=2), indiquer 'true', sinon 'false' (sans guillemets)
 const nextPageDef = true;
 // Logique de pagination : si les pages ne sont pas numérotées dans l'URL, identifier le bouton permettant de passer à la page suivante
 const nextButtonDef = null;
 
+
 // --- Structure des pages d'articles --- //
 
-// Pour les articles réservés aux abonné.e.s : élément de la bannière "Réservé aux abonnés"
-const premiumBannerDef = 'span.icon__premium:not(.icon--outside-simple';
+// Pour les articles réservés aux abonné.e.s : élément contenant la bannière "Réservé aux abonnés"
+const premiumBannerDef = 'p.article__status';
 // Si la bannière se situe dans l'en-tête d'article : élément de l'en-tête
-const articleHeaderDef = '.article__header';
+const articleHeaderDef = '.article__header, .article__header-wrap';
 // Elément du titre de l'article
 const titleDivDef = 'h1';
 // Elément du chapô
 const subhedDivDef = 'p.article__desc';
 // Elément du corps de l'article
-const bodyDivDef = 'article.article__content';
+const bodyDivDef = '.article__content';
 // Elément du nom de l'auteur.e
 const authorElementDef = 'span.meta__author';
 // Logique de date : 
@@ -77,6 +79,8 @@ const textElementsDef = '.article__paragraph, h2';
 const exclElementsDef = null;
 
 // ------------- Fin du code à modifier ----------------------------//
+
+
 
 // ------------- Ne rien modifier sous cette ligne ---------------- //
 const fieldset = document.createElement('fieldset');
@@ -167,7 +171,13 @@ function updateRange() {
             if (msg) {
                 console.log('Message from background: ', msg);
                 console.log('Updating range');
-                extractionMessage.textContent = `Extraction de la page ${msg.pageNo} sur ${pagesNumber} au format ${selectedFormat}...`;
+                let pagesTotal;
+                if (pagesNumber) {
+                    pagesTotal = pagesNumber;
+                } else {
+                    pagesTotal = msg.resultsPageNumber;
+                }
+                extractionMessage.textContent = `Extraction de la page ${msg.pageNo} sur ${pagesTotal} au format ${selectedFormat}...`;
             } else {
                 console.error('No message from background');
             }
@@ -237,7 +247,7 @@ extractButton.addEventListener('click', () => {
             if (response.success) {
                 // Display number and selection of downloaded articles
                 downloadedFilesContainer.style.display = 'block';
-                downloadedFilesContainer.textContent = `\nFini !\n\n${response.downloadedFiles.length} article(s) téléchargé(s) :\n`;
+                downloadedFilesContainer.textContent = `\nFini !\n\n${response.downloadedFiles.length} article(s) téléchargé(s) :\n\n`;
                 const downloadedFilesList = document.createElement('div');
                 downloadedFilesList.style.fontWeight = 'normal';
                 downloadedFilesList.textContent = `${response.downloadedFiles
@@ -251,7 +261,7 @@ extractButton.addEventListener('click', () => {
                     const skippedFilesWrapper = document.createElement('div');
                     skippedFilesWrapper.classList.add('list-wrapper');
                     skippedFilesWrapper.style.color = '#ffa500';
-                    skippedFilesWrapper.textContent = `\n${response.skippedFiles.length} articles réservés aux abonné·e·s ont été ignorés.\n`;
+                    skippedFilesWrapper.textContent = `\n${response.skippedFiles.length} articles réservés aux abonné·e·s ont été ignorés.\n\n`;
                     downloadedFilesContainer.appendChild(skippedFilesWrapper);
                     const skippedFilesContainer = document.createElement('div');
                     skippedFilesContainer.classList.add('list-container');
@@ -339,7 +349,7 @@ extractButton.addEventListener('click', () => {
                     const errorFilesWrapper = document.createElement('div');
                     errorFilesWrapper.classList.add('list-wrapper');
                     errorFilesWrapper.style.color = '#e60000';
-                    errorFilesWrapper.textContent = `\n${response.errorFiles.length} résultat(s) en erreur.\n`;
+                    errorFilesWrapper.textContent = `\n${response.errorFiles.length} résultat(s) en erreur.\n\n`;
                     downloadedFilesContainer.appendChild(errorFilesWrapper);
                     const errorFilesContainer = document.createElement('div');
                     errorFilesContainer.classList.add('list-container');
@@ -377,7 +387,7 @@ extractButton.addEventListener('click', () => {
                         errorFileLink.setAttribute('href', errorArticleList[i]);
                         errorFileLink.setAttribute('target', '_blank');
                         errorFileLink.textContent =
-                            errorArticleList[i] + errorMessageList[i] + '\n';
+                            errorMessageList[i] + '\n';
                         errorFileItem.appendChild(errorFileLink);
                         errorFilesLinksContainer.appendChild(errorFileItem);
                     }

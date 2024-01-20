@@ -1,72 +1,4 @@
-button.pcm-ui,
-select.pcm-ui,
-.abort-button {
-    background-color: #2a303b;
-    color: #ffffff !important;
-    border: none;
-    height: 36px;
-    font-family: 'Marr Sans', Arial, 'Roboto', sans-serif;
-    font-weight: 500 !important;
-    padding: 6px 12px;
-    border-radius: 0.3rem;
-    pointer-events: auto;
-    margin-right: 10px !important;
-    float: right;
-    transition: background-color ease-out 0.3s;
-}
-
-button.pcm-ui:hover,
-select.pcm-ui:hover {
-    background-color: #3f495a;
-}
-
-button {
-    cursor: pointer;
-}
-
-select:focus-visible {
-    outline: none;
-}
-
-.show-article-list-button {
-    display: block;
-    cursor: pointer;
-}
-
-.hide-article-list-button {
-    display: none;
-    cursor: pointer;
-}
-
-.show-article-list-button,
-.hide-article-list-button {
-    color: #2a303b;
-    transition: color ease-out 0.3s;
-}
-
-.show-article-list-button:hover,
-.hide-article-list-button:hover {
-    color: #3f495a;
-}
-
-.list-container {
-    border-radius: 5px;
-    background-color: rgba(0, 0, 0, 0.2);
-    margin-left: 1em;
-    margin-right: 1em;
-    padding: 0.5em;
-}
-
-.article-list-container {
-    color: #000;
-    font-weight: normal;
-}
-
-.error-file-link:hover,
-.skipped-link:hover {
-    text-decoration: underline;
-}
-
+/* Style de l'encadré */
 fieldset.pcm-ui {
     background-color: #f0f0f0;
     width: auto !important;
@@ -101,33 +33,35 @@ legend {
     margin-right: 5px;
 }
 
-.fileList {
-    font-family: sans-serif;
-    font-size: small;
-    font-weight: bold;
-    text-transform: none;
-    color: green;
+/* Style des boutons et du menu de sélection du format */
+button.pcm-ui,
+select.pcm-ui,
+.abort-button {
+    background-color: #2a303b;
+    color: #ffffff !important;
+    border: none;
+    height: 36px;
+    font-family: 'Marr Sans', Arial, 'Roboto', sans-serif;
+    font-weight: 500 !important;
+    padding: 6px 12px;
+    border-radius: 0.3rem;
+    pointer-events: auto;
+    margin-right: 10px !important;
+    float: right;
+    transition: background-color ease-out 0.3s;
 }
 
-#extractionMessage {
-    font-family: sans-serif;
-    font-size: small;
-    font-weight: bold;
-    text-transform: none;
-    display: inline;
-    margin-left: 1em;
-    vertical-align: middle;
+button.pcm-ui:hover,
+select.pcm-ui:hover {
+    background-color: #3f495a;
 }
 
-.spinner {
-    border: 2px solid #e1e4ea;
-    border-left: 2px solid #2a303b;
-    border-radius: 50%;
-    width: 12px;
-    height: 12px;
-    animation: spin 1s linear infinite;
-    display: inline-block;
-    vertical-align: middle;
+button {
+    cursor: pointer;
+}
+
+select:focus-visible {
+    outline: none;
 }
 
 .abort-button {
@@ -141,6 +75,29 @@ legend {
     background-color: #cc0000;
 }
 
+/* Style du message s'affichant pendant l'extraction */
+#extractionMessage {
+    font-family: sans-serif;
+    font-size: small;
+    font-weight: bold;
+    text-transform: none;
+    display: inline;
+    margin-left: 1em;
+    vertical-align: middle;
+}
+
+/* Style du spinner d'attente */
+.spinner {
+    border: 2px solid #e1e4ea;
+    border-left: 2px solid #2a303b;
+    border-radius: 50%;
+    width: 12px;
+    height: 12px;
+    animation: spin 1s linear infinite;
+    display: inline-block;
+    vertical-align: middle;
+}
+
 @keyframes spin {
     0% {
         transform: rotate(0deg);
@@ -150,6 +107,58 @@ legend {
     }
 }
 
-div.fileList {
+/* Style de la liste de fichiers téléchargés */
+.fileList {
+    font-family: sans-serif;
+    font-size: small;
+    font-weight: bold;
+    text-transform: none;
     white-space: pre-wrap;
+    color: green;
+}
+
+/* Style des boutons d'affichage et masquage des listes d'articles abonnés ou en erreur */
+.show-article-list-button {
+    display: block;
+    cursor: pointer;
+}
+
+.hide-article-list-button {
+    display: none;
+    cursor: pointer;
+}
+
+.show-article-list-button,
+.hide-article-list-button {
+    color: #2a303b;
+    transition: color ease-out 0.3s;
+}
+
+.show-article-list-button:hover,
+.hide-article-list-button:hover {
+    color: #2a303b;
+}
+
+/* Style des listes d'articles abonnés ou en erreur */
+.list-container {
+    border-radius: 5px;
+    background-color: rgba(0, 0, 0, 0.2);
+    margin-left: 1em;
+    margin-right: 1em;
+    padding: 0.5em;
+    transition: background-color ease-out 0.3s;
+}
+
+.list-container:hover {
+    background-color: rgba(0, 0, 0, 0.35);
+}
+
+.article-list-container {
+    color: #000;
+    font-weight: normal;
+}
+
+.error-file-link:hover,
+.skipped-link:hover {
+    text-decoration: underline;
 }
