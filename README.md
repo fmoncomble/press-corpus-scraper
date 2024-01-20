@@ -18,7 +18,7 @@ Moncomble, F. (2024). *Press Corpus Scraper* (Version 0.1.4) [JavaScript]. Arras
   - Sélectionner le dossier décompressé
  
 ## Mode d'emploi
-- Naviguer vers :
+- Naviguer vers le site d'un journal pris en charge :
     - [Le Figaro](https://recherche.lefigaro.fr/)
     - [Le Monde](https://www.lemonde.fr/recherche/)
 - Effectuer une recherche par mot-clef
@@ -32,5 +32,3 @@ Moncomble, F. (2024). *Press Corpus Scraper* (Version 0.1.4) [JavaScript]. Arras
     - Firefox : l'archive .zip contenant les fichiers est automatiquement téléchargée dans le dossier par défaut
     - Chrome/Edge : sélectionner le dossier de destination de l'archive .zip
 - Décompresser l'archive obtenue pour charger les fichiers dans une application d'analyse textuelle
-
- 
