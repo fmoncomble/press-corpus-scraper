@@ -3,7 +3,7 @@ Une extension pour extraire et télécharger des articles de presse à des fins 
 ### Citer ce programme
 Si vous utilisez cette extension pour vos travaux de recherche, merci de la référencer de la façon suivante :  
   
-Moncomble, F. (2024). *Press Corpus Scraper* (Version 0.1.4) [JavaScript]. Arras, France : Université d’Artois. Disponible à l'adresse : https://github.com/fmoncomble/press-corpus-scraper
+Moncomble, F. (2024). *Press Corpus Scraper* (Version 0.2.2) [JavaScript]. Arras, France : Université d’Artois. Disponible à l'adresse : https://github.com/fmoncomble/press-corpus-scraper
 
 
 ## Installation
@@ -23,7 +23,7 @@ Moncomble, F. (2024). *Press Corpus Scraper* (Version 0.1.4) [JavaScript]. Arras
     - [Le Monde](https://www.lemonde.fr/recherche/)
 - Effectuer une recherche par mot-clef
 - (Facultatif : affiner la recherche)
-- Sélectionner le format de fichier souhaité : TXT ou XML
+- Sélectionner le format de fichier souhaité : TXT ou XML/XTZ (pour import dans [TXM](https://txm.gitpages.huma-num.fr/textometrie/))
 - Cliquer sur « Extraire »
   - Les articles réservés aux abonnés ne sont pas téléchargés mais listés sous forme de liens
   - Les articles que l'extension échoue à extraire sont listés sous forme de liens
