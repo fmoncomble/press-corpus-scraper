@@ -9,9 +9,12 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
             console.log('Message from content script: ', message);
             url = message.url;
             selectedFormat = message.format;
+            extractAll = message.extractAll;
+            console.log('Extract all? ', extractAll);
             paperName = message.paperName;
+            aboBtnDef = message.aboBtnDef;
             searchTermContainerDef = message.searchTermContainerDef;
-            resultsNumberContainerDef = message.resultsNumberContainerDef;
+            resultsNumber = message.resultsNumber;
             resultsNumberPerPageDef = message.resultsNumberPerPageDef;
             articleListDef = message.articleListDef;
             articlesDef = message.articlesDef;
@@ -70,13 +73,24 @@ async function performExtractAndSave(url) {
     console.log(
         'Pagination logic: page number? ' +
             nextPageDef +
-            ' Next button? ' +
+            ' / Next button? ' +
             nextButtonDef
     );
     if (nextPageDef) {
+        const pageQuery = url.split('page=')[1];
         const queryString = url.split('?')[1];
-        if (queryString) {
-            console.log('Query string = ' + queryString + '. Appending page number');
+        if (pageQuery) {
+            console.log('Query string exists and already includes page number');
+            if (extractAll) {
+                const baseQuery = url.split('page')[0];
+                nextUrl = baseQuery + 'page=1';
+            } else {
+                nextUrl = url;
+            }
+        } else if (queryString) {
+            console.log(
+                'Query string = ' + queryString + '. Appending page number'
+            );
             nextUrl = url + '&page=' + pageNo;
         } else if (!queryString) {
             console.log('No existing query string, creating');
@@ -98,19 +112,13 @@ async function performExtractAndSave(url) {
         try {
             console.log('Search page URL = ' + nextUrl);
             const response = await fetch(nextUrl);
+
             const html = await response.text();
             doc = parser.parseFromString(html, 'text/html');
 
             let resultsPageNumber;
-            if (resultsNumberContainerDef) {
-                const resultsNumberContainer = doc.querySelector(
-                    resultsNumberContainerDef
-                );
-                const resultsNumberString = resultsNumberContainer.textContent
-                    .replace('résultats', '')
-                    .replaceAll(/\s/g, '')
-                    .trim();
-                const resultsNumber = Number(resultsNumberString);
+            if (resultsNumber) {
+                resultsNumber = Number(resultsNumber);
                 resultsPageNumber = Math.ceil(
                     resultsNumber / resultsNumberPerPageDef
                 );
@@ -188,7 +196,10 @@ async function performExtractAndSave(url) {
                                 '... > n’est pas un article.';
                             errorFiles.push(url);
                             errorMessages.push(errorMessage);
-                            console.error(errorMessage, url + ' n’a pas de titre.');
+                            console.error(
+                                errorMessage,
+                                url + ': title not found.'
+                            );
                             throw errorMessage;
                         }
 
@@ -227,7 +238,11 @@ async function performExtractAndSave(url) {
                                 premiumBanner
                             );
                         }
-                        if (premiumBanner) {
+                        const aboBtn = contentDoc.querySelector(aboBtnDef);
+                        if (aboBtn) {
+                            console.log('AboBtn found: ', aboBtn);
+                        }
+                        if (premiumBanner && aboBtn) {
                             console.log(
                                 '“' +
                                     url +
@@ -266,7 +281,10 @@ async function performExtractAndSave(url) {
                                 '“' +
                                 titleDiv.textContent.trim() +
                                 '...” n’est pas un article.';
-                            console.error(errorMessage, url + ' ne contient pas de texte.');
+                            console.error(
+                                errorMessage,
+                                url + ' does not contain text.'
+                            );
                             errorFiles.push(url);
                             errorMessages.push(errorMessage);
                             throw errorMessage;
@@ -496,10 +514,14 @@ async function performExtractAndSave(url) {
                 console.log('Extraction aborted');
                 break;
             }
-
-            if (nextPageDef) {
-                nextUrl = await getNextPageUrl(nextUrl);
-                console.log('Next page URL = ' + nextUrl);
+            if (extractAll) {
+                if (nextPageDef) {
+                    nextUrl = await getNextPageUrl(nextUrl);
+                    console.log('Next page URL = ' + nextUrl);
+                }
+            } else {
+                console.log('Single page extraction finished');
+                break;
             }
         } catch (error) {
             console.error('Error: ' + error);
@@ -534,7 +556,7 @@ async function getNextPageUrl(nextUrl) {
     const newPageNo = currentPageNo + 1;
     const nextPageUrl = urlParts[0] + 'page=' + newPageNo;
     const response = await fetch(nextPageUrl);
-    console.log('Next page fetch OK? ', response.ok)
+    console.log('Next page fetch OK? ', response.ok);
     if (response.redirected || !response.ok) {
         console.log('Last page reached');
         return null;

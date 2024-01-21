@@ -20,15 +20,15 @@ const paperName = 'Le Monde';
 // Désigner le point d'insertion de l'encadré de l'extension
 const anchor = document.querySelector('.search__form-container');
 
-
 // --- Structure de la page de résultats --- //
 
-// Indiquer entre guillemets simples les éléments (tag, class et/ou id) pertinents de la structure HTML de la page. S'ils n'existent pas ou ne sont pas utiles, indiquer 'null' (sans guillemets)
+// Indiquer entre guillemets simples les attributs HTML (tag, class et/ou id) des éléments pertinents de la page. S'ils n'existent pas ou ne sont pas utiles, indiquer 'null' (sans guillemets)
 
 // Où retrouver les termes de recherche
 const searchTermContainerDef = 'input.input.input__search';
 // S'il est présent : élément contenant le nombre total de résultats
-const resultsNumberContainerDef = null;
+const resultsNumberContainer = null;
+const resultsNumber = null;
 // S'il est pertinent : nombre de résultats par page
 const resultsNumberPerPageDef = null;
 let pagesNumber; // S'il est présent sur la page (ex. boutons de pagination en bas de la page) : nombre total de pages de résultats. Sinon, passer les lignes suivantes en commentaire (les faire précéder de deux barres obliques //)
@@ -49,9 +49,10 @@ const nextPageDef = true;
 // Logique de pagination : si les pages ne sont pas numérotées dans l'URL, identifier le bouton permettant de passer à la page suivante
 const nextButtonDef = null;
 
-
 // --- Structure des pages d'articles --- //
 
+// Identifier le bouton d'abonnement
+const aboBtnDef = '.js-btn-premium';
 // Pour les articles réservés aux abonné.e.s : élément contenant la bannière "Réservé aux abonnés"
 const premiumBannerDef = 'p.article__status';
 // Si la bannière se situe dans l'en-tête d'article : élément de l'en-tête
@@ -64,7 +65,7 @@ const subhedDivDef = 'p.article__desc';
 const bodyDivDef = '.article__content';
 // Elément du nom de l'auteur.e
 const authorElementDef = 'span.meta__author';
-// Logique de date : 
+// Logique de date :
 // - si la date est présente dans l'URL (ex. https://www.journal.fr/2024/01/20/titre-de-larticle), indiquer 'url' ;
 // - si la date n'est pas présente dans l'URL mais dans un élément HTML de la page, indiquer 'node'. S'il existe, privilégier un élément contenant la date au format ISO (commençant par AAAA-MM-JJ).
 const dateLogic = 'url';
@@ -103,7 +104,7 @@ let selectedFormat = 'txt';
 const select = document.createElement('select');
 select.classList.add('pcm-ui');
 const txt = new Option('TXT', 'txt');
-const xml = new Option('XML', 'xml');
+const xml = new Option('XML/XTZ', 'xml');
 select.appendChild(txt);
 select.appendChild(xml);
 
@@ -117,11 +118,54 @@ select.addEventListener('change', function () {
 const extractButton = document.createElement('button');
 extractButton.classList.add('pcm-ui');
 extractButton.id = 'extractButton';
-extractButton.textContent = 'Extraire';
+extractButton.textContent = 'Tout extraire';
 
 extractButtonsContainer.appendChild(extractButton);
 extractButtonsContainer.appendChild(select);
 fieldset.appendChild(extractButtonsContainer);
+
+// Create extraction option checkbox
+const checkboxDiv = document.createElement('div');
+checkboxDiv.classList.add('checkbox-div');
+const container = document.createElement('label');
+container.classList.add('switch');
+const slider = document.createElement('span');
+slider.classList.add('slider');
+const checkbox = document.createElement('input');
+checkbox.type = 'checkbox';
+checkbox.name = 'extractOption';
+checkbox.id = 'extractOption';
+checkbox.checked = 'checked';
+container.appendChild(checkbox);
+container.appendChild(slider);
+const label = document.createElement('span');
+label.id = 'extractOption';
+label.htmlFor = 'extractOption';
+label.appendChild(document.createTextNode(''));
+let pagesTotal;
+if (pagesNumber) {
+    pagesTotal = pagesNumber;
+} else if (resultsNumber) {
+    pagesTotal = Math.ceil(resultsNumber / resultsNumberPerPageDef);
+}
+label.textContent = `Extraire les ${pagesTotal} pages de résultats`;
+checkboxDiv.appendChild(container);
+checkboxDiv.appendChild(label);
+extractButton.before(checkboxDiv);
+
+let extractAll = true;
+
+checkbox.addEventListener('change', function () {
+    if (checkbox.checked) {
+        console.log('Full extraction ahead');
+        extractButton.textContent = 'Tout extraire';
+        extractAll = true;
+    } else {
+        console.log('Single page extraction');
+        extractButton.textContent = 'Extraire cette page';
+        extractAll = false;
+    }
+});
 
 // Create abort button
 const abortButton = document.createElement('button');
@@ -171,12 +215,12 @@ function updateRange() {
             if (msg) {
                 console.log('Message from background: ', msg);
                 console.log('Updating range');
-                let pagesTotal;
-                if (pagesNumber) {
-                    pagesTotal = pagesNumber;
-                } else {
-                    pagesTotal = msg.resultsPageNumber;
-                }
+                // let pagesTotal;
+                // if (pagesNumber) {
+                //     pagesTotal = pagesNumber;
+                // } else {
+                //     pagesTotal = msg.resultsPageNumber;
+                // }
                 extractionMessage.textContent = `Extraction de la page ${msg.pageNo} sur ${pagesTotal} au format ${selectedFormat}...`;
             } else {
                 console.error('No message from background');
@@ -208,9 +252,11 @@ extractButton.addEventListener('click', () => {
             action: 'performExtraction',
             url: window.location.href,
             format: selectedFormat,
+            extractAll: extractAll,
             paperName: paperName,
+            aboBtnDef: aboBtnDef,
             searchTermContainerDef: searchTermContainerDef,
-            resultsNumberContainerDef: resultsNumberContainerDef,
+            resultsNumber: resultsNumber,
             resultsNumberPerPageDef: resultsNumberPerPageDef,
             articleListDef: articleListDef,
             articlesDef: articlesDef,
@@ -386,8 +432,7 @@ extractButton.addEventListener('click', () => {
                         errorFileLink.classList.add('error-file-link');
                         errorFileLink.setAttribute('href', errorArticleList[i]);
                         errorFileLink.setAttribute('target', '_blank');
-                        errorFileLink.textContent =
-                            errorMessageList[i] + '\n';
+                        errorFileLink.textContent = errorMessageList[i] + '\n';
                         errorFileItem.appendChild(errorFileLink);
                         errorFilesLinksContainer.appendChild(errorFileItem);
                     }
@@ -412,20 +457,18 @@ extractButton.addEventListener('click', () => {
                 downloadedFilesContainer.appendChild(totalFilesContainer);
 
                 // Calculate and display the number of lost results
-                // const resultsNumberContainer = document.querySelector(
-                //     'div.resultats div.facettes__nombre'
-                // );
-                // const resultsNumberString = resultsNumberContainer.textContent
-                //     .replace('résultats', '')
-                //     .trim();
-                // const resultsNumber = Number(resultsNumberString);
-                // if (fileTotal < resultsNumber) {
-                //     const fileDiff = resultsNumber - fileTotal;
-                //     const lostFilesContainer = document.createElement('div');
-                //     lostFilesContainer.style.color = 'blue';
-                //     lostFilesContainer.textContent = `\n${fileDiff} résultat(s) introuvable(s)... 👀`;
-                //     downloadedFilesContainer.appendChild(lostFilesContainer);
-                // }
+                if (resultsNumber) {
+                    if (fileTotal < resultsNumber) {
+                        const fileDiff = resultsNumber - fileTotal;
+                        const lostFilesContainer =
+                            document.createElement('div');
+                        lostFilesContainer.style.color = 'blue';
+                        lostFilesContainer.textContent = `\n${fileDiff} résultat(s) introuvable(s)... 👀`;
+                        downloadedFilesContainer.appendChild(
+                            lostFilesContainer
+                        );
+                    }
+                }
             } else {
                 console.error('Error:', response.error);
             }

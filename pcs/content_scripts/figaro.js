@@ -27,8 +27,9 @@ const anchor = document.querySelector('.resultats');
 
 // Où retrouver les termes de recherche
 const searchTermContainerDef = 'input.recherche__input';
-// S'il est présent : élément contenant le nombre total de résultats
-const resultsNumberContainerDef = 'div.resultats div.facettes__nombre';
+// S'il est présent : définir le nombre total de résultats
+const resultsNumberContainer = document.querySelector('div.resultats div.facettes__nombre');
+const resultsNumber = Number(resultsNumberContainer.textContent.replace('résultats', '').replaceAll(/\s/g, '').trim());
 // S'il est pertinent : nombre de résultats par page
 const resultsNumberPerPageDef = 20;
 let pagesNumber // S'il est présent sur la page (ex. boutons de pagination en bas de la page) : nombre total de pages de résultats. Sinon, passer les lignes suivantes en commentaire (les faire précéder de deux barres obliques //)
@@ -51,6 +52,8 @@ const nextButtonDef = null;
 
 // --- Structure des pages d'articles --- //
 
+// Identifier le bouton d'abonnement
+const aboBtnDef = '.fh-subscribe.fh-subscribe--desktop';
 // Pour les articles réservés aux abonné.e.s : élément contenant la bannière "Réservé aux abonnés"
 const premiumBannerDef = 'div.fig-premium-mark-article';
 // Si la bannière se situe dans l'en-tête d'article : élément de l'en-tête
@@ -87,6 +90,7 @@ const exclElementsDef = [readAlso, seeAlso];
 
 // ------------- Ne rien modifier sous cette ligne ---------------- //
 const fieldset = document.createElement('fieldset');
+fieldset.classList.add('pcm-ui');
 fieldset.textContent = 'Extraire et télécharger les articles au format désiré';
 anchor.appendChild(fieldset);
 
@@ -103,8 +107,9 @@ extractButtonsContainer.style.display = 'inline';
 let selectedFormat = 'txt';
 
 const select = document.createElement('select');
+select.classList.add('pcm-ui');
 const txt = new Option('TXT', 'txt');
-const xml = new Option('XML', 'xml');
+const xml = new Option('XML/XTZ', 'xml');
 select.appendChild(txt);
 select.appendChild(xml);
 
@@ -116,12 +121,56 @@ select.addEventListener('change', function () {
 });
 
 const extractButton = document.createElement('button');
+extractButton.classList.add('pcm-ui');
 extractButton.id = 'extractButton';
-extractButton.textContent = 'Extraire';
+extractButton.textContent = 'Tout extraire';
 
 extractButtonsContainer.appendChild(extractButton);
 extractButtonsContainer.appendChild(select);
 fieldset.appendChild(extractButtonsContainer);
+
+// Create extraction option checkbox
+const checkboxDiv = document.createElement('div');
+checkboxDiv.classList.add('checkbox-div');
+const container = document.createElement('label');
+container.classList.add('switch');
+const slider = document.createElement('span');
+slider.classList.add('slider');
+const checkbox = document.createElement('input');
+checkbox.type = 'checkbox';
+checkbox.name = 'extractOption';
+checkbox.id = 'extractOption';
+checkbox.checked = 'checked';
+container.appendChild(checkbox);
+container.appendChild(slider);
+const label = document.createElement('span');
+label.id = 'extractOption';
+label.htmlFor = 'extractOption';
+label.appendChild(document.createTextNode(''));
+let pagesTotal;
+if (pagesNumber) {
+    pagesTotal = pagesNumber;
+} else if (resultsNumber) {
+    pagesTotal = Math.ceil(resultsNumber / resultsNumberPerPageDef);
+}
+label.textContent = `Extraire les ${pagesTotal} pages de résultats`;
+checkboxDiv.appendChild(container);
+checkboxDiv.appendChild(label);
+extractButton.before(checkboxDiv);
+
+let extractAll = true;
+
+checkbox.addEventListener('change', function () {
+    if (checkbox.checked) {
+        console.log('Full extraction ahead');
+        extractButton.textContent = 'Tout extraire';
+        extractAll = true;
+    } else {
+        console.log('Single page extraction');
+        extractButton.textContent = 'Extraire cette page';
+        extractAll = false;
+    }
+});
 
 // Create abort button
 const abortButton = document.createElement('button');
@@ -158,6 +207,7 @@ extractionMessage.id = 'extractionMessage';
 extractionMessage.textContent = 'Extraction lancée...';
 extractionContainer.appendChild(extractionMessage);
 
+// Function to update the range of results being processed
 function updateRange() {
     console.log('updateRange function invoked');
     let port;
@@ -170,12 +220,12 @@ function updateRange() {
             if (msg) {
                 console.log('Message from background: ', msg);
                 console.log('Updating range');
-                let pagesTotal;
-                if (pagesNumber) {
-                    pagesTotal = pagesNumber;
-                } else {
-                    pagesTotal = msg.resultsPageNumber;
-                }
+                // let pagesTotal;
+                // if (pagesNumber) {
+                //     pagesTotal = pagesNumber;
+                // } else {
+                //     pagesTotal = msg.resultsPageNumber;
+                // }
                 extractionMessage.textContent = `Extraction de la page ${msg.pageNo} sur ${pagesTotal} au format ${selectedFormat}...`;
             } else {
                 console.error('No message from background');
@@ -207,12 +257,15 @@ extractButton.addEventListener('click', () => {
             action: 'performExtraction',
             url: window.location.href,
             format: selectedFormat,
+            extractAll: extractAll,
             paperName: paperName,
+            aboBtnDef: aboBtnDef,
             searchTermContainerDef: searchTermContainerDef,
-            resultsNumberContainerDef: resultsNumberContainerDef,
+            resultsNumber: resultsNumber,
             resultsNumberPerPageDef: resultsNumberPerPageDef,
             articleListDef: articleListDef,
             articlesDef: articlesDef,
+            articleHeaderDef: articleHeaderDef,
             premiumBannerDef: premiumBannerDef,
             titleDivDef: titleDivDef,
             subhedDivDef: subhedDivDef,
@@ -384,8 +437,7 @@ extractButton.addEventListener('click', () => {
                         errorFileLink.classList.add('error-file-link');
                         errorFileLink.setAttribute('href', errorArticleList[i]);
                         errorFileLink.setAttribute('target', '_blank');
-                        errorFileLink.textContent =
-                            errorMessageList[i] + '\n';
+                        errorFileLink.textContent = errorMessageList[i] + '\n';
                         errorFileItem.appendChild(errorFileLink);
                         errorFilesLinksContainer.appendChild(errorFileItem);
                     }
@@ -410,19 +462,17 @@ extractButton.addEventListener('click', () => {
                 downloadedFilesContainer.appendChild(totalFilesContainer);
 
                 // Calculate and display the number of lost results
-                const resultsNumberContainer = document.querySelector(
-                    'div.resultats div.facettes__nombre'
-                );
-                const resultsNumberString = resultsNumberContainer.textContent
-                    .replace('résultats', '')
-                    .trim();
-                const resultsNumber = Number(resultsNumberString);
-                if (fileTotal < resultsNumber) {
-                    const fileDiff = resultsNumber - fileTotal;
-                    const lostFilesContainer = document.createElement('div');
-                    lostFilesContainer.style.color = 'blue';
-                    lostFilesContainer.textContent = `\n${fileDiff} résultat(s) introuvable(s)... 👀`;
-                    downloadedFilesContainer.appendChild(lostFilesContainer);
+                if (resultsNumber) {
+                    if (fileTotal < resultsNumber) {
+                        const fileDiff = resultsNumber - fileTotal;
+                        const lostFilesContainer =
+                            document.createElement('div');
+                        lostFilesContainer.style.color = 'blue';
+                        lostFilesContainer.textContent = `\n${fileDiff} résultat(s) introuvable(s)... 👀`;
+                        downloadedFilesContainer.appendChild(
+                            lostFilesContainer
+                        );
+                    }
                 }
             } else {
                 console.error('Error:', response.error);
