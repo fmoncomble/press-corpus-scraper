@@ -21,6 +21,7 @@ Moncomble, F. (2024). *Press Corpus Scraper* (Version 0.2.3) [JavaScript]. Arras
 - Naviguer vers le site d'un journal pris en charge :
     - [Le Figaro](https://recherche.lefigaro.fr/)
     - [Le Monde](https://www.lemonde.fr/recherche/)
+    - [Le Point](https://www.lepoint.fr/recherche/index.php)
 - Effectuer une recherche par mot-clef
 - (Facultatif : affiner la recherche)
 - Sélectionner le format de fichier souhaité : TXT ou XML/XTZ (pour import dans [TXM](https://txm.gitpages.huma-num.fr/textometrie/))
