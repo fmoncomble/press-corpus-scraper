@@ -1,14 +1,14 @@
 /* Style de l'encadré */
 fieldset.pcs-ui {
     background-color: #f0f0f0;
-    border-color: #4a90e2 !important;
+    border-color: #d80c0c !important;
     font-family: 'Marr Sans', Arial, 'Roboto', sans-serif;
-    font-weight: 600;
+    font-weight: 500;
 }
 
 legend {
-    background: linear-gradient(#1679b9, #184c77);
-    border-color: #4a90e2;
+    background: linear-gradient(#d80c0c, #a90a0a);
+    border-color: #d80c0c;
 }
 
 .legend-text {
@@ -19,28 +19,30 @@ legend {
 button.pcs-ui,
 select.pcs-ui,
 .abort-button {
-    background-color: #4a90e2;
-    font-family: inherit;
-    font-weight: 600 !important;
+    background-color: #d80c0c;
+    font-family: 'Marr Sans', Arial, 'Roboto', sans-serif;
 }
 
 button.pcs-ui:hover,
 select.pcs-ui:hover {
-    background-color: #3a87df;
+    background-color: #a90a0a;
 }
 
 /* Style du bouton d'option d'extraction */
+.switch {
+    vertical-align: text-bottom !important;
+}
 
 input:checked + .slider {
-    background-color: #4a90e2;
+    background-color: #d80c0c;
 }
 
 input:focus + .slider {
-    box-shadow: 0 0 1px #4a90e2;
+    box-shadow: 0 0 1px #d80c0c;
 }
 
 /* Style du spinner d'attente */
 .spinner {
-    border: 2px solid #4a90e2;
-    border-left: 2px solid #0e3158;
+    border: 2px solid #fccfcf;
+    border-left: 2px solid #d80c0c;
 }

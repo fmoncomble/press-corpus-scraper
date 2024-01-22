@@ -2,7 +2,7 @@
     "manifest_version": 2,
     "name": "Press corpus scraper",
 
-    "version": "0.2.2",
+    "version": "0.2.3",
 
     "description": "Extraire et télécharger des articles de presse",
     "homepage_url": "https://github.com/fmoncomble/press_corpus_scraper",
@@ -16,7 +16,8 @@
         "downloads",
         "storage",
         "*://*.lefigaro.fr/*",
-        "*://*.lemonde.fr/*"
+        "*://*.lemonde.fr/*",
+        "*://*.lepoint.fr/*"
     ],
 
     "background": {
@@ -26,14 +27,42 @@
 
     "content_scripts": [
         {
-            "matches": ["https://recherche.lefigaro.fr/recherche*"],
-            "js": ["content_scripts/figaro.js"],
-            "css": ["content_scripts/figaro.css"]
+            "matches": [
+                "https://recherche.lefigaro.fr/recherche*"
+            ],
+            "js": [
+                "content_scripts/figaro.js", 
+                "content_scripts/config.js"
+            ],
+            "css": [
+                "content_scripts/figaro.css", 
+                "content_scripts/config.css"
+            ]
         },
         {
-            "matches": ["https://www.lemonde.fr/recherche/?*"],
-            "js": ["content_scripts/lemonde.js"],
-            "css": ["content_scripts/lemonde.css"]
+            "matches": [
+                "https://www.lemonde.fr/recherche/?*"
+            ],
+            "js": [
+                "content_scripts/lemonde.js",
+                "content_scripts/config.js"
+            ],
+            "css": [
+                "content_scripts/lemonde.css",
+                "content_scripts/config.css"]
+        },
+        {
+            "matches": [
+                "https://www.lepoint.fr/recherche/*"
+            ],
+            "js": [
+                "content_scripts/lepoint.js",
+                "content_scripts/config.js"
+            ],
+            "css": [
+                "content_scripts/lepoint.css",
+                "content_scripts/config.css"
+            ]
         }
     ],
 

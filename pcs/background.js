@@ -29,6 +29,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
             dateAttributeDef = message.dateAttributeDef;
             dateStringDef = message.dateStringDef;
             textElementsDef = message.textElementsDef;
+            exclElementsText = message.exclElementsText;
             exclElementsDef = message.exclElementsDef;
             nextPageDef = message.nextPageDef;
             nextButtonDef = message.nextButtonDef;
@@ -37,11 +38,12 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
                 .then((results) => {
                     sendResponse({
                         success: true,
-                        downloadedFiles: results[0],
-                        skippedFiles: results[1],
-                        skippedTitles: results[2],
-                        errorFiles: results[3],
-                        errorMessages: results[4],
+                        fetchedUrls: results[0],
+                        downloadedFiles: results[1],
+                        skippedFiles: results[2],
+                        skippedTitles: results[3],
+                        errorFiles: results[4],
+                        errorMessages: results[5],
                     });
                 })
                 .catch((error) => {
@@ -99,9 +101,9 @@ async function performExtractAndSave(url) {
     } else if (nextButtonDef) {
         nextUrl = url;
     }
-    const fetchedUrls = new Set();
 
     const zip = new JSZip();
+    const fetchedUrls = new Set();
     const addedFileNames = new Set();
     const skippedFiles = [];
     const skippedTitles = [];
@@ -111,10 +113,41 @@ async function performExtractAndSave(url) {
     loop: while (nextUrl) {
         try {
             console.log('Search page URL = ' + nextUrl);
-            const response = await fetch(nextUrl);
+            let articles;
 
-            const html = await response.text();
-            doc = parser.parseFromString(html, 'text/html');
+            for (let i = 1; i <= 3; i++) {
+                console.log(
+                    'Attempt #' + i + ' to fetch articles at ' + nextUrl
+                );
+                const response = await fetch(nextUrl);
+                const html = await response.text();
+                doc = parser.parseFromString(html, 'text/html');
+
+                let articleList = doc.querySelector(articleListDef);
+                if (!articleList) {
+                    throw new Error('Article list not found');
+                } else if (articleList) {
+                    console.log('Article list: ', articleList);
+                    articles = articleList.querySelectorAll(articlesDef);
+                }
+
+                if (articles.length >= 1) {
+                    console.log(
+                        'Articles found on attempt #' + i + '!',
+                        articles
+                    );
+                    break;
+                } else {
+                    console.log('No articles found on attempt #' + i + ', trying again');
+                }
+
+                await new Promise(resolve => setTimeout(resolve, 1000));
+            }
+
+            if (articles.length === 0) {
+                console.log('Last article reached');
+                break loop;
+            }
 
             let resultsPageNumber;
             if (resultsNumber) {
@@ -122,17 +155,6 @@ async function performExtractAndSave(url) {
                 resultsPageNumber = Math.ceil(
                     resultsNumber / resultsNumberPerPageDef
                 );
-            }
-
-            let articleList = doc.querySelector(articleListDef);
-            if (!articleList) {
-                throw new Error('Article list not found');
-            }
-
-            const articles = articleList.querySelectorAll(articlesDef);
-            if (articles.length === 0) {
-                console.log('Last article reached');
-                break loop;
             }
 
             function sendRange() {
@@ -157,11 +179,17 @@ async function performExtractAndSave(url) {
 
             sendRange();
 
-            const urls = Array.from(articles).map(
-                (p) => new URL(p.querySelector('a').getAttribute('href')).href
-            );
-
-            fetchedUrls.add(...urls);
+            const nextUrlURL = new URL(nextUrl);
+            console.log('URL origin: ', nextUrlURL.origin);
+            const urls = Array.from(articles).map(function (p) {
+                let articleUrl = p.querySelector('a').getAttribute('href');
+                if (!articleUrl.startsWith('http')) {
+                    articleUrl = nextUrlURL.origin + articleUrl;
+                }
+                console.log('Article URL: ', articleUrl);
+                return new URL(articleUrl).href;
+            });
+            console.log('Article URLs: ', urls);
 
             await Promise.all(
                 urls.map(async (url) => {
@@ -238,11 +266,11 @@ async function performExtractAndSave(url) {
                                 premiumBanner
                             );
                         }
-                        const aboBtn = contentDoc.querySelector(aboBtnDef);
-                        if (aboBtn) {
-                            console.log('AboBtn found: ', aboBtn);
-                        }
-                        if (premiumBanner && aboBtn) {
+                        // const aboBtn = contentDoc.querySelector(aboBtnDef);
+                        // if (aboBtn) {
+                        //     console.log('AboBtn found: ', aboBtn);
+                        // }
+                        if (premiumBanner) {
                             console.log(
                                 '“' +
                                     url +
@@ -303,24 +331,55 @@ async function performExtractAndSave(url) {
 
                         function filterTextElements(
                             textElements,
-                            exclElementsDef
+                            exclElementsDef,
+                            exclElementsText
                         ) {
-                            return textElements.filter(function (node) {
-                                return !exclElementsDef.some(function (e) {
-                                    return node.textContent.includes(e);
-                                });
+                            let excludedNodes = [];
+                            let filteredElements = textElements.filter(function (node) {
+                                let textContentExcluded = false;
+                                let identifierExcluded = false;
+                                // Check if the node's textContent includes any of the exclElementsText
+                                if (exclElementsText) {
+                                    textContentExcluded =
+                                        exclElementsText.some(function (e) {
+                                            return node.textContent.includes(e);
+                                        });
+                                    console.log('Node containing text to exclude? ', textContentExcluded);
+                                }
+
+                                // Check if the node's identifier is in the exclElementsDef array
+                                if (exclElementsDef) {
+                                    identifierExcluded =
+                                        exclElementsDef.includes(
+                                            node.className
+                                        );
+                                        console.log('Node to exclude on identifier? ', identifierExcluded);
+                                }
+
+                                if (textContentExcluded || identifierExcluded) {
+                                    excludedNodes.push(node + ', ' + node.textContent);
+                                }
+
+                                // Exclude the node if either condition is true
+                                return !(
+                                    textContentExcluded || identifierExcluded
+                                );
                             });
+
+                            console.log('Excluded nodes: ', excludedNodes);
+                            return filteredElements;
                         }
 
                         let text;
-                        if (exclElementsDef) {
+                        if (exclElementsDef || exclElementsText) {
                             console.log(
                                 'Elements to exclude: ',
-                                exclElementsDef
+                                exclElementsDef + exclElementsText
                             );
                             textElements = filterTextElements(
                                 textElements,
-                                exclElementsDef
+                                exclElementsDef,
+                                exclElementsText
                             );
                             console.log(
                                 'Text elements after filtering: ',
@@ -351,7 +410,7 @@ async function performExtractAndSave(url) {
                             let dateElement =
                                 contentDoc.querySelector(dateElementDef);
                             let dateElementValue;
-                            if (dateElement) {
+                            if (dateElement && dateAttributeDef) {
                                 dateElementValue =
                                     dateElement.getAttribute(dateAttributeDef);
                                 function isIsoDate() {
@@ -369,17 +428,54 @@ async function performExtractAndSave(url) {
                             }
                             let dateString;
                             let frenchDateString;
-                            if (dateElement && isIsoDate()) {
+                            if (dateElementValue && isIsoDate()) {
                                 console.log(
                                     'ISO date for ' + url,
                                     dateElementValue
                                 );
-                            } else if (dateElement && !isIsoDate()) {
+                                date = dateElement
+                                    ? dateElementValue.split('T')[0]
+                                    : 'date-inconnue';
+                                console.log('Article date from ISO: ', date);
+                            } else if (
+                                (dateElementValue && !isIsoDate()) ||
+                                (dateElement && !dateElementValue)
+                            ) {
+                                dateString = dateElement.textContent
+                                    .replace('Publié le', '')
+                                    .trim();
                                 console.log(
                                     'Non ISO date for ' + url,
-                                    dateElement.textContent
+                                    dateString
                                 );
-                            } else {
+                                if (isFrenchDate(dateString)) {
+                                    console.log(
+                                        'French date identified for ' + url
+                                    );
+                                    date = convertFrenchDateToISO(dateString);
+                                    console.log(
+                                        'Article date from French format: ',
+                                        date
+                                    );
+                                } else {
+                                    try {
+                                        console.log(
+                                            'Date string exists for ' + url,
+                                            dateString
+                                        );
+                                        date =
+                                            buildDateFromNumberFormat(
+                                                dateString
+                                            );
+                                        console.log(
+                                            'Article date from number format: ',
+                                            date
+                                        );
+                                    } catch (error) {
+                                        'Error building date for ' + url, error;
+                                    }
+                                }
+                            } else if (!dateElement) {
                                 const divs = contentDoc.querySelectorAll('div');
                                 console.log('Divs:', divs);
                                 const divArray = Array.from(divs);
@@ -388,66 +484,28 @@ async function performExtractAndSave(url) {
                                     d.textContent.includes(dateStringDef)
                                 );
                                 console.log('Date div: ', dateDiv);
-                                function isFrenchDate() {
-                                    if (
-                                        /\d{1,2}\s[/p{L}]{3,}\s\d{4}/u.test(
-                                            dateDiv.textContent
-                                        )
-                                    ) {
-                                        console.log('French date for ' + url);
-                                        return true;
-                                    } else {
-                                        return false;
-                                    }
-                                }
-                                if (isFrenchDate()) {
-                                    frenchDateString = dateDiv.textContent;
-                                } else {
-                                    dateString = dateDiv.textContent;
-                                }
-                            }
-
-                            if (dateElement && isIsoDate()) {
-                                console.log('Date element exists for ' + url);
-                                date = dateElement
-                                    ? dateElementValue
-                                          //   .getAttribute(dateAttributeDef)
-                                          .split('T')[0]
-                                    : 'date-inconnue';
-                                console.log('Date: ', date);
-                            } else if (dateElement && !isIsoDate()) {
-                                const frenchDate = dateElement.textContent
-                                    .replace('Publié le ', '')
-                                    .trim();
-                                console.log(
-                                    'French date for ' + url,
-                                    frenchDate
-                                );
-                                date = convertFrenchDateToISO(frenchDate);
-                                console.log('Date: ', date);
-                            } else if (frenchDateString) {
-                                console.log('French date exists for ' + url);
-                                const frenchDate = frenchDateString.textContent
-                                    .replace('Publié le', '')
-                                    .trim();
-                                date = convertFrenchDateToISO(frenchDate);
-                                console.log('Date: ', date);
-                            } else if (dateString) {
-                                try {
+                                if (isFrenchDate(dateDiv)) {
+                                    frenchDateString = dateDiv.textContent
+                                        .replace('Publié le', '')
+                                        .trim();
+                                    date =
+                                        convertFrenchDateToISO(
+                                            frenchDateString
+                                        );
                                     console.log(
-                                        'Date string exists for ' + url
+                                        'Article date from text in French format: ',
+                                        date
                                     );
-                                    const datePattern = /(\d+)\/(\d+)\/(\d+)/u;
-                                    const day =
-                                        dateString.match(datePattern)[1];
-                                    const month =
-                                        dateString.match(datePattern)[2];
-                                    const year =
-                                        dateString.match(datePattern)[3];
-                                    date = year + '-' + month + '-' + day;
-                                    console.log('Date: ', date);
-                                } catch (error) {
-                                    'Error building date for ' + url, error;
+                                } else {
+                                    dateString = dateDiv.textContent
+                                        .replace('Publié le')
+                                        .trim();
+                                    date =
+                                        buildDateFromNumberFormat(dateString);
+                                    console.log(
+                                        'Article date from text in number format: ',
+                                        date
+                                    );
                                 }
                             } else if (
                                 !dateElement &&
@@ -501,6 +559,7 @@ async function performExtractAndSave(url) {
                             index++;
                         }
 
+                        fetchedUrls.add(url);
                         addedFileNames.add(baseFileName);
 
                         zip.file(baseFileName, fileContent);
@@ -542,6 +601,7 @@ async function performExtractAndSave(url) {
     await downloadZip(zipBlob, zipFileName);
 
     return [
+        Array.from(fetchedUrls),
         Array.from(addedFileNames),
         skippedFiles,
         skippedTitles,
@@ -609,6 +669,26 @@ async function downloadZip(zipBlob, zipFileName) {
             reject(new Error('Download API not available'));
         }
     });
+}
+
+// Function to construct a date from a number format DD/MM/YYYY
+function buildDateFromNumberFormat(dateString) {
+    const datePattern = /(\d+)\/(\d+)\/(\d+)/u;
+    const day = dateString.match(datePattern)[1];
+    const month = dateString.match(datePattern)[2];
+    const year = dateString.match(datePattern)[3];
+    date = year + '-' + month + '-' + day;
+    return date;
+}
+
+// Function to check if a date is in French format
+function isFrenchDate(div) {
+    if (/\d{1,2}\s[/p{L}]{3,}\s\d{4}/u.test(div.textContent)) {
+        console.log('French date located for ' + url);
+        return true;
+    } else {
+        return false;
+    }
 }
 
 // Function to convert date into ISO format (YYYY-MM-DD)
