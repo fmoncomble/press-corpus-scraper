@@ -3,7 +3,9 @@ fieldset {
     border: solid 1px #041F4A;
     border-radius: 5px;
     padding: 20px;
-    color: #041F4A
+    color: #041F4A;
+    font-family: 'GuardianTextSans', 'Guardian Text Sans Web', 'Helvetica Neue',
+    Helvetica, Arial, 'Lucida Grande', sans-serif;
 }
 
 legend {
@@ -199,4 +201,13 @@ button {
 
 #extract-select {
     margin-left: 10px;
+}
+
+a,
+a:visited {
+    color: inherit;
+}
+
+a:hover {
+    color:#052962;
 }

@@ -3,7 +3,8 @@ fieldset {
     border: solid 1px #121212;
     border-radius: 5px;
     padding: 20px;
-    color: #121212
+    color: #121212;
+    font-family: 'nyt-franklin', sans-serif;
 }
 
 legend {
