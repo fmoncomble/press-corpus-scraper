@@ -7,8 +7,9 @@ Moncomble, F. (2024). *Press Corpus Scraper* (Version 0.2.3) [JavaScript]. Arras
 
 
 ## Installation
-### Firefox
-[![Firefox add-on](https://github.com/fmoncomble/Figaro_extractor/assets/59739627/e4df008e-1aac-46be-a216-e6304a65ba97)](https://github.com/fmoncomble/press-corpus-scraper/releases/latest/download/pcs.xpi)
+### Firefox (recommandé)
+[![Firefox add-on](https://github.com/fmoncomble/Figaro_extractor/assets/59739627/e4df008e-1aac-46be-a216-e6304a65ba97)](https://github.com/fmoncomble/press-corpus-scraper/releases/latest/download/pcs.xpi)  
+(Les mises à jour de l'extension sont automatiques.)
 ### Chrome/Edge
 - ![Télécharger l'archive .zip](https://github.com/fmoncomble/press-corpus-scraper/releases/latest/download/pcs.zip)
 - Décompresser l'archive
@@ -22,13 +23,18 @@ Moncomble, F. (2024). *Press Corpus Scraper* (Version 0.2.3) [JavaScript]. Arras
     - [Le Figaro](https://recherche.lefigaro.fr/)
     - [Le Monde](https://www.lemonde.fr/recherche/)
     - [Le Point](https://www.lepoint.fr/recherche/index.php)
-- Effectuer une recherche par mot-clef
-- (Facultatif : affiner la recherche)
+    - [The Guardian](https://www.theguardian.com/)
+    - [The New York Times](https://www.nytimes.com/)
+- Sites français :
+    - Effectuer une recherche par mot-clef
+    - (Facultatif : affiner la recherche)
+- Sites anglophones :
+    - Cliquer sur le bouton `PCScraper` en haut à droite dans la barre de menus du site pour ouvrir la fenêtre de recherche 
+    - Construire une requête dans l'interface, puis cliquer sur `Search` 
 - Sélectionner le format de fichier souhaité : TXT ou XML/XTZ (pour import dans [TXM](https://txm.gitpages.huma-num.fr/textometrie/))
 - Cliquer sur « Extraire »
   - Les articles réservés aux abonnés ne sont pas téléchargés mais listés sous forme de liens
   - Les articles que l'extension échoue à extraire sont listés sous forme de liens
-  - Il arrive que le nombre de résultats annoncés par le site soit approximatif...
   - A l'issue de l'extraction :
     - Firefox : l'archive .zip contenant les fichiers est automatiquement téléchargée dans le dossier par défaut
     - Chrome/Edge : sélectionner le dossier de destination de l'archive .zip

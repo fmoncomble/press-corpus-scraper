@@ -1,0 +1,22 @@
+#pcs-btn::before {
+    content: '';
+    height: 20px;
+    margin-right: 24px;
+    border-left: 1px solid #e2e2e2;
+}
+#pcs-btn {
+    cursor: pointer;
+}
+
+#pcs-btn:hover {
+    text-decoration: underline;
+}
+
+#pcs-link {
+    font-weight: 600;
+    color: #D0021B;
+}
+
+#pcs-link:focus {
+    text-decoration: none;
+}

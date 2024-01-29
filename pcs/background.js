@@ -138,10 +138,12 @@ async function performExtractAndSave(url) {
                     );
                     break;
                 } else {
-                    console.log('No articles found on attempt #' + i + ', trying again');
+                    console.log(
+                        'No articles found on attempt #' + i + ', trying again'
+                    );
                 }
 
-                await new Promise(resolve => setTimeout(resolve, 1000));
+                await new Promise((resolve) => setTimeout(resolve, 1000));
             }
 
             if (articles.length === 0) {
@@ -335,36 +337,52 @@ async function performExtractAndSave(url) {
                             exclElementsText
                         ) {
                             let excludedNodes = [];
-                            let filteredElements = textElements.filter(function (node) {
-                                let textContentExcluded = false;
-                                let identifierExcluded = false;
-                                // Check if the node's textContent includes any of the exclElementsText
-                                if (exclElementsText) {
-                                    textContentExcluded =
-                                        exclElementsText.some(function (e) {
-                                            return node.textContent.includes(e);
-                                        });
-                                    console.log('Node containing text to exclude? ', textContentExcluded);
-                                }
-
-                                // Check if the node's identifier is in the exclElementsDef array
-                                if (exclElementsDef) {
-                                    identifierExcluded =
-                                        exclElementsDef.includes(
-                                            node.className
+                            let filteredElements = textElements.filter(
+                                function (node) {
+                                    let textContentExcluded = false;
+                                    let identifierExcluded = false;
+                                    // Check if the node's textContent includes any of the exclElementsText
+                                    if (exclElementsText) {
+                                        textContentExcluded =
+                                            exclElementsText.some(function (e) {
+                                                return node.textContent.includes(
+                                                    e
+                                                );
+                                            });
+                                        console.log(
+                                            'Node containing text to exclude? ',
+                                            textContentExcluded
                                         );
-                                        console.log('Node to exclude on identifier? ', identifierExcluded);
-                                }
+                                    }
 
-                                if (textContentExcluded || identifierExcluded) {
-                                    excludedNodes.push(node + ', ' + node.textContent);
-                                }
+                                    // Check if the node's identifier is in the exclElementsDef array
+                                    if (exclElementsDef) {
+                                        identifierExcluded =
+                                            exclElementsDef.includes(
+                                                node.className
+                                            );
+                                        console.log(
+                                            'Node to exclude on identifier? ',
+                                            identifierExcluded
+                                        );
+                                    }
 
-                                // Exclude the node if either condition is true
-                                return !(
-                                    textContentExcluded || identifierExcluded
-                                );
-                            });
+                                    if (
+                                        textContentExcluded ||
+                                        identifierExcluded
+                                    ) {
+                                        excludedNodes.push(
+                                            node + ', ' + node.textContent
+                                        );
+                                    }
+
+                                    // Exclude the node if either condition is true
+                                    return !(
+                                        textContentExcluded ||
+                                        identifierExcluded
+                                    );
+                                }
+                            );
 
                             console.log('Excluded nodes: ', excludedNodes);
                             return filteredElements;
@@ -533,21 +551,24 @@ async function performExtractAndSave(url) {
 
                         let extension = '.txt';
 
-                        let fileContent = `${author}\n\n${date}\n\n${titleDiv.textContent}\n\n${subhed}\n\n${text}`;
+                        let fileContent = `${paperName}\n\n${author}\n\n${date}\n\n${titleDiv.textContent}\n\n${subhed}\n\n${text}`;
 
                         if (selectedFormat === 'xml') {
                             extension = '.xml';
                             const title = titleDiv.textContent
-                                .replaceAll('"', '&quot;')
-                                .replaceAll('&', '&amp;');
+                                .replaceAll('&', '&amp;')
+                                .replaceAll('"', '&quot;');
                             subhed = subhed.replaceAll('&', '&amp;');
                             text = text
                                 .replaceAll('&', '&amp;')
                                 .replaceAll('\n', '<lb></lb>');
-                            fileContent = `<text author="${author}" title="${title}" date="${date}">\n<ref target="${url}">Link to original document</ref><lb></lb><lb></lb>\n\n${subhed}<lb></lb><lb></lb>\n\n${text}\n</text>`;
+                            fileContent = `<text source="${paperName}" author="${author}" title="${title}" date="${date}">\n<ref target="${url}">Link to original document</ref><lb></lb><lb></lb>\n\n${subhed}<lb></lb><lb></lb>\n\n${text}\n</text>`;
                         }
 
-                        let baseFileName = `${date}_${author
+                        let baseFileName = `${date}_${paperName.replaceAll(
+                            /\s/g,
+                            '_'
+                        )}_${author
                             .replaceAll(/\p{P}/gu, '')
                             .replaceAll(/\s+/g, '_')
                             .substring(0, 20)}${extension}`;
@@ -555,7 +576,10 @@ async function performExtractAndSave(url) {
 
                         // Append a number to the file name to make it unique
                         while (addedFileNames.has(baseFileName)) {
-                            baseFileName = `${date}_${author}_${index}${extension}`;
+                            baseFileName = `${date}_${paperName.replaceAll(
+                                /\s/g,
+                                '_'
+                            )}_${author}_${index}${extension}`;
                             index++;
                         }
 

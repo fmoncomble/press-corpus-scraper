@@ -1,0 +1,22 @@
+#pcs-btn:before {
+    content: '';
+    border-left: 1px solid #506991;
+    height: 24px;
+    margin-left: 10px;
+}
+
+#pcs-btn {
+    cursor: pointer;
+}
+
+#pcs-link {
+    color: #FFE500;
+}
+
+#pcs-link:hover {
+    text-decoration: underline;
+}
+
+#pcs-link:focus {
+    text-decoration: none;
+}

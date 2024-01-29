@@ -2,7 +2,7 @@
     "manifest_version": 2,
     "name": "Press corpus scraper",
 
-    "version": "0.2.3",
+    "version": "0.3",
 
     "description": "Extraire et télécharger des articles de presse",
     "homepage_url": "https://github.com/fmoncomble/press_corpus_scraper",
@@ -17,7 +17,9 @@
         "storage",
         "*://*.lefigaro.fr/*",
         "*://*.lemonde.fr/*",
-        "*://*.lepoint.fr/*"
+        "*://*.lepoint.fr/*",
+        "*://*.theguardian.com/*",
+        "*://*.nytimes.com/*"
     ],
 
     "background": {
@@ -25,44 +27,44 @@
         "persistent": false
     },
 
+    "browser_action": {
+        "default_icon": {
+            "32": "icons/icon-32.png",
+            "48": "icons/icon-48.png",
+            "96": "icons/icon-96.png"
+        }
+    },
+
+    "web_accessible_resources": [
+        "content_scripts/guardianapi.html",
+        "content_scripts/nytimesapi.html"
+    ],
+
     "content_scripts": [
         {
-            "matches": [
-                "https://recherche.lefigaro.fr/recherche*"
-            ],
-            "js": [
-                "content_scripts/figaro.js", 
-                "content_scripts/config.js"
-            ],
-            "css": [
-                "content_scripts/figaro.css", 
-                "content_scripts/config.css"
-            ]
+            "matches": ["https://recherche.lefigaro.fr/recherche*"],
+            "js": ["content_scripts/figaro.js", "content_scripts/config.js"],
+            "css": ["content_scripts/figaro.css", "content_scripts/config.css"]
         },
         {
-            "matches": [
-                "https://www.lemonde.fr/recherche/?*"
-            ],
-            "js": [
-                "content_scripts/lemonde.js",
-                "content_scripts/config.js"
-            ],
-            "css": [
-                "content_scripts/lemonde.css",
-                "content_scripts/config.css"]
+            "matches": ["https://www.lemonde.fr/recherche/?*"],
+            "js": ["content_scripts/lemonde.js", "content_scripts/config.js"],
+            "css": ["content_scripts/lemonde.css", "content_scripts/config.css"]
         },
         {
-            "matches": [
-                "https://www.lepoint.fr/recherche/*"
-            ],
-            "js": [
-                "content_scripts/lepoint.js",
-                "content_scripts/config.js"
-            ],
-            "css": [
-                "content_scripts/lepoint.css",
-                "content_scripts/config.css"
-            ]
+            "matches": ["https://www.lepoint.fr/recherche/*"],
+            "js": ["content_scripts/lepoint.js", "content_scripts/config.js"],
+            "css": ["content_scripts/lepoint.css", "content_scripts/config.css"]
+        },
+        {
+            "matches": ["https://www.theguardian.com/*"],
+            "js": ["content_scripts/guardian.js"],
+            "css": ["content_scripts/guardian.css"]
+        },
+        {
+            "matches": ["https://www.nytimes.com/*"],
+            "js": ["content_scripts/nytimes.js"],
+            "css": ["content_scripts/nytimes.css"]
         }
     ],
 

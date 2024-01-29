@@ -65,7 +65,7 @@ const dateAttributeDef = null;
 // Logique de date de secours : indiquer un mot-clef permettant de trouver la date de l'article dans la page
 const dateStringDef = 'Publié';
 // Eléments textuels à inclure (paragraphes de texte, sous-titres, etc.)
-const textElementsDef = '.article__paragraph, h2';
+const textElementsDef = '.article__paragraph, .article__cite, h2';
 // Éléments textuels à exclure (le cas échéant, publicités, liens vers d'autres contenus, etc. partageant les mêmes identifiants que les éléments à inclure) sous forme d'array de contenus de texte (ex. ['LIRE AUSSI', 'VOIR AUSSI']).
 const exclElementsText = null;
 // Éléments à exclure, sous forme d'array de classes (ex. ['.advert', '.ext-link'])
