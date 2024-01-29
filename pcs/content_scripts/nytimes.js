@@ -1,5 +1,5 @@
-window.onload = function() {
-    console.log('The NY Times PCS script injected');
+window.onload = function () {
+    console.log('NY Times PCS script injected');
 
     let anchor = document.querySelector('.css-17j7fe1');
     const scriptBtn = document.createElement('li');
@@ -15,4 +15,4 @@ window.onload = function() {
     scriptLink.setAttribute('target', '_blank');
     scriptBtn.appendChild(scriptLink);
     anchor.appendChild(scriptBtn);
-}
+};

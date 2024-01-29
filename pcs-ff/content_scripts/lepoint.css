@@ -1,0 +1,48 @@
+/* Style de l'encadré */
+fieldset.pcs-ui {
+    background-color: #f0f0f0;
+    border-color: #d80c0c !important;
+    font-family: 'Marr Sans', Arial, 'Roboto', sans-serif;
+    font-weight: 500;
+}
+
+legend {
+    background: linear-gradient(#d80c0c, #a90a0a);
+    border-color: #d80c0c;
+}
+
+.legend-text {
+    font-family: 'noto-serif', serif;
+}
+
+/* Style des boutons et du menu de sélection du format */
+button.pcs-ui,
+select.pcs-ui,
+.abort-button {
+    background-color: #d80c0c;
+    font-family: 'Marr Sans', Arial, 'Roboto', sans-serif;
+}
+
+button.pcs-ui:hover,
+select.pcs-ui:hover {
+    background-color: #a90a0a;
+}
+
+/* Style du bouton d'option d'extraction */
+.switch {
+    vertical-align: text-bottom !important;
+}
+
+input:checked + .slider {
+    background-color: #d80c0c;
+}
+
+input:focus + .slider {
+    box-shadow: 0 0 1px #d80c0c;
+}
+
+/* Style du spinner d'attente */
+.spinner {
+    border: 2px solid #fccfcf;
+    border-left: 2px solid #d80c0c;
+}
