@@ -22,6 +22,7 @@ document.addEventListener('DOMContentLoaded', async function () {
         'extract-select-container'
     );
     const extractSelect = document.getElementById('extract-select');
+    const listWrapper = document.getElementById('list-wrapper');
 
     // Manage API key
     let apiKey;
@@ -313,13 +314,9 @@ document.addEventListener('DOMContentLoaded', async function () {
         });
     }
 
-    // Attribute function to search button
+    // Ascribe function to search button
     const searchBtn = document.querySelector('.trigger-search');
     searchBtn.addEventListener('click', function () {
-        resultsContainer.style.display = 'none';
-        abortSearchBtn.style.display = 'none';
-        resultsOverview.textContent = '';
-        extractContainer.style.display = 'none';
         buildApiQuery();
     });
 
@@ -337,6 +334,13 @@ document.addEventListener('DOMContentLoaded', async function () {
     let toDate = '';
 
     async function buildApiQuery() {
+        resultsContainer.style.display = 'none';
+        abortSearchBtn.style.display = 'none';
+        resultsOverview.textContent = '';
+        extractContainer.style.display = 'none';
+        outputContainer.textContent = '';
+        outputContainer.style.display = 'none';
+        listWrapper.style.display = 'none';
         const urlValue = urlInput.value;
         if (urlValue) {
             queryUrl = urlValue;
@@ -395,7 +399,7 @@ document.addEventListener('DOMContentLoaded', async function () {
             }
             if (newsdesk) {
                 if (keywords) {
-                    queryUrl = queryUrl + ' AND '
+                    queryUrl = queryUrl + ' AND ';
                 }
                 queryUrl = queryUrl + ' AND news_desk:(' + newsdesk + ')';
             }
@@ -442,38 +446,46 @@ document.addEventListener('DOMContentLoaded', async function () {
         try {
             searchSpinner.style.display = 'inline-block';
             const queryResponse = await fetch(queryUrl);
-            if (queryResponse.ok) {
-                if (queryResponse.status === 429) {
-                    window.alert('You have reached your API rate limit');
-                    return;
-                }
+            console.log('Query response = ', queryResponse);
+            if (queryResponse.status === 429) {
+                window.alert('You have reached your API rate limit');
+                resultsOverview.textContent = 'API rate limit reached. Try again later.'
+                resultsContainer.style.display = 'block';
+                throw new Error('API rate limit reached');
+            } else if (!queryResponse.ok) {
+                window.alert('There was an error processing your query');
+                throw new Error(
+                    ('HTTP error: query responded with status ',
+                    queryResponse.status)
+                );
+            } else if (queryResponse.ok) {
                 const data = await queryResponse.json();
                 const dataContent = data.response;
                 resultsTotal = dataContent.meta.hits;
                 resultsOverview.textContent = `${resultsTotal} results found.`;
                 resultsContainer.style.display = 'block';
+
+                if (resultsTotal > 0) {
+                    if (resultsTotal > 1000) {
+                        resultsOverview.append(
+                            ' Only the first 1,000 results will be processed. Consider refining your search before continuing.'
+                        );
+                    } else {
+                        resultsOverview.append(' Begin extraction?');
+                    }
+                    resultsOverview.style.display = 'block';
+                    resultsContainer.style.display = 'block';
+                    extractContainer.style.display = 'block';
+                } else {
+                    resultsOverview.textContent =
+                        'Query returned no result. Restart search.';
+                    resultsOverview.style.display = 'block';
+                    resultsContainer.style.display = 'block';
+                    extractContainer.style.display = 'none';
+                }
             }
         } catch (error) {
             console.error('There was an error getting results number: ', error);
-        }
-
-        if (resultsTotal > 0) {
-            if (resultsTotal > 1000) {
-                resultsOverview.append(
-                    ' Only the first 1,000 results will be processed. Consider refining your search before continuing.'
-                );
-            } else {
-                resultsOverview.append(' Begin extraction?');
-            }
-            resultsOverview.style.display = 'block';
-            resultsContainer.style.display = 'block';
-            extractContainer.style.display = 'block';
-        } else {
-            resultsOverview.textContent =
-                'Query returned no result. Restart search.';
-            resultsOverview.style.display = 'block';
-            resultsContainer.style.display = 'block';
-            extractContainer.style.display = 'none';
         }
         searchSpinner.style.display = 'none';
     }
@@ -546,23 +558,26 @@ document.addEventListener('DOMContentLoaded', async function () {
         try {
             maxResults = Number(maxResults);
             pagesTotal = Math.ceil(maxResults / 10);
-            let fetchTime = pagesTotal * 12;
-            let minutes = Math.floor(fetchTime / 60);
-            if (minutes === 1) {
-                minutes = minutes + ' minute';
-            } else {
-                minutes = minutes + ' minutes';
-            }
-            let seconds = fetchTime % 60;
-            if (seconds > 0) {
-                fetchTime = `${minutes} and ${seconds} seconds`;
-            } else if (minutes === 0) {
-                fetchTime = `${seconds} seconds`;
-            } else {
-                fetchTime = `${minutes}`;
-            }
-            processContainer.textContent = `Extracting ${maxResults} results: this will take approximately ${fetchTime}...`;
+            let fetchTime = (pagesTotal - 1) * 12;
+            processContainer.textContent = `Fetching ${maxResults} results: this should take approximately `;
             processContainer.style.display = 'block';
+            const countdownDiv = document.createElement('div');
+            processContainer.appendChild(countdownDiv);
+            countdownDiv.style.display = 'inline';
+            const countdown = setInterval(function () {
+                let minutes = Math.floor(fetchTime / 60);
+                let seconds = fetchTime % 60;
+                if (seconds < 10) {
+                    seconds = '0' + seconds;
+                }
+                countdownDiv.textContent = minutes + ':' + seconds + '...';
+                fetchTime = fetchTime - 1;
+                if (fetchTime < 0) {
+                    clearInterval(countdown);
+                    processContainer.textContent =
+                        'Finished fetching results, extracting text...';
+                }
+            }, 1000);
 
             let i = 0;
             async function fetchResults(i) {
@@ -652,7 +667,7 @@ document.addEventListener('DOMContentLoaded', async function () {
                 const response = await fetch(link);
                 if (!response.ok) {
                     console.error(
-                        'Could not fetch article: status ',
+                        'Could not fetch article' + link + ': status ',
                         response.status
                     );
                     errorArticles.push(link);
@@ -661,6 +676,11 @@ document.addEventListener('DOMContentLoaded', async function () {
                 const html = await response.text();
                 const doc = parser.parseFromString(html, 'text/html');
                 const body = doc.querySelector('section[name="articleBody"]');
+                if (!body) {
+                    console.error('No article content found for ', link);
+                    errorArticles.push(link);
+                    return;
+                }
                 const paragraphs = body.querySelectorAll('p');
 
                 let text = '';
@@ -719,7 +739,9 @@ document.addEventListener('DOMContentLoaded', async function () {
 
         processContainer.style.display = 'none';
         const downloadedFiles = Array.from(addedArticles);
-        outputContainer.textContent = `${downloadedFiles.length} out of ${maxResults} downloaded:\n\n`;
+        outputContainer.style.display = 'block';
+        outputContainer.textContent = `${downloadedFiles.length} out of ${maxResults} articles downloaded:\n\n`;
+        listWrapper.style.display = 'block';
         fileList.textContent = `${downloadedFiles.slice(0, 20).join(', ')}...`;
         if (premiumArticles.length > 0) {
             const premiumList = document.querySelector('div#premium-list');
@@ -729,8 +751,12 @@ document.addEventListener('DOMContentLoaded', async function () {
             } else {
                 premiumNb.textContent = premiumArticles.length + ' articles';
             }
-            premiumArticles.forEach((pA) => {
-                premiumList.append(pA + `\n`);
+            premiumArticles.forEach((link) => {
+                const a = document.createElement('a');
+                a.setAttribute('href', link);
+                a.setAttribute('target', '_blank');
+                a.textContent = link;
+                premiumList.appendChild(a);
             });
             premiumList.style.color = '#ff9900';
             premiumList.style.display = 'block';
@@ -743,9 +769,13 @@ document.addEventListener('DOMContentLoaded', async function () {
             } else {
                 errorNb.textContent = errorArticles.length + ' results';
             }
-            errorArticles.forEach((eA) => {
-                errorList.append(eA + `\n`);
-            })
+            errorArticles.forEach((link) => {
+                const a = document.createElement('a');
+                a.setAttribute('href', link);
+                a.setAttribute('target', '_blank');
+                a.textContent = link;
+                errorList.appendChild(a);
+            });
             errorList.style.color = '#cc0000';
             errorList.style.display = 'block';
         }

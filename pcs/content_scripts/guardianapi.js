@@ -92,13 +92,6 @@ document.addEventListener('DOMContentLoaded', async function () {
     }
     initiateForm();
 
-    // Attribute function to search button
-    const searchBtn = document.querySelector('.trigger-search');
-    searchBtn.addEventListener('click', function () {
-        resultsContainer.style.display = 'none';
-        buildApiQuery();
-    });
-
     // Assign function to reset button
     const resetFormBtn = document.querySelector('.reset-form');
     resetFormBtn.addEventListener('click', function () {
@@ -283,10 +276,12 @@ document.addEventListener('DOMContentLoaded', async function () {
                 });
                 input.setAttribute('type', 'text');
                 input.value = '';
-                let selects = newSearchContainer.querySelectorAll('select.search-option');
+                let selects = newSearchContainer.querySelectorAll(
+                    'select.search-option'
+                );
                 selects.forEach((s) => {
                     s.style.display = 'none';
-                })
+                });
                 input.style.display = 'inline';
                 enableUpdateQuery(newSearchContainer);
             } catch (error) {
@@ -294,6 +289,12 @@ document.addEventListener('DOMContentLoaded', async function () {
             }
         });
     }
+
+    // Assign function to search button
+    const searchBtn = document.querySelector('.trigger-search');
+    searchBtn.addEventListener('click', function () {
+        buildApiQuery();
+    });
 
     // Function to build the query URL
     let queryUrl;
@@ -308,6 +309,10 @@ document.addEventListener('DOMContentLoaded', async function () {
     let toDate = '';
 
     async function buildApiQuery() {
+        resultsContainer.style.display = 'none';
+        processContainer.textContent = '';
+        outputContainer.textContent = '';
+        fileList.textContent = '';
         const urlValue = urlInput.value;
         if (urlValue) {
             queryUrl = urlValue;
@@ -382,7 +387,7 @@ document.addEventListener('DOMContentLoaded', async function () {
             queryLink.setAttribute('href', queryUrl);
             queryLink.setAttribute('target', '_blank');
             queryLink.textContent = queryUrl;
-            queryUrlDiv.textContent = 'Query URL: '
+            queryUrlDiv.textContent = 'Query URL: ';
             queryUrlDiv.appendChild(queryLink);
         }
         try {
