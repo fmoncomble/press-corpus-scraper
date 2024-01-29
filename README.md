@@ -3,7 +3,7 @@ Une extension pour extraire et télécharger des articles de presse à des fins 
 ### Citer ce programme
 Si vous utilisez cette extension pour vos travaux de recherche, merci de la référencer de la façon suivante :  
   
-Moncomble, F. (2024). *Press Corpus Scraper* (Version 0.2.3) [JavaScript]. Arras, France : Université d’Artois. Disponible à l'adresse : https://github.com/fmoncomble/press-corpus-scraper
+Moncomble, F. (2024). *Press Corpus Scraper* (Version 0.3) [JavaScript]. Arras, France : Université d’Artois. Disponible à l'adresse : https://github.com/fmoncomble/press-corpus-scraper
 
 
 ## Installation
@@ -11,7 +11,7 @@ Moncomble, F. (2024). *Press Corpus Scraper* (Version 0.2.3) [JavaScript]. Arras
 [![Firefox add-on](https://github.com/fmoncomble/Figaro_extractor/assets/59739627/e4df008e-1aac-46be-a216-e6304a65ba97)](https://github.com/fmoncomble/press-corpus-scraper/releases/latest/download/pcs.xpi)  
 (Les mises à jour de l'extension sont automatiques.)
 ### Chrome/Edge
-- ![Télécharger l'archive .zip](https://github.com/fmoncomble/press-corpus-scraper/releases/latest/download/pcs.zip)
+- [Télécharger l'archive .zip](https://github.com/fmoncomble/press-corpus-scraper/releases/latest/download/pcs.zip)
 - Décompresser l'archive
 - Ouvrir le gestionnaire d'extensions : `chrome://extensions` ou `edge://extensions`
   - Activer le « mode développeur »
