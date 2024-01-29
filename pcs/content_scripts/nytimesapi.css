@@ -5,6 +5,7 @@ fieldset {
     padding: 20px;
     color: #121212;
     font-family: 'nyt-franklin', sans-serif;
+    font-size: small;
 }
 
 legend {
