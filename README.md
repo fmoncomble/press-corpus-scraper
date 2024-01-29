@@ -7,9 +7,9 @@ Moncomble, F. (2024). *Press Corpus Scraper* (Version 0.3) [JavaScript]. Arras, 
 
 
 ## Installation
-### Firefox (recommandé)
-[![Firefox add-on](https://github.com/fmoncomble/Figaro_extractor/assets/59739627/e4df008e-1aac-46be-a216-e6304a65ba97)](https://github.com/fmoncomble/press-corpus-scraper/releases/latest/download/pcs.xpi)  
-(Les mises à jour de l'extension sont automatiques.)
+### Firefox (recommandé : mises à jour automatiques)
+[![Firefox add-on](https://github.com/fmoncomble/Figaro_extractor/assets/59739627/e4df008e-1aac-46be-a216-e6304a65ba97)](https://github.com/fmoncomble/press-corpus-scraper/releases/latest/download/pcs.xpi)
+
 ### Chrome/Edge
 - [Télécharger l'archive .zip](https://github.com/fmoncomble/press-corpus-scraper/releases/latest/download/pcs.zip)
 - Décompresser l'archive
