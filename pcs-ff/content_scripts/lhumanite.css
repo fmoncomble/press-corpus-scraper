@@ -1,0 +1,45 @@
+/* Style de l'encadré */
+fieldset.pcs-ui {
+    background-color: hsl(0, 0%, 94%);
+    border-color: #f13c47 !important;
+    font-family: 'Overpass', sans-serif;
+}
+
+legend {
+    background: linear-gradient(#f2404c, #f13c47);
+    border-color: #f13c47;
+}
+
+.legend-text {
+    font-family: 'Tanker', sans-serif;
+    color: white;
+}
+
+/* Style des boutons et du menu de sélection du format */
+button.pcs-ui,
+select.pcs-ui,
+.abort-button {
+    background-color: #f13c47;
+    font-family: 'Overpass', sans-serif;
+}
+
+button.pcs-ui:hover,
+select.pcs-ui:hover {
+    background-color: #f2404c;
+}
+
+/* Style du bouton d'option d'extraction */
+
+input:checked + .slider {
+    background-color: #f13c47;
+}
+
+input:focus + .slider {
+    box-shadow: 0 0 1px #f13c47;
+}
+
+/* Style du spinner d'attente */
+.spinner {
+    border: 2px solid #fccfd2;
+    border-left: 2px solid #f13c47;
+}

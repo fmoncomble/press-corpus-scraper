@@ -86,6 +86,7 @@ const exclElementsText = [
     'Pour découvrir toutes nos autres newsletters, rendez-vous ici',
     'En vous inscrivant, vous acceptez les conditions générales d’utilisations',
     'Recevez en avant-première les informations et analyses politiques de la rédaction du Point',
+    'Recevez l’information analysée et décryptée par la rédaction du Point.',
 ];
 // Éléments à exclure, sous forme d'array de classes d'éléments (ex. ['advert', 'ext-link'])
 const exclElementsDef = [

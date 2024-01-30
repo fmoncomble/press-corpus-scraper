@@ -270,7 +270,9 @@ extractButton.addEventListener('click', function (event) {
                     downloadedFileName.setAttribute('target', '_blank');
                     let downloadedFileUrl = downloadedFileLinks[i];
                     try {
-                        if (i === 19) {
+                        if (i === downloadedFiles.length) {
+                            break;
+                        } else if (i === 19 || i === downloadedFiles.length - 1) {
                             downloadedFileName.textContent =
                                 downloadedFiles[i] + '...';
                         } else {
@@ -350,7 +352,7 @@ extractButton.addEventListener('click', function (event) {
                                 );
                             }
                             skippedArticleLink.textContent =
-                                skippedTitleList[i];
+                                skippedTitleList[i].trim();
                             skippedFilesLinksContainer.appendChild(
                                 skippedArticleItem
                             );

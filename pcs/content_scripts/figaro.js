@@ -63,8 +63,8 @@ const authorElementDef =
 // - si la date n'est pas présente dans l'URL mais dans un élément HTML de la page, indiquer 'node'. S'il existe, privilégier un élément contenant la date au format ISO (commençant par AAAA-MM-JJ).
 const dateLogic = 'node';
 // Si la logique de date est 'node', indiquer l'élément où se trouve la date. Si elle est codée comme attribut d'un élément (ex. <time datetime='AAAA-MM-JJTHH:MM:SS'>), préciser également le nom de l'attribut.
-const dateElementDef = 'time';
-const dateAttributeDef = 'datetime';
+const dateElementDef = 'meta[property="article:published_time"]';
+const dateAttributeDef = 'content';
 // Logique de date de secours : indiquer un mot-clef permettant de trouver la date de l'article dans la page
 const dateStringDef = 'Publié';
 // Eléments textuels à inclure (paragraphes de texte, sous-titres, etc.)

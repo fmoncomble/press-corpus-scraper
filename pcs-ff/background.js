@@ -494,7 +494,7 @@ async function performExtractAndSave(url) {
                                     }
                                 }
                             } else if (!dateElement) {
-                                const divs = contentDoc.querySelectorAll('div');
+                                const divs = contentDoc.querySelectorAll('*');
                                 console.log('Divs:', divs);
                                 const divArray = Array.from(divs);
                                 console.log('Div array: ', divArray);
@@ -557,11 +557,15 @@ async function performExtractAndSave(url) {
                             extension = '.xml';
                             const title = titleDiv.textContent
                                 .replaceAll('&', '&amp;')
-                                .replaceAll('"', '&quot;');
+                                .replaceAll('"', '&quot;')
+                                .trim();
                             subhed = subhed.replaceAll('&', '&amp;');
                             text = text
                                 .replaceAll('&', '&amp;')
+                                .replaceAll('<', '&lt;')
+                                .replaceAll('>', '&gt;')
                                 .replaceAll('\n', '<lb></lb>');
+                            url = url.split('&')[0];
                             fileContent = `<text source="${paperName}" author="${author}" title="${title}" date="${date}">\n<ref target="${url}">Link to original document</ref><lb></lb><lb></lb>\n\n${subhed}<lb></lb><lb></lb>\n\n${text}\n</text>`;
                         }
 
