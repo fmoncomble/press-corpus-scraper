@@ -19,7 +19,8 @@
         "*://*.lemonde.fr/*",
         "*://*.lepoint.fr/*",
         "*://*.theguardian.com/*",
-        "*://*.nytimes.com/*"
+        "*://*.nytimes.com/*",
+        "*://*.humanite.fr/*"
     ],
 
     "background": {
@@ -65,6 +66,11 @@
             "matches": ["https://www.nytimes.com/*"],
             "js": ["content_scripts/nytimes.js"],
             "css": ["content_scripts/nytimes.css"]
+        },
+        {
+            "matches": ["https://www.humanite.fr/?*"],
+            "js": ["content_scripts/lhumanite.js", "content_scripts/config.js"],
+            "css": ["content_scripts/lhumanite.css", "content_scripts/config.css"]
         }
     ],
 

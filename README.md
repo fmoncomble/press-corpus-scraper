@@ -21,6 +21,7 @@ Moncomble, F. (2024). *Press Corpus Scraper* (Version 0.3) [JavaScript]. Arras, 
 ## Mode d'emploi
 - Naviguer vers le site d'un journal pris en charge :
     - [Le Figaro](https://recherche.lefigaro.fr/)
+    - [L'Humanité](https://www.humanite.fr/)
     - [Le Monde](https://www.lemonde.fr/recherche/)
     - [Le Point](https://www.lepoint.fr/recherche/index.php)
     - [The Guardian](https://www.theguardian.com/)
