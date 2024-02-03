@@ -10,6 +10,7 @@ document.addEventListener('DOMContentLoaded', async function () {
     const queryUrlDiv = document.getElementById('query-url-div');
     const resultsOverview = document.querySelector('div#results-overview');
     const extractContainer = document.querySelector('div#extract-container');
+    const extractionCounter = document.querySelector('div#extraction-counter');
     const formatSelector = document.querySelector('#format');
     const orderOption = document.querySelector('.order-option');
     const extractBtn = document.querySelector('.extract-button');
@@ -23,6 +24,9 @@ document.addEventListener('DOMContentLoaded', async function () {
     );
     const extractSelect = document.getElementById('extract-select');
     const listWrapper = document.getElementById('list-wrapper');
+    const premiumLinks = document.querySelector('ul#premium-links');
+    const errorLinks = document.querySelector('ul#error-links');
+    const noContentLinks = document.querySelector('ul#no-content-links');
 
     // Manage API key
     let apiKey;
@@ -78,6 +82,38 @@ document.addEventListener('DOMContentLoaded', async function () {
         }
     }
 
+    // Manage API rate limit
+    let apiCallTotal;
+    function getApiCallTotal(callback) {
+        chrome.storage.local.get(['nytimesapicallnb'], function (result) {
+            apiCallTotal = result.nytimesapicallnb;
+            callback(apiCallTotal);
+        });
+    }
+
+    getApiCallTotal(function (callResult) {
+        apiCallTotal = callResult;
+        if (apiCallTotal) {
+            console.log('API calls left today: ', apiCallTotal);
+        } else if (!apiCallTotal) {
+            chrome.storage.local.set({ nytimesapicallnb: 500 }, function () {
+                console.log('Number of API calls available set to 500');
+            });
+            chrome.alarms.create('resetApiCallTotal', {
+                periodInMinutes: 24 * 60,
+            });
+            console.log('API rate reset countdown created');
+        }
+    });
+
+    chrome.alarms.onAlarm.addListener(function (alarm) {
+        if (alarm.name === 'resetApiCallTotal') {
+            chrome.storage.local.set({ nytimesapicallnb: 500 }, function () {
+                console.log('Number of API calls available reset to 500');
+            });
+        }
+    });
+
     // Create search form
     function initiateForm() {
         const initSearchContainer = searchContainer.cloneNode(true);
@@ -107,7 +143,7 @@ document.addEventListener('DOMContentLoaded', async function () {
         orderOption.value = 'newest';
         searchSpinner.style.display = 'none';
         resultsContainer.style.display = 'none';
-        processContainer.textContent = '';
+        processMsg.textContent = '';
         outputContainer.textContent = '';
         fileList.textContent = '';
         extractOption.value = 'all';
@@ -324,7 +360,6 @@ document.addEventListener('DOMContentLoaded', async function () {
     let queryUrl;
     let pagesTotal;
     let resultsTotal;
-    let results = [];
     let nextQueryUrl;
     let keywords = '';
     let newsdesk = '';
@@ -449,7 +484,8 @@ document.addEventListener('DOMContentLoaded', async function () {
             console.log('Query response = ', queryResponse);
             if (queryResponse.status === 429) {
                 window.alert('You have reached your API rate limit');
-                resultsOverview.textContent = 'API rate limit reached. Try again later.'
+                resultsOverview.textContent =
+                    'API rate limit reached. Try again later.';
                 resultsContainer.style.display = 'block';
                 throw new Error('API rate limit reached');
             } else if (!queryResponse.ok) {
@@ -459,6 +495,13 @@ document.addEventListener('DOMContentLoaded', async function () {
                     queryResponse.status)
                 );
             } else if (queryResponse.ok) {
+                apiCallTotal = apiCallTotal - 1;
+                chrome.storage.local.set(
+                    { nytimesapicallnb: apiCallTotal },
+                    function () {
+                        console.log('API calls left today: ', apiCallTotal);
+                    }
+                );
                 const data = await queryResponse.json();
                 const dataContent = data.response;
                 resultsTotal = dataContent.meta.hits;
@@ -520,9 +563,11 @@ document.addEventListener('DOMContentLoaded', async function () {
     abortBtn.addEventListener('click', function () {
         abort = true;
         abortBtn.textContent = 'Aborting...';
+        console.log('Abort signal sent');
     });
 
     const processContainer = document.querySelector('#process-container');
+    const processMsg = processContainer.querySelector('div#process-message');
     const outputContainer = document.querySelector('#output-container');
     const fileList = document.querySelector('#file-list');
 
@@ -541,44 +586,51 @@ document.addEventListener('DOMContentLoaded', async function () {
     let rIndex = 1;
     async function extractArticles() {
         abortBtn.style.display = 'inline';
+        abort = false;
         extractBtn.style.display = 'none';
-        processContainer.textContent = '';
+        processMsg.textContent = '';
         outputContainer.textContent = '';
         fileList.textContent = '';
+        premiumLinks.textContent = '';
+        errorLinks.textContent = '';
         extractSpinner.style.display = 'inline-block';
+        let results = [];
         const zip = new JSZip();
         const addedArticles = new Set();
         const premiumArticles = [];
         const errorArticles = [];
+        const noContentArticles = [];
+        const retryArticles = [];
         rIndex = 1;
         let maxResults = extractSelect.value;
         if (!maxResults) {
             maxResults = resultsTotal;
         }
-        try {
-            maxResults = Number(maxResults);
-            pagesTotal = Math.ceil(maxResults / 10);
-            let fetchTime = (pagesTotal - 1) * 12;
-            processContainer.textContent = `Fetching ${maxResults} results: this should take approximately `;
-            processContainer.style.display = 'block';
-            const countdownDiv = document.createElement('div');
-            processContainer.appendChild(countdownDiv);
-            countdownDiv.style.display = 'inline';
-            const countdown = setInterval(function () {
-                let minutes = Math.floor(fetchTime / 60);
-                let seconds = fetchTime % 60;
-                if (seconds < 10) {
-                    seconds = '0' + seconds;
-                }
-                countdownDiv.textContent = minutes + ':' + seconds + '...';
-                fetchTime = fetchTime - 1;
-                if (fetchTime < 0) {
-                    clearInterval(countdown);
-                    processContainer.textContent =
-                        'Finished fetching results, extracting text...';
-                }
-            }, 1000);
+        maxResults = Number(maxResults);
+        pagesTotal = Math.ceil(maxResults / 10);
+        let fetchTime = (pagesTotal - 1) * 12;
+        if (maxResults > 10) {
+            processMsg.textContent = `Fetching ${maxResults} results: this should take approximately `;
+        }
+        processContainer.style.display = 'block';
+        processMsg.style.display = 'block';
+        const countdownDiv = document.createElement('div');
+        processMsg.appendChild(countdownDiv);
+        countdownDiv.style.display = 'inline';
+        const countdown = setInterval(function () {
+            let minutes = Math.floor(fetchTime / 60);
+            let seconds = fetchTime % 60;
+            if (seconds < 10) {
+                seconds = '0' + seconds;
+            }
+            countdownDiv.textContent = minutes + ':' + seconds + '...';
+            fetchTime = fetchTime - 1;
+            if (fetchTime < 0) {
+                clearInterval(countdown);
+            }
+        }, 1000);
 
+        try {
             let i = 0;
             async function fetchResults(i) {
                 return new Promise(async (resolve, reject) => {
@@ -602,12 +654,25 @@ document.addEventListener('DOMContentLoaded', async function () {
                     } else if (abort) {
                         abortBtn.textContent = 'Abort';
                         abortBtn.style.display = 'none';
+                        extractBtn.style.display = 'inline';
+                        extractSpinner.style.display = 'none';
+                        processMsg.textContent = '';
+                        processContainer.style.display = 'none';
+                        console.log('Fetch operation aborted');
                         resolve();
                         return;
                     }
+                    apiCallTotal = apiCallTotal - 1;
+                    chrome.storage.local.set(
+                        { nytimesapicallnb: apiCallTotal },
+                        function () {
+                            console.log('API calls left today: ', apiCallTotal);
+                        }
+                    );
                     const data = await response.json();
                     const dataContent = data.response;
                     results = results.concat(dataContent.docs);
+                    console.log('Number of results: ', results.length);
                     if (results.length === 0) {
                         resolve();
                         return;
@@ -627,14 +692,48 @@ document.addEventListener('DOMContentLoaded', async function () {
                     }
                 });
             }
+
             await fetchResults(i);
 
+            if (abort) {
+                abortBtn.textContent = 'Abort';
+                abortBtn.style.display = 'none';
+                extractBtn.style.display = 'inline';
+                extractSpinner.style.display = 'none';
+                processMsg.textContent = '';
+                processContainer.style.display = 'none';
+                return;
+            }
+
+            processMsg.textContent =
+                'Finished fetching results, now extracting...';
+
             for (r of results) {
-                await processResult(r);
-                if (rIndex > maxResults) {
+                if (rIndex <= maxResults) {
+                    try {
+                        extractionCounter.textContent = `Processing result #${rIndex} out of ${maxResults}...`;
+                        await new Promise((resolve) =>
+                            setTimeout(resolve, 1000)
+                        );
+                        await processResult(r);
+                        rIndex++;
+                    } catch (error) {
+                        console.log(error);
+                    }
+                } else if (rIndex > maxResults) {
+                    break;
+                }
+                if (abort) {
+                    abortBtn.textContent = 'Abort';
+                    abortBtn.style.display = 'none';
+                    extractBtn.style.display = 'inline';
+                    extractSpinner.style.display = 'none';
+                    console.log('Result extraction aborted');
                     break;
                 }
             }
+
+            // Function to extract text and metadata from each result
             async function processResult(r) {
                 const parser = new DOMParser();
                 const date = r.pub_date.split('T')[0];
@@ -664,33 +763,94 @@ document.addEventListener('DOMContentLoaded', async function () {
                     authorName = 'unknown';
                 }
 
-                const response = await fetch(link);
-                if (!response.ok) {
-                    console.error(
-                        'Could not fetch article' + link + ': status ',
-                        response.status
+                let text;
+                const pauseDiv = document.querySelector('div#pause-message');
+                const premiumMsg = document.querySelector(
+                    'span#premium-message'
+                );
+                const pauseMsg = document.querySelector('span#confirm-message');
+                const pauseLink = pauseDiv.querySelector('a#confirm-link');
+                const resumeBtn = pauseDiv.querySelector('button#resume-btn');
+                await getText();
+
+                // Function to build text content
+                async function getText() {
+                    let response = await fetch(link);
+                    if (response.status === 403) {
+                        pauseLink.setAttribute('href', link);
+                        pauseDiv.style.display = 'block';
+                        pauseMsg.style.display = 'inline';
+                        await new Promise((resolve) => {
+                            resumeBtn.addEventListener(
+                                'click',
+                                async function resumeFetch() {
+                                    response = await fetch(link);
+                                    resumeBtn.removeEventListener(
+                                        'click',
+                                        resumeFetch
+                                    );
+                                    resolve();
+                                }
+                            );
+                        });
+                        pauseDiv.style.display = 'none';
+                        pauseMsg.style.display = 'none';
+                    } else if (!response.ok) {
+                        console.error(
+                            'Could not fetch article ' + link + ': status ',
+                            response.status
+                        );
+                        errorArticles.push(link);
+                        retryArticles.push(r);
+                        return;
+                    }
+                    const html = await response.text();
+                    const doc = parser.parseFromString(html, 'text/html');
+                    const body = doc.querySelector(
+                        'section[name="articleBody"]'
                     );
-                    errorArticles.push(link);
-                    return;
-                }
-                const html = await response.text();
-                const doc = parser.parseFromString(html, 'text/html');
-                const body = doc.querySelector('section[name="articleBody"]');
-                if (!body) {
-                    console.error('No article content found for ', link);
-                    errorArticles.push(link);
-                    return;
-                }
-                const paragraphs = body.querySelectorAll('p');
+                    if (!body) {
+                        console.error('No article content found for ', link);
+                        noContentArticles.push(link);
+                        return;
+                    }
+                    const paragraphs = body.querySelectorAll('p');
 
-                let text = '';
-                for (p of paragraphs) {
-                    const pText = p.textContent;
-                    text = text + `\n${pText}\n`;
+                    text = '';
+                    for (p of paragraphs) {
+                        const pText = p.textContent;
+                        text = text + `\n${pText}\n`;
+                    }
                 }
 
-                if (text.includes('Already a subscriber? Log in.')) {
-                    premiumArticles.push(link);
+                if (!text) {
+                    return;
+                } else if (
+                    text &&
+                    text.includes('Already a subscriber? Log in.')
+                ) {
+                    console.log('Login required');
+                    pauseDiv.style.display = 'block';
+                    premiumMsg.style.display = 'inline';
+                    resumeBtn.style.display = 'inline';
+                    await new Promise((resolve) => {
+                        resumeBtn.addEventListener(
+                            'click',
+                            async function resumeFetch() {
+                                // await getText();
+                                    results.push(r);
+                                    rIndex--;
+                                    console.log('Skipping this one, will process later');
+                                resumeBtn.removeEventListener(
+                                    'click',
+                                    resumeFetch
+                                );
+                                resolve();
+                            }
+                        );
+                    });
+                    pauseDiv.style.display = 'none';
+                    premiumMsg.style.display = 'none';
                     return;
                 }
 
@@ -709,11 +869,14 @@ document.addEventListener('DOMContentLoaded', async function () {
                 if (format === 'xml') {
                     let xmltitle = title
                         .replaceAll('&', '&amp;')
-                        .replaceAll('"', '&quot;');
+                        .replaceAll('"', '&quot;')
+                        .replaceAll(/<.+?>/g, '')
+                        .trim();
                     let xmlauthor = authorName
                         .replaceAll('&', '&amp;')
-                        .replaceAll('"', '&quot;');
-                    let xmlsubhed = subhed.replaceAll('&', '&amp;');
+                        .replaceAll('"', '&quot;')
+                        .trim();
+                    let xmlsubhed = subhed.replaceAll('&', '&amp;').trim();
                     let xmltext = text
                         .replaceAll('&', '&amp;')
                         .replaceAll('<', '&lt;')
@@ -725,59 +888,140 @@ document.addEventListener('DOMContentLoaded', async function () {
                 addedArticles.add(baseFileName);
 
                 zip.file(baseFileName, fileContent);
-
-                rIndex++;
             }
         } catch (error) {
             console.error(error);
         }
-        // }
 
         const zipBlob = await zip.generateAsync({
             type: 'blob',
         });
 
         processContainer.style.display = 'none';
-        const downloadedFiles = Array.from(addedArticles);
+        extractionCounter.textContent = '';
+        let downloadedFiles = Array.from(addedArticles);
         outputContainer.style.display = 'block';
         outputContainer.textContent = `${downloadedFiles.length} out of ${maxResults} articles downloaded:\n\n`;
         listWrapper.style.display = 'block';
         fileList.textContent = `${downloadedFiles.slice(0, 20).join(', ')}...`;
         if (premiumArticles.length > 0) {
-            const premiumList = document.querySelector('div#premium-list');
-            const premiumNb = premiumList.querySelector('span#premium-nb');
-            if (premiumArticles.length === 1) {
-                premiumNb.textContent = premiumArticles.length + ' article';
-            } else {
-                premiumNb.textContent = premiumArticles.length + ' articles';
+            try {
+                const premiumList = document.querySelector('div#premium-list');
+                const premiumNb = premiumList.querySelector('span#premium-nb');
+                const showPremiumBtn = premiumList.querySelector(
+                    'div#show-premium-list'
+                );
+                const hidePremiumBtn = premiumList.querySelector(
+                    'div#hide-premium-list'
+                );
+                if (premiumArticles.length === 1) {
+                    premiumNb.textContent =
+                        premiumArticles.length + ' premium article';
+                } else {
+                    premiumNb.textContent =
+                        premiumArticles.length + ' premium articles';
+                }
+                premiumArticles.forEach((link) => {
+                    const li = document.createElement('li');
+                    const a = document.createElement('a');
+                    a.setAttribute('href', link);
+                    a.setAttribute('target', '_blank');
+                    a.textContent = link;
+                    li.appendChild(a);
+                    premiumLinks.appendChild(li);
+                });
+                premiumList.style.color = '#ff9900';
+                premiumList.style.display = 'block';
+                showPremiumBtn.addEventListener('click', () => {
+                    premiumLinks.style.display = 'block';
+                    hidePremiumBtn.style.display = 'inline';
+                    showPremiumBtn.style.display = 'none';
+                });
+                hidePremiumBtn.addEventListener('click', () => {
+                    premiumLinks.style.display = 'none';
+                    hidePremiumBtn.style.display = 'none';
+                    showPremiumBtn.style.display = 'inline';
+                });
+            } catch (error) {
+                console.error(error);
             }
-            premiumArticles.forEach((link) => {
-                const a = document.createElement('a');
-                a.setAttribute('href', link);
-                a.setAttribute('target', '_blank');
-                a.textContent = link;
-                premiumList.appendChild(a);
-            });
-            premiumList.style.color = '#ff9900';
-            premiumList.style.display = 'block';
         }
         if (errorArticles.length > 0) {
-            const errorList = document.querySelector('div#error-list');
-            const errorNb = document.querySelector('span#error-nb');
-            if (errorArticles.length === 1) {
-                errorNb.textContent = errorArticles.length + ' result';
-            } else {
-                errorNb.textContent = errorArticles.length + ' results';
+            try {
+                const errorList = document.querySelector('div#error-list');
+                const errorNb = document.querySelector('span#error-nb');
+                const showBtn = document.querySelector('div#show-list');
+                const hideBtn = document.querySelector('div#hide-list');
+                showBtn.addEventListener('click', () => {
+                    errorLinks.style.display = 'block';
+                    hideBtn.style.display = 'inline';
+                    showBtn.style.display = 'none';
+                });
+                hideBtn.addEventListener('click', () => {
+                    errorLinks.style.display = 'none';
+                    hideBtn.style.display = 'none';
+                    showBtn.style.display = 'inline';
+                });
+                if (errorArticles.length === 1) {
+                    errorNb.textContent = errorArticles.length + ' result';
+                } else {
+                    errorNb.textContent = errorArticles.length + ' results';
+                }
+                errorArticles.forEach((link) => {
+                    const li = document.createElement('li');
+                    const a = document.createElement('a');
+                    a.setAttribute('href', link);
+                    a.setAttribute('target', '_blank');
+                    a.textContent = link;
+                    li.appendChild(a);
+                    errorLinks.appendChild(li);
+                });
+                errorList.style.color = '#cc0000';
+                errorList.style.display = 'block';
+            } catch (error) {
+                console.error(error);
             }
-            errorArticles.forEach((link) => {
-                const a = document.createElement('a');
-                a.setAttribute('href', link);
-                a.setAttribute('target', '_blank');
-                a.textContent = link;
-                errorList.appendChild(a);
-            });
-            errorList.style.color = '#cc0000';
-            errorList.style.display = 'block';
+        }
+        if (noContentArticles.length > 0) {
+            try {
+                const noContentList = document.querySelector(
+                    'div#no-content-list'
+                );
+                const noContentNb =
+                    document.querySelector('span#no-content-nb');
+                const showBtn = document.querySelector('div#show-nc-list');
+                const hideBtn = document.querySelector('div#hide-nc-list');
+                showBtn.addEventListener('click', () => {
+                    noContentLinks.style.display = 'block';
+                    hideBtn.style.display = 'inline';
+                    showBtn.style.display = 'none';
+                });
+                hideBtn.addEventListener('click', () => {
+                    noContentLinks.style.display = 'none';
+                    hideBtn.style.display = 'none';
+                    showBtn.style.display = 'inline';
+                });
+                if (noContentArticles.length === 1) {
+                    noContentNb.textContent =
+                        noContentArticles.length + ' result';
+                } else {
+                    noContentNb.textContent =
+                        noContentArticles.length + ' results';
+                }
+                noContentArticles.forEach((link) => {
+                    const li = document.createElement('li');
+                    const a = document.createElement('a');
+                    a.setAttribute('href', link);
+                    a.setAttribute('target', '_blank');
+                    a.textContent = link;
+                    li.appendChild(a);
+                    noContentLinks.appendChild(li);
+                });
+                noContentList.style.color = '#cc0000';
+                noContentList.style.display = 'block';
+            } catch (error) {
+                console.error(error);
+            }
         }
         abortBtn.style.display = 'none';
         extractBtn.style.display = 'inline';

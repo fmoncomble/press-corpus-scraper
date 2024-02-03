@@ -11,6 +11,17 @@
         <fieldset>
             <legend>The New York Times corpus scraper</legend>
             <div class="wrapper">
+                <div>
+                    ⚠️ An active subscription to the New York Times is necessary
+                    to scrape article content.
+                    <a
+                        href="https://myaccount.nytimes.com/auth/login"
+                        target="_blank"
+                        >Log into your account</a
+                    >
+                    before starting.
+                </div>
+                <br />
                 <div class="apikey-container">
                     <input
                         type="password"
@@ -408,7 +419,7 @@
                     <div>
                         <select id="extract-option">
                             <option value="all">Extract all</option>
-                            <option value="selection">Extract selection</option>
+                            <option value="selection">Extract sample</option>
                         </select>
                         <span
                             id="extract-select-container"
@@ -437,22 +448,103 @@
                         style="display: none"
                     ></div>
                 </div>
-                <div id="process-container"></div>
+                <div id="process-container">
+                    <div id="process-message" style="display: none">
+                        Finished fetching results, extracting text...
+                    </div>
+                    <br />
+                    <div id="extraction-counter"></div>
+                    <br />
+                    <div id="pause-message" style="display: none">
+                        <span id="confirm-message" style="display: none"
+                            >NYT server is getting suspicious: click
+                            <a
+                                id="confirm-link"
+                                style="color: red"
+                                target="_blank"
+                                >here</a
+                            >
+                            to confirm you are human, then come back to resume.
+                        </span>
+                        <span id="premium-message" style="display: none"
+                            >You seem to be logged out of your account: click
+                            <a
+                                style="color: #ff9900"
+                                href="https://myaccount.nytimes.com/auth/login"
+                                target="_blank"
+                                >here</a
+                            >
+                            to log in, then come back to resume.
+                        </span>
+                        <button id="resume-btn">Resume</button>
+                    </div>
+                </div>
                 <div id="output-container"></div>
                 <div id="list-wrapper">
                     <div id="file-list"></div>
                     <br />
                     <div id="premium-list" style="display: none">
-                        <span id="premium-nb"></span> were skipped.
+                        <span id="premium-nb"></span> skipped.
                         <a
                             href="https://myaccount.nytimes.com/auth/login"
                             target="_blank"
                             >Log into your NYT account</a
                         >
-                        to avoid this.
+                        and retry.
+                        <br />
+                        <div
+                            id="show-premium-list"
+                            class="show-list"
+                            style="display: inline"
+                        >
+                            Show list 🔽
+                        </div>
+                        <div
+                            id="hide-premium-list"
+                            class="hide-list"
+                            style="display: none"
+                        >
+                            Hide list 🔼
+                        </div>
+                        <ul id="premium-links" style="display: none"></ul>
                     </div>
                     <div id="error-list" style="display: none">
-                        <span id="error-nb"></span> responded with an error:
+                        <span id="error-nb"></span>
+                        <span>responded with an error. </span>
+                        <div
+                            id="show-list"
+                            class="show-list"
+                            style="display: inline"
+                        >
+                            Show list 🔽
+                        </div>
+                        <div
+                            id="hide-list"
+                            class="hide-list"
+                            style="display: none"
+                        >
+                            Hide list 🔼
+                        </div>
+                        <ul id="error-links" style="display: none"></ul>
+                    </div>
+                    <div id="no-content-list" style="display: none">
+                        <span id="no-content-nb"></span>
+                        <span>could not be processed. </span>
+                        <div
+                            id="show-nc-list"
+                            class="show-list"
+                            style="display: inline"
+                        >
+                            Show list 🔽
+                        </div>
+                        <div
+                            id="hide-nc-list"
+                            class="hide-list"
+                            style="display: none"
+                        >
+                            Hide list 🔼
+                        </div>
+                        <ul id="no-content-links" style="display: none"></ul>
                     </div>
                 </div>
             </div>
