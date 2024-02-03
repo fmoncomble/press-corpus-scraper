@@ -15,7 +15,7 @@ Moncomble, F. (2024). *Press Corpus Scraper* (Version 0.3) [JavaScript]. Arras, 
 - Unzip the archive
 - Open the extensions manager: `chrome://extensions` or `edge://extensions`
   - Activate "developer mode"
-  - Click on "Load unpackaged extension".
+  - Click "Load unpacked".
   - Select the unzipped folder
  
 ## Instructions for use
