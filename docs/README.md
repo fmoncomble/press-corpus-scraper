@@ -1,4 +1,4 @@
-# ![icon-96](https://github.com/fmoncomble/press_corpus_scraper/assets/59739627/d5d96847-4c02-4800-9419-ee1b39936ff5) Press Corpus Scraper ([**English version**](https://github.com/fmoncomble/press-corpus-scraper/blob/main/README_EN.md))
+# ![icon-96](https://github.com/fmoncomble/press_corpus_scraper/assets/59739627/d5d96847-4c02-4800-9419-ee1b39936ff5) Press Corpus Scraper ([**English version**](https://fmoncomble.github.io/press-corpus-scraper/README_EN.md))
 
 Une extension pour extraire et télécharger des articles de presse à des fins de fouille textuelle.
 ### Citer ce programme
