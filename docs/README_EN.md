@@ -4,7 +4,7 @@ An extension for extracting and downloading press articles for text mining.
 ### Cite this program
 If you use this extension for your research, please reference it as follows:  
   
-Moncomble, F. (2024). *Press Corpus Scraper* (Version 0.3) [JavaScript]. Arras, France: Université d'Artois. Available at: https://github.com/fmoncomble/press-corpus-scraper
+Moncomble, F. (2024). *Press Corpus Scraper* (Version 0.3) [JavaScript]. Arras, France: Université d'Artois. Available at: https://fmoncomble.github.io/press-corpus-scraper/
 
 
 ## Installation
