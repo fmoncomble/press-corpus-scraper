@@ -52,6 +52,9 @@ Moncomble, F. (2024). *Press Corpus Scraper* (Version 0.3) [JavaScript]. Arras, 
 
 ### Limites et problèmes connus
 - Sites français : même avec un compte abonné actif, l'extension n'a pas accès au texte intégral des articles premium (le cookie n'est pas accepté par le serveur distant). Seuls les articles en accès libre sont donc récupérés, les autres étant listés sous forme de liens.
+- *Guardian* et *New York Times* : la recherche s'appuie sur les API offertes par ces deux publications. Une clef d'accès est requise ; son obtention est gratuite et automatique aux liens suivants :
+    - [*The Guardian*](https://bonobo.capi.gutools.co.uk/register/developer)
+    - [*The New York Times*](https://developer.nytimes.com/get-started)
 - *New York Times* : un abonnement actif est indispensable pour accéder au texte intégral de tous les articles, il faut donc être connecté à son compte au préalable. Le serveur distant accepte le cookie envoyé par l'extension (pour le moment), mais celle-ci doit composer avec certaines limitations et dispositifs de sécurité :
     - les requêtes ne renvoient que 10 résultats à la fois, et l'API n'autorise que 5 requêtes par minute : celles-ci sont donc espacées de 12 secondes pour éviter tout blocage
     - le serveur bloque les accès trop nombreux et trop rapides : le contenu des articles n'est donc extrait qu'à raison d'1 article par seconde. Malgré cela, un blocage peut survenir : l'extension invite alors à cliquer sur un lien pour prouver qu'on n'est pas un robot...
