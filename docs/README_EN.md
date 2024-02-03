@@ -1,4 +1,7 @@
-# ![icon-96](https://github.com/fmoncomble/press_corpus_scraper/assets/59739627/d5d96847-4c02-4800-9419-ee1b39936ff5) Press Corpus Scraper ([**Version française**](https://fmoncomble.github.io/press-corpus-scraper))
+# ![icon-96](https://github.com/fmoncomble/press_corpus_scraper/assets/59739627/d5d96847-4c02-4800-9419-ee1b39936ff5) Press Corpus Scraper
+
+([**Version française**](https://fmoncomble.github.io/press-corpus-scraper))  
+ 
 An extension for extracting and downloading press articles for text mining.
 ### Cite this program
 If you use this extension for your research, please reference it as follows:  
