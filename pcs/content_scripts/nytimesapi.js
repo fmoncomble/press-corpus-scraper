@@ -99,12 +99,23 @@ document.addEventListener('DOMContentLoaded', async function () {
             chrome.storage.local.set({ nytimesapicallnb: 500 }, function () {
                 console.log('Number of API calls available set to 500');
             });
-            chrome.alarms.create('resetApiCallTotal', {
-                periodInMinutes: 24 * 60,
-            });
-            console.log('API rate reset countdown created');
+            // chrome.alarms.create('resetApiCallTotal', {
+            //     periodInMinutes: 24 * 60,
+            // });
+            // console.log('API rate reset countdown created');
         }
+        updateApiCounter();
     });
+
+    var now = new Date();
+    var nextMidnight = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1);
+    var timeToNextMidnight = nextMidnight.getTime() - now.getTime();
+
+    chrome.alarms.create('resetApiCallTotal', {
+        when: Date.now() + timeToNextMidnight,
+        periodInMinutes: 24 * 60
+    });
+    console.log('API rate reset countdown created. Counter will be reset in approximately ' + Math.floor(timeToNextMidnight/1000/60/60) + ' hours and ' + Math.floor(timeToNextMidnight/1000/60%60) + ' minutes.');
 
     chrome.alarms.onAlarm.addListener(function (alarm) {
         if (alarm.name === 'resetApiCallTotal') {
@@ -113,6 +124,12 @@ document.addEventListener('DOMContentLoaded', async function () {
             });
         }
     });
+
+    const apiCounter = document.querySelector('span#api-counter');
+    function updateApiCounter() {
+        console.log('API counter updated');
+        apiCounter.textContent = apiCallTotal;
+    }
 
     // Create search form
     function initiateForm() {
@@ -502,6 +519,7 @@ document.addEventListener('DOMContentLoaded', async function () {
                         console.log('API calls left today: ', apiCallTotal);
                     }
                 );
+                updateApiCounter();
                 const data = await queryResponse.json();
                 const dataContent = data.response;
                 resultsTotal = dataContent.meta.hits;
@@ -669,6 +687,7 @@ document.addEventListener('DOMContentLoaded', async function () {
                             console.log('API calls left today: ', apiCallTotal);
                         }
                     );
+                    updateApiCounter();
                     const data = await response.json();
                     const dataContent = data.response;
                     results = results.concat(dataContent.docs);
