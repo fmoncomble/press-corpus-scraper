@@ -30,7 +30,7 @@ Moncomble, F. (2024). *Press Corpus Scraper* (Version 0.3) [JavaScript]. Arras, 
 - French websites :
     - Search by keyword
     - (Optional: refine your search)
-    - A box appears at the top of the results page. Example for *Monde* :  
+    - A box appears at the top of the results page. Example for *Le Monde* :  
       <img width="704" alt="Screenshot 2024-02-03 at 08 09 21" src="https://github.com/fmoncomble/press-corpus-scraper/assets/59739627/07b0a58a-1730-4652-9eff-f2d010a0a9ec">  
 - English-language sites:
     - Click on the `PCScraper` button in the top right-hand corner of the site's menu bar to open the search window  
@@ -49,14 +49,14 @@ Moncomble, F. (2024). *Press Corpus Scraper* (Version 0.3) [JavaScript]. Arras, 
   - When extraction is complete :
     - Firefox: the .zip archive containing the files is automatically downloaded to the default folder
     - Chrome/Edge: select the destination folder for the .zip archive
-- Unzip the resulting archive to load the files into a text analysis application
+- Unzip the resulting archive to load the files into text analysis software
 
 ### Known issues and limitations
-- French sites: even with an active subscriber account, the extension does not have access to the full text of paywalled articles (the cookie is not accepted by the remote server). Only free-access articles are therefore retrieved, the others being listed as links.
-- *Guardian* and *New York Times*: the query and extraction process is by the the APIs offered by these two publications. An access key is required, which can be obtained free of charge from the following links:
+- French sites: even with an active subscription, the extension does not have access to the full text of paywalled articles (the cookie is not accepted by the remote server). Only free-access articles are therefore retrieved, the others being listed as links.
+- *Guardian* and *New York Times*: the query and extraction process relies on the APIs offered by these two publications. An access key is required, which can be obtained free of charge from the following links:
     - [*The Guardian*](https://bonobo.capi.gutools.co.uk/register/developer)
     - [*The New York Times*](https://developer.nytimes.com/get-started)
 - *The New York Times*: an active subscription is required to access the full text of all articles, so you need to be logged into your account first. The remote server accepts the cookie sent by the extension (for the time being), but there are a number of limitations and security features:
     - requests can only return 10 results at a time, and the API only authorises 5 requests per minute: these are therefore spaced 12 seconds apart to avoid any blocking
-    - the server blocks fetch requests that are too numerous and too fast: to avoid that, article content is therefore only retrieved at a rate of 1 article per second. Despite this, a block may occur: the extension then invites you to click on a link to prove that you are not a robot...
-    - the subscriber account can be disconnected at any time: the extension then pauses and prompts you to click on an authentication link to resume content retrieval.
+    - the server blocks fetch requests that are too numerous and too fast: to avoid that, article content is only retrieved at a rate of 1 article per second. Despite this, a block may occur: the extension then invites you to click on a link to prove that you are not a robot...
+    - the subscriber account can be disconnected at any time: the extension then pauses and prompts you to click on an authentication link before resuming content retrieval.
