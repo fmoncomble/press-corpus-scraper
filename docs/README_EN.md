@@ -1,6 +1,8 @@
 ([**Version française**](https://fmoncomble.github.io/press-corpus-scraper))  
  
-An extension for extracting and downloading press articles for text mining.
+An extension for extracting and downloading press articles for text mining.  
+  
+🚨 **New!** 🚨 Support for Europresse: log in via [your institutional portal](europresse-list.md).
 ### Cite this program
 If you use this extension for your research, please reference it as follows:  
   
@@ -27,7 +29,7 @@ Moncomble, F. (2024). *Press Corpus Scraper* (Version 0.4) [JavaScript]. Arras, 
     - [*Le Point*](https://www.lepoint.fr/recherche/index.php)
     - [*The Guardian*](https://www.theguardian.com/)
     - [*The New York Times*](https://www.nytimes.com/)
-- 🚨 **New!** 🚨 Europresse is now supported: log in via your university's portal. [List of supported institutions](europresse-list.md)
+- or your institution's Europresse portal: [list of supported institutions](europresse-list.md)
 - French websites :
     - Search by keyword
     - (Optional: refine your search)

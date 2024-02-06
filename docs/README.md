@@ -1,6 +1,8 @@
 ([**English version**](https://fmoncomble.github.io/press-corpus-scraper/README_EN.html))  
 
-Une extension pour extraire et télécharger des articles de presse à des fins de fouille textuelle.
+Une extension pour extraire et télécharger des articles de presse à des fins de fouille textuelle.  
+  
+🚨 **Nouveau !** 🚨 Prise en charge d'Europresse : connectez-vous via [le portail de votre établissement](europresse-list.md).
 ### Citer ce programme
 Si vous utilisez cette extension pour vos travaux de recherche, merci de la référencer de la façon suivante :  
   
@@ -27,7 +29,7 @@ Moncomble, F. (2024). *Press Corpus Scraper* (Version 0.4) [JavaScript]. Arras, 
     - [*Le Point*](https://www.lepoint.fr/recherche/index.php)
     - [*The Guardian*](https://www.theguardian.com/)
     - [*The New York Times*](https://www.nytimes.com/)
-- 🚨 **Nouveau !** 🚨 Europresse est maintenant pris en charge : connectez-vous via le portail de votre établissement. [Liste des établissements pris en charge](europresse-list.md)
+- ou le portail Europresse de votre établissement : [liste des établissements pris en charge](europresse-list.md)
 - Sites français :
     - Effectuer une recherche par mot-clef
     - (Facultatif : affiner la recherche)
