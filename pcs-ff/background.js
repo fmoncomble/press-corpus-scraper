@@ -2,6 +2,7 @@ let url;
 let doc;
 let pageNo;
 let pubNameDef;
+let searchTerm;
 let abortExtraction;
 
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
@@ -686,13 +687,19 @@ async function performExtractAndSave(url) {
         type: 'blob',
     });
 
-    // const searchTerm = doc.querySelector(searchTermContainerDef).value.trim();
+    searchTerm = searchTerm
+        .replaceAll(/\|/gu, ' OR')
+        .replaceAll(/&/gu, ' AND')
+        .replaceAll(/!/gu, ' NOT')
+        .replaceAll(/\p{P}/gu, '')
+        .trim()
+        .replaceAll(/\s/gu, '_');
 
-    const zipFileName = `${paperName.replaceAll(
-        /\s/g,
-        '_'
-    )}_${searchTerm.replaceAll(/\s/g, '_').replaceAll('"', '')}_${selectedFormat}_archive.zip`;
-
+        const zipFileName = `${paperName.replaceAll(
+            /\s/g,
+            '_'
+        )}_${searchTerm}_${selectedFormat}_archive.zip`;
+    
     await downloadZip(zipBlob, zipFileName);
 
     return [
