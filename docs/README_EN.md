@@ -55,12 +55,12 @@ Moncomble, F. (2024). *Press Corpus Scraper* (Version 0.4) [JavaScript]. Arras, 
 - Unzip the resulting archive to load the files into text analysis software
 
 ### Known issues and limitations
-- French sites: even with an active subscription, the extension does not have access to the full text of paywalled articles (the cookie is not accepted by the remote server). Only free-access articles are therefore retrieved, the others being listed as links.
-- Europresse: the metadata can be inaccurate, due to the way it is displayed by Europresse itself.
-- *Guardian* and *New York Times*: the query and extraction process relies on the APIs offered by these two publications. An access key is required, which can be obtained free of charge from the following links:
+- **French sites:** even with an active subscription, the extension does not have access to the full text of paywalled articles (the cookie is not accepted by the remote server). Only free-access articles are therefore retrieved, the others being listed as links.
+- **Europresse** handles article metadata rather randomly, with no dedicated HTML elements, which can lead to some inconsistency in the way they are rendered in downloaded files (subheads where author name should belong, etc.). This is not a limitation of the add-on but of Europresse!
+- ***Guardian* and *New York Times*:** the query and extraction process relies on the APIs offered by these two publications. An access key is required, which can be obtained free of charge from the following links:
     - [*The Guardian*](https://bonobo.capi.gutools.co.uk/register/developer)
     - [*The New York Times*](https://developer.nytimes.com/get-started)
-- *The New York Times*: an active subscription is required to access the full text of all articles, so you need to be logged into your account first. The remote server accepts the cookie sent by the extension (for the time being), but there are a number of limitations and security features:
+- ***The New York Times*:** an active subscription is required to access the full text of all articles, so you need to be logged into your account first. The remote server accepts the cookie sent by the extension (for the time being), but there are a number of limitations and security features:
     - requests can only return 10 results at a time, and the API only authorises 5 requests per minute: these are therefore spaced 12 seconds apart to avoid any blocking
     - the server blocks fetch requests that are too numerous and too fast: to avoid that, article content is only retrieved at a rate of 1 article per second. Despite this, a block may occur: the extension then invites you to click on a link to prove that you are not a robot...
     - the subscriber account can be disconnected at any time: the extension then pauses and prompts you to click on an authentication link before resuming content retrieval.

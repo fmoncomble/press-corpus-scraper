@@ -55,12 +55,12 @@ Moncomble, F. (2024). *Press Corpus Scraper* (Version 0.4) [JavaScript]. Arras, 
 - Décompresser l'archive obtenue pour charger les fichiers dans une application d'analyse textuelle
 
 ### Limites et problèmes connus
-- Sites français : même avec un compte abonné actif, l'extension n'a pas accès au texte intégral des articles premium (le cookie n'est pas accepté par le serveur distant). Seuls les articles en accès libre sont donc récupérés, les autres étant listés sous forme de liens.
-- Europresse : l'exactitude des métadonnées peut laisser à désirer... Des scories peuvent subsister, qui tiennent à la façon dont Europresse les affiche.
-- *Guardian* et *New York Times* : la recherche s'appuie sur les API offertes par ces deux publications. Une clef d'accès est requise ; son obtention est gratuite et automatique aux liens suivants :
+- **Sites français :** même avec un compte abonné actif, l'extension n'a pas accès au texte intégral des articles premium (le cookie n'est pas accepté par le serveur distant). Seuls les articles en accès libre sont donc récupérés, les autres étant listés sous forme de liens.
+- **Europresse** affiche les métadonnées des articles de façon très aléatoire, sans éléments HTML dédiés, ce qui peut donner lieu à des incohérences dans la structure des fichiers téléchargés (chapô en lieu et place du nom d'auteur.e, etc.). Ce n'est pas un problème de l'extension mais d'Europresse !
+- ***Guardian* et *New York Times* :** la recherche s'appuie sur les API offertes par ces deux publications. Une clef d'accès est requise ; son obtention est gratuite et automatique aux liens suivants :
     - [*The Guardian*](https://bonobo.capi.gutools.co.uk/register/developer)
     - [*The New York Times*](https://developer.nytimes.com/get-started)
-- *New York Times* : un abonnement actif est indispensable pour accéder au texte intégral de tous les articles, il faut donc être connecté à son compte au préalable. Le serveur distant accepte le cookie envoyé par l'extension (pour le moment), mais celle-ci doit composer avec certaines limitations et dispositifs de sécurité :
+- ***New York Times* :** un abonnement actif est indispensable pour accéder au texte intégral de tous les articles, il faut donc être connecté à son compte au préalable. Le serveur distant accepte le cookie envoyé par l'extension (pour le moment), mais celle-ci doit composer avec certaines limitations et dispositifs de sécurité :
     - les requêtes ne renvoient que 10 résultats à la fois, et l'API n'autorise que 5 requêtes par minute : celles-ci sont donc espacées de 12 secondes pour éviter tout blocage
     - le serveur bloque les accès trop nombreux et trop rapides : le contenu des articles n'est donc extrait qu'à raison d'1 article par seconde. Malgré cela, un blocage peut survenir : l'extension invite alors à cliquer sur un lien pour prouver qu'on n'est pas un robot...
     - le compte abonné peut être déconnecté à tout moment : l'extension se met alors en pause et invite à cliquer sur un lien d'authentification afin de pouvoir reprendre la récupération de contenu.
