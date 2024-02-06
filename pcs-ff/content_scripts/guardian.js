@@ -1,6 +1,6 @@
 console.log('The Guardian PCS script injected');
 
-const anchor = document.querySelector('.dcr-14f8c26');
+const anchor = document.querySelector('gu-island[name="HeaderTopBar"] div div span');
 const scriptBtn = document.createElement('div');
 scriptBtn.id = 'pcs-btn';
 scriptBtn.classList.add('dcr-1gd007l');
