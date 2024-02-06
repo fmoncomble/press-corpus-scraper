@@ -54,6 +54,7 @@ Moncomble, F. (2024). *Press Corpus Scraper* (Version 0.3) [JavaScript]. Arras, 
 
 ### Limites et problèmes connus
 - Sites français : même avec un compte abonné actif, l'extension n'a pas accès au texte intégral des articles premium (le cookie n'est pas accepté par le serveur distant). Seuls les articles en accès libre sont donc récupérés, les autres étant listés sous forme de liens.
+- Europresse : l'exactitude des métadonnées peut laisser à désirer... Des scories peuvent subsister, qui tiennent à la façon dont Europresse les affiche.
 - *Guardian* et *New York Times* : la recherche s'appuie sur les API offertes par ces deux publications. Une clef d'accès est requise ; son obtention est gratuite et automatique aux liens suivants :
     - [*The Guardian*](https://bonobo.capi.gutools.co.uk/register/developer)
     - [*The New York Times*](https://developer.nytimes.com/get-started)

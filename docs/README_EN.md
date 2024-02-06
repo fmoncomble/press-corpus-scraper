@@ -27,6 +27,7 @@ Moncomble, F. (2024). *Press Corpus Scraper* (Version 0.3) [JavaScript]. Arras, 
     - [*Le Point*](https://www.lepoint.fr/recherche/index.php)
     - [*The Guardian*](https://www.theguardian.com/)
     - [*The New York Times*](https://www.nytimes.com/)
+  - ... or to Europresse via your university's portal.
 - French websites :
     - Search by keyword
     - (Optional: refine your search)
@@ -53,6 +54,7 @@ Moncomble, F. (2024). *Press Corpus Scraper* (Version 0.3) [JavaScript]. Arras, 
 
 ### Known issues and limitations
 - French sites: even with an active subscription, the extension does not have access to the full text of paywalled articles (the cookie is not accepted by the remote server). Only free-access articles are therefore retrieved, the others being listed as links.
+- Europresse: the metadata can be inaccurate, due to the way it is displayed by Europresse itself.
 - *Guardian* and *New York Times*: the query and extraction process relies on the APIs offered by these two publications. An access key is required, which can be obtained free of charge from the following links:
     - [*The Guardian*](https://bonobo.capi.gutools.co.uk/register/developer)
     - [*The New York Times*](https://developer.nytimes.com/get-started)
