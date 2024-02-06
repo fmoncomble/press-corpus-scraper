@@ -1,6 +1,7 @@
 let url;
 let doc;
 let pageNo;
+let pubNameDef;
 let abortExtraction;
 
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
@@ -13,14 +14,17 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
             console.log('Extract all? ', extractAll);
             paperName = message.paperName;
             aboBtnDef = message.aboBtnDef;
-            searchTermContainerDef = message.searchTermContainerDef;
+            searchTerm = message.searchTerm;
             resultsNumber = message.resultsNumber;
             resultsNumberPerPageDef = message.resultsNumberPerPageDef;
             articleListDef = message.articleListDef;
             articlesDef = message.articlesDef;
             articleHeaderDef = message.articleHeaderDef;
+            pubNameDef = message.pubNameDef;
             premiumBannerDef = message.premiumBannerDef;
             titleDivDef = message.titleDivDef;
+            euroLinkDef = message.euroLinkDef;
+            euroLinkAttribute = message.euroLinkAttribute;
             subhedDivDef = message.subhedDivDef;
             bodyDivDef = message.bodyDivDef;
             authorElementDef = message.authorElementDef;
@@ -32,6 +36,8 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
             exclElementsText = message.exclElementsText;
             exclElementsDef = message.exclElementsDef;
             nextPageDef = message.nextPageDef;
+            pageParam = message.pageParam;
+            firstPage = message.firstPage;
             nextButtonDef = message.nextButtonDef;
             console.log('Output format: ' + selectedFormat);
             performExtractAndSave(url)
@@ -68,7 +74,14 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 });
 
 async function performExtractAndSave(url) {
-    pageNo = 1;
+    console.log('First page no = ', firstPage);
+    if (typeof firstPage !== 'undefined') {
+        pageNo = firstPage;
+        console.log('First page is defined -> ', pageNo);
+    } else {
+        pageNo = 1;
+        console.log('First page is not defined -> ', pageNo);
+    }
     abortExtraction = false;
     const parser = new DOMParser();
     let nextUrl;
@@ -79,13 +92,13 @@ async function performExtractAndSave(url) {
             nextButtonDef
     );
     if (nextPageDef) {
-        const pageQuery = url.split('page=')[1];
+        const pageQuery = url.split(`${pageParam}=`)[1];
         const queryString = url.split('?')[1];
         if (pageQuery) {
             console.log('Query string exists and already includes page number');
             if (extractAll) {
                 const baseQuery = url.split('page')[0];
-                nextUrl = baseQuery + 'page=1';
+                nextUrl = baseQuery + `${pageParam}=${pageNo}`;
             } else {
                 nextUrl = url;
             }
@@ -93,10 +106,10 @@ async function performExtractAndSave(url) {
             console.log(
                 'Query string = ' + queryString + '. Appending page number'
             );
-            nextUrl = url + '&page=' + pageNo;
+            nextUrl = url + `&${pageParam}=` + pageNo;
         } else if (!queryString) {
             console.log('No existing query string, creating');
-            nextUrl = url + '?page=' + pageNo;
+            nextUrl = url + `?${pageParam}=` + pageNo;
         }
     } else if (nextButtonDef) {
         nextUrl = url;
@@ -122,6 +135,7 @@ async function performExtractAndSave(url) {
                 const response = await fetch(nextUrl);
                 const html = await response.text();
                 doc = parser.parseFromString(html, 'text/html');
+                console.log('Search page structure: ', doc);
 
                 let articleList = doc.querySelector(articleListDef);
                 if (!articleList) {
@@ -159,6 +173,13 @@ async function performExtractAndSave(url) {
                 );
             }
 
+            let sentPageNo;
+            if (typeof firstPage !== 'undefined' && firstPage === 0) {
+                sentPageNo = pageNo + 1;
+            } else {
+                sentPageNo = pageNo;
+            }
+
             function sendRange() {
                 console.log('sendRange function invoked');
                 let currentTab;
@@ -170,8 +191,9 @@ async function performExtractAndSave(url) {
                         let port = chrome.tabs.connect(currentTab.id, {
                             name: 'backgroundjs',
                         });
+                        console.log('PageNo sent: ', sentPageNo);
                         port.postMessage({
-                            pageNo,
+                            sentPageNo,
                             resultsPageNumber,
                         });
                         pageNo += 1;
@@ -302,9 +324,6 @@ async function performExtractAndSave(url) {
                                     titleDivDef
                                 ).nextElementSibling;
                         }
-                        if (authorElement) {
-                            console.log('Author: ', authorElement.textContent);
-                        }
 
                         if (!bodyDiv) {
                             errorMessage =
@@ -415,12 +434,14 @@ async function performExtractAndSave(url) {
                         if (authorElement) {
                             author = authorElement.textContent
                                 .replace('Par', '')
+                                .replace('par', '')
                                 .replaceAll('"', '&quot;')
                                 .replaceAll('&', '&amp;')
                                 .trim();
                         } else {
                             author = 'auteur-inconnu';
                         }
+                        console.log('Author: ', author);
 
                         let date;
                         console.log('Date logic: ', dateLogic);
@@ -540,18 +561,46 @@ async function performExtractAndSave(url) {
                         }
 
                         function buildDateFromUrl(url) {
-                            const datePattern = /(\d+)\/(\d+)\/(\d+)/u;
-                            const day = url.match(datePattern)[3];
-                            const month = url.match(datePattern)[2];
-                            const year = url.match(datePattern)[1];
+                            const datePattern =
+                                /(%C2%B7)?(\d{4})\/?(\d{2})\/?(\d{2})/u;
+                            const day = url.match(datePattern)[4];
+                            const month = url.match(datePattern)[3];
+                            const year = url.match(datePattern)[2];
                             let builtDate = year + '-' + month + '-' + day;
                             console.log('Built date: ', builtDate);
                             return builtDate;
                         }
 
                         let extension = '.txt';
+                        let pubName;
+                        if (pubNameDef) {
+                            let pubNameSpan =
+                                contentDoc.querySelector(pubNameDef);
+                            const brIndex =
+                                pubNameSpan.innerHTML.indexOf('<br>');
+                            if (brIndex !== -1) {
+                                pubNameSpan = pubNameSpan.innerHTML.substring(
+                                    0,
+                                    brIndex
+                                );
+                                pubName = pubNameSpan
+                                    .replaceAll(/[,-].+/g, '')
+                                    .replaceAll(/\s+/g, ' ')
+                                    .replace(/\(.+/, '')
+                                    .trim();
+                            } else {
+                                pubName = pubNameSpan.textContent
+                                    .replaceAll(/[,-].+/g, '')
+                                    .replaceAll(/\s+/g, ' ')
+                                    .replace(/\(.+/, '')
+                                    .trim();
+                            }
+                        }
+                        if (!pubNameDef) {
+                            pubName = paperName;
+                        }
 
-                        let fileContent = `${paperName}\n\n${author}\n\n${date}\n\n${titleDiv.textContent}\n\n${subhed}\n\n${text}`;
+                        let fileContent = `${pubName}\n\n${author}\n\n${date}\n\n${titleDiv.textContent}\n\n${subhed}\n\n${text}`;
 
                         if (selectedFormat === 'xml') {
                             extension = '.xml';
@@ -565,25 +614,43 @@ async function performExtractAndSave(url) {
                                 .replaceAll('<', '&lt;')
                                 .replaceAll('>', '&gt;')
                                 .replaceAll('\n', '<lb></lb>');
-                            url = url.split('&')[0];
-                            fileContent = `<text source="${paperName}" author="${author}" title="${title}" date="${date}">\n<ref target="${url}">Link to original document</ref><lb></lb><lb></lb>\n\n${subhed}<lb></lb><lb></lb>\n\n${text}\n</text>`;
+                            const euroLinkBtn =
+                                contentDoc.querySelector(euroLinkDef);
+                            let euroLink;
+                            if (euroLinkBtn) {
+                                euroLink =
+                                    euroLinkBtn.getAttribute(euroLinkAttribute);
+                                console.log(
+                                    'Article Europresse link = ',
+                                    euroLink
+                                );
+                                url = euroLink;
+                            } else {
+                                url = url.split('&')[0];
+                            }
+                            fileContent = `<text source="${pubName}" author="${author}" title="${title}" date="${date}">\n<ref target="${url}">Link to original document</ref><lb></lb><lb></lb>\n\n${subhed}<lb></lb><lb></lb>\n\n${text}\n</text>`;
                         }
 
-                        let baseFileName = `${date}_${paperName.replaceAll(
+                        let baseFileName = `${date}_${pubName.replaceAll(
                             /\s/g,
                             '_'
                         )}_${author
                             .replaceAll(/\p{P}/gu, '')
                             .replaceAll(/\s+/g, '_')
+                            .trim()
                             .substring(0, 20)}${extension}`;
                         let index = 1;
 
                         // Append a number to the file name to make it unique
                         while (addedFileNames.has(baseFileName)) {
-                            baseFileName = `${date}_${paperName.replaceAll(
+                            baseFileName = `${date}_${pubName.replaceAll(
                                 /\s/g,
                                 '_'
-                            )}_${author}_${index}${extension}`;
+                            )}_${author
+                                .replaceAll(/\p{P}/gu, '')
+                                .replaceAll(/\s+/g, '_')
+                                .trim()
+                                .substring(0, 20)}_${index}${extension}`;
                             index++;
                         }
 
@@ -619,7 +686,7 @@ async function performExtractAndSave(url) {
         type: 'blob',
     });
 
-    const searchTerm = doc.querySelector(searchTermContainerDef).value.trim();
+    // const searchTerm = doc.querySelector(searchTermContainerDef).value.trim();
 
     const zipFileName = `${paperName.replaceAll(
         /\s/g,
@@ -639,10 +706,10 @@ async function performExtractAndSave(url) {
 }
 
 async function getNextPageUrl(nextUrl) {
-    const urlParts = nextUrl.split('page=');
+    const urlParts = nextUrl.split(`${pageParam}=`);
     const currentPageNo = Number(urlParts[1]);
     const newPageNo = currentPageNo + 1;
-    const nextPageUrl = urlParts[0] + 'page=' + newPageNo;
+    const nextPageUrl = urlParts[0] + `${pageParam}=` + newPageNo;
     const response = await fetch(nextPageUrl);
     console.log('Next page fetch OK? ', response.ok);
     if (response.redirected || !response.ok) {

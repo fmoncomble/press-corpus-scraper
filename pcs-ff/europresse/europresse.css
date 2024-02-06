@@ -1,0 +1,47 @@
+/* Style de l'encadré */
+fieldset.pcs-ui {
+    background-color: #f0f0f0;
+    border-color: #00607f !important;
+    font-family: 'Montserrat', sans-serif;
+    margin: 30px 10% !important;
+}
+
+legend {
+    background: linear-gradient(#0086b3, #00607f);
+    border-color: #00607f;
+}
+
+.legend-text {
+    font-family: 'Montserrat', sans-serif;
+    text-transform: uppercase;
+    color: white;
+}
+
+/* Style des boutons et du menu de sélection du format */
+button.pcs-ui,
+select.pcs-ui,
+.abort-button {
+    background-color: #00607f;
+    font-family: 'Montserrat', sans-serif;
+}
+
+button.pcs-ui:hover,
+select.pcs-ui:hover {
+    background-color: #0086b3;
+}
+
+/* Style du bouton d'option d'extraction */
+
+input:checked + .slider {
+    background-color: #00607f;
+}
+
+input:focus + .slider {
+    box-shadow: 0 0 1px #00607f;
+}
+
+/* Style du spinner d'attente */
+.spinner {
+    border: 2px solid #b3ecff;
+    border-left: 2px solid #00607f;
+}

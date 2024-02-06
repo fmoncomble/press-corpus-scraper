@@ -16,6 +16,7 @@ const anchor = document.querySelector('.search__form-container');
 
 // Où retrouver les termes de recherche
 const searchTermContainerDef = 'input.input.input__search';
+const searchTerm = document.querySelector(searchTermContainerDef).value.trim();
 // S'il est présent : élément contenant le nombre total de résultats
 const resultsNumberContainer = null;
 const resultsNumber = null;
@@ -34,8 +35,9 @@ const articleListDef =
     'div.page__content.river.river--rubrique.river--search, section.js-river-search';
 // Elément contenant chaque résultat
 const articlesDef = 'section.teaser.teaser--inline-picture  ';
-// Logique de pagination : si les pages sont numérotées dans l'URL (parfois seulement à partir de la 2e page de résultats, ex. https://www.journal.fr/recherche/?keywords=termes%20de%20recherche&page=2), indiquer 'true', sinon 'false' (sans guillemets)
+// Logique de pagination : si les pages sont numérotées dans l'URL (parfois seulement à partir de la 2e page de résultats, ex. https://www.journal.fr/recherche/?keywords=termes%20de%20recherche&page=2), indiquer 'true', sinon 'false' (sans guillemets), puis indiquer le nom du paramètre ('page', 'p' ou autre)
 const nextPageDef = true;
+const pageParam = 'page';
 // Logique de pagination : si les pages ne sont pas numérotées dans l'URL, identifier le bouton permettant de passer à la page suivante
 const nextButtonDef = null;
 
@@ -83,13 +85,14 @@ variableDiv.style.display = 'none';
 var variables = {
     paperName: paperName,
     anchor: anchor,
-    searchTermContainerDef: searchTermContainerDef,
+    searchTerm: searchTerm,
     resultsNumberContainer: resultsNumberContainer,
     resultsNumber: resultsNumber,
     resultsNumberPerPageDef: resultsNumberPerPageDef,
     pagesNumber: pagesNumber,
     articleListDef: articleListDef,
     nextPageDef: nextPageDef,
+    pageParam: pageParam,
     nextButtonDef: nextButtonDef,
     aboBtnDef: aboBtnDef,
     premiumBannerDef: premiumBannerDef,

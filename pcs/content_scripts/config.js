@@ -16,13 +16,14 @@ if (document.readyState !== 'loading') {
     var variables = JSON.parse(variableDiv.textContent);
     var paperName = variables.paperName;
     var anchor = variables.anchor;
-    var searchTermContainerDef = variables.searchTermContainerDef;
+    var searchTerm = variables.searchTerm;
     var resultsNumberContainer = variables.resultsNumberContainer;
     var resultsNumber = variables.resultsNumber;
     var resultsNumberPerPageDef = variables.resultsNumberPerPageDef;
     var pagesNumber = variables.pagesNumber;
     var articleListDef = variables.articleListDef;
     var nextPageDef = variables.nextPageDef;
+    var pageParam = variables.pageParam;
     var nextButtonDef = variables.nextButtonDef;
     var aboBtnDef = variables.aboBtnDef;
     var premiumBannerDef = variables.premiumBannerDef;
@@ -44,7 +45,8 @@ const fieldset = document.createElement('fieldset');
 fieldset.classList.add('pcs-ui');
 const fieldsetText = document.createElement('div');
 fieldsetText.classList.add('pcs-fs-text');
-fieldsetText.textContent = 'Extraire et télécharger les articles au format souhaité';
+fieldsetText.textContent =
+    'Extraire et télécharger les articles au format souhaité';
 fieldset.appendChild(fieldsetText);
 anchor.appendChild(fieldset);
 
@@ -181,8 +183,8 @@ function updateRange() {
             if (msg) {
                 console.log('Message from background: ', msg);
                 console.log('Updating range');
-                pageNo = msg.pageNo;
-                extractionMessage.textContent = `Extraction de la page ${msg.pageNo} sur ${pagesTotal} au format ${selectedFormat}...`;
+                pageNo = msg.sentPageNo;
+                extractionMessage.textContent = `Extraction de la page ${msg.sentPageNo} sur ${pagesTotal} au format ${selectedFormat}...`;
             } else {
                 console.error('No message from background');
             }
@@ -218,7 +220,7 @@ extractButton.addEventListener('click', function (event) {
             extractAll: extractAll,
             paperName: paperName,
             aboBtnDef: aboBtnDef,
-            searchTermContainerDef: searchTermContainerDef,
+            searchTerm: searchTerm,
             resultsNumber: resultsNumber,
             resultsNumberPerPageDef: resultsNumberPerPageDef,
             articleListDef: articleListDef,
@@ -237,6 +239,7 @@ extractButton.addEventListener('click', function (event) {
             exclElementsText: exclElementsText,
             exclElementsDef: exclElementsDef,
             nextPageDef: nextPageDef,
+            pageParam: pageParam,
             nextButtonDef: nextButtonDef,
         },
         (response) => {
@@ -261,7 +264,7 @@ extractButton.addEventListener('click', function (event) {
                 console.log('Downloaded files: ', downloadedFiles);
                 const downloadedFileLinks = response.fetchedUrls;
                 console.log('Downloaded file links: ', downloadedFileLinks);
-                downloadedFilesContainer.textContent = `\nFini !\n\n${pageNo} pages traitées, ${downloadedFiles.length} article(s) téléchargé(s) :\n\n`;
+                downloadedFilesContainer.textContent = `\nFini !\n\n${pageNo} page(s) traitée(s), ${downloadedFiles.length} article(s) téléchargé(s) :\n\n`;
                 const downloadedFilesList = document.createElement('div');
                 downloadedFilesList.style.fontWeight = 'normal';
                 for (let i = 0; i < 20; i++) {
@@ -272,7 +275,10 @@ extractButton.addEventListener('click', function (event) {
                     try {
                         if (i === downloadedFiles.length) {
                             break;
-                        } else if (i === 19 || i === downloadedFiles.length - 1) {
+                        } else if (
+                            i === 19 ||
+                            i === downloadedFiles.length - 1
+                        ) {
                             downloadedFileName.textContent =
                                 downloadedFiles[i] + '...';
                         } else {
