@@ -27,6 +27,7 @@ Moncomble, F. (2024). *Press Corpus Scraper* (Version 0.3) [JavaScript]. Arras, 
     - [*Le Point*](https://www.lepoint.fr/recherche/index.php)
     - [*The Guardian*](https://www.theguardian.com/)
     - [*The New York Times*](https://www.nytimes.com/)
+- ... ou Europresse via le portail de votre université.
 - Sites français :
     - Effectuer une recherche par mot-clef
     - (Facultatif : affiner la recherche)
