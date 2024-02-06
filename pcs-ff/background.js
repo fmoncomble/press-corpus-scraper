@@ -207,13 +207,17 @@ async function performExtractAndSave(url) {
             const nextUrlURL = new URL(nextUrl);
             console.log('URL origin: ', nextUrlURL.origin);
             const urls = Array.from(articles).map(function (p) {
-                let articleUrl = p.querySelector('a').getAttribute('href');
+                let articleAnchor = p.querySelector('a')
+                if (!articleAnchor) {
+                    return null;
+                }
+                let articleUrl = articleAnchor.getAttribute('href');
                 if (!articleUrl.startsWith('http')) {
                     articleUrl = nextUrlURL.origin + articleUrl;
                 }
                 console.log('Article URL: ', articleUrl);
                 return new URL(articleUrl).href;
-            });
+            }).filter(url => url !== null);
             console.log('Article URLs: ', urls);
 
             await Promise.all(

@@ -163,7 +163,11 @@ if (pagesNumber) {
 } else if (resultsNumber) {
     pagesTotal = Math.ceil(resultsNumber / resultsNumberPerPageDef);
 }
-label.textContent = `Extraire les ${pagesTotal} pages de résultats`;
+if (pagesTotal > 20) {
+    label.textContent = `Extraire les 20 premières pages de résultats (sur ${pagesTotal})`;
+} else {
+    label.textContent = `Extraire les ${pagesTotal} pages de résultats`;
+}
 checkboxDiv.appendChild(container);
 checkboxDiv.appendChild(label);
 if (pagesTotal > 1) {

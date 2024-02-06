@@ -8,9 +8,11 @@ let abortExtraction;
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     if (message.action === 'performExtraction') {
         try {
+            console.log('Message from content script: ', message);
             url = message.url;
             selectedFormat = message.format;
             extractAll = message.extractAll;
+            console.log('Extract all? ', extractAll);
             paperName = message.paperName;
             aboBtnDef = message.aboBtnDef;
             searchTerm = message.searchTerm;
@@ -38,6 +40,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
             pageParam = message.pageParam;
             firstPage = message.firstPage;
             nextButtonDef = message.nextButtonDef;
+            console.log('Output format: ' + selectedFormat);
             performExtractAndSave(url)
                 .then((results) => {
                     sendResponse({
@@ -72,18 +75,28 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 });
 
 async function performExtractAndSave(url) {
+    console.log('First page no = ', firstPage);
     if (typeof firstPage !== 'undefined') {
         pageNo = firstPage;
+        console.log('First page is defined -> ', pageNo);
     } else {
         pageNo = 1;
+        console.log('First page is not defined -> ', pageNo);
     }
     abortExtraction = false;
     const parser = new DOMParser();
     let nextUrl;
+    console.log(
+        'Pagination logic: page number? ' +
+            nextPageDef +
+            ' / Next button? ' +
+            nextButtonDef
+    );
     if (nextPageDef) {
         const pageQuery = url.split(`${pageParam}=`)[1];
         const queryString = url.split('?')[1];
         if (pageQuery) {
+            console.log('Query string exists and already includes page number');
             if (extractAll) {
                 const baseQuery = url.split('page')[0];
                 nextUrl = baseQuery + `${pageParam}=${pageNo}`;
@@ -91,8 +104,12 @@ async function performExtractAndSave(url) {
                 nextUrl = url;
             }
         } else if (queryString) {
+            console.log(
+                'Query string = ' + queryString + '. Appending page number'
+            );
             nextUrl = url + `&${pageParam}=` + pageNo;
         } else if (!queryString) {
+            console.log('No existing query string, creating');
             nextUrl = url + `?${pageParam}=` + pageNo;
         }
     } else if (nextButtonDef) {
@@ -109,28 +126,43 @@ async function performExtractAndSave(url) {
 
     loop: while (nextUrl) {
         try {
+            console.log('Search page URL = ' + nextUrl);
             let articles;
 
             for (let i = 1; i <= 3; i++) {
+                console.log(
+                    'Attempt #' + i + ' to fetch articles at ' + nextUrl
+                );
                 const response = await fetch(nextUrl);
                 const html = await response.text();
                 doc = parser.parseFromString(html, 'text/html');
+                console.log('Search page structure: ', doc);
 
                 let articleList = doc.querySelector(articleListDef);
                 if (!articleList) {
                     throw new Error('Article list not found');
                 } else if (articleList) {
+                    console.log('Article list: ', articleList);
                     articles = articleList.querySelectorAll(articlesDef);
                 }
 
                 if (articles.length >= 1) {
+                    console.log(
+                        'Articles found on attempt #' + i + '!',
+                        articles
+                    );
                     break;
+                } else {
+                    console.log(
+                        'No articles found on attempt #' + i + ', trying again'
+                    );
                 }
 
                 await new Promise((resolve) => setTimeout(resolve, 1000));
             }
 
             if (articles.length === 0) {
+                console.log('Last article reached');
                 break loop;
             }
 
@@ -150,6 +182,7 @@ async function performExtractAndSave(url) {
             }
 
             function sendRange() {
+                console.log('sendRange function invoked');
                 let currentTab;
                 chrome.tabs.query(
                     { active: true, currentWindow: true },
@@ -159,6 +192,7 @@ async function performExtractAndSave(url) {
                         let port = chrome.tabs.connect(currentTab.id, {
                             name: 'backgroundjs',
                         });
+                        console.log('PageNo sent: ', sentPageNo);
                         port.postMessage({
                             sentPageNo,
                             resultsPageNumber,
@@ -171,13 +205,20 @@ async function performExtractAndSave(url) {
             sendRange();
 
             const nextUrlURL = new URL(nextUrl);
+            console.log('URL origin: ', nextUrlURL.origin);
             const urls = Array.from(articles).map(function (p) {
-                let articleUrl = p.querySelector('a').getAttribute('href');
+                let articleAnchor = p.querySelector('a')
+                if (!articleAnchor) {
+                    return null;
+                }
+                let articleUrl = articleAnchor.getAttribute('href');
                 if (!articleUrl.startsWith('http')) {
                     articleUrl = nextUrlURL.origin + articleUrl;
                 }
+                console.log('Article URL: ', articleUrl);
                 return new URL(articleUrl).href;
-            });
+            }).filter(url => url !== null);
+            console.log('Article URLs: ', urls);
 
             await Promise.all(
                 urls.map(async (url) => {
@@ -185,6 +226,8 @@ async function performExtractAndSave(url) {
                         let errorMessage;
 
                         const contentResponse = await fetch(url);
+                        console.log('Content response: ', contentResponse);
+                        console.log('Article URL = ', contentResponse.url);
                         if (!contentResponse.ok) {
                             errorMessage =
                                 ' (' +
@@ -202,6 +245,7 @@ async function performExtractAndSave(url) {
                         );
 
                         const titleDiv = contentDoc.querySelector(titleDivDef);
+                        console.log('Title div: ', titleDiv);
                         if (!titleDiv) {
                             errorMessage =
                                 '< ' +
@@ -218,30 +262,62 @@ async function performExtractAndSave(url) {
 
                         const articleHeader =
                             contentDoc.querySelector(articleHeaderDef);
+                        console.log(
+                            'Premium banner element definition: ',
+                            premiumBannerDef
+                        );
                         let premiumBanner;
                         if (articleHeader) {
+                            console.log('Article header: ', articleHeader);
                             premiumBanner =
                                 articleHeader.querySelector(premiumBannerDef);
-                            if (!premiumBanner) {
+                            if (premiumBanner) {
+                                console.log(
+                                    'Premium banner found in header: ',
+                                    premiumBanner
+                                );
+                            } else {
+                                console.log(
+                                    'No premium banner in header, trying elsewhere'
+                                );
                                 premiumBanner =
                                     contentDoc.querySelector(premiumBannerDef);
+                                console.log(
+                                    'Premium banner found in doc: ',
+                                    premiumBanner
+                                );
                             }
                         } else if (!articleHeader) {
                             premiumBanner =
                                 contentDoc.querySelector(premiumBannerDef);
+                            console.log(
+                                'Premium banner found in doc: ',
+                                premiumBanner
+                            );
                         }
                         // const aboBtn = contentDoc.querySelector(aboBtnDef);
                         // if (aboBtn) {
                         //     console.log('AboBtn found: ', aboBtn);
                         // }
                         if (premiumBanner) {
+                            console.log(
+                                '“' +
+                                    url +
+                                    '”' +
+                                    ' is a premium article, skipping'
+                            );
                             skippedFiles.push(url);
                             skippedTitles.push(titleDiv.textContent);
                             return;
+                        } else {
+                            console.log(
+                                'No premium banner, continuing extraction'
+                            );
                         }
 
                         const subhedDiv =
                             contentDoc.querySelector(subhedDivDef);
+                        console.log('Subhed div: ', subhedDiv);
 
                         const bodyDiv = contentDoc.querySelector(bodyDivDef);
 
@@ -272,10 +348,12 @@ async function performExtractAndSave(url) {
                         if (subhedDiv) {
                             subhed = subhedDiv.textContent;
                         }
+                        console.log('Subhed: ', subhed);
 
                         let textElements = Array.from(
                             bodyDiv.querySelectorAll(textElementsDef)
                         );
+                        console.log('Text elements = ', textElements);
 
                         function filterTextElements(
                             textElements,
@@ -295,6 +373,10 @@ async function performExtractAndSave(url) {
                                                     e
                                                 );
                                             });
+                                        console.log(
+                                            'Node containing text to exclude? ',
+                                            textContentExcluded
+                                        );
                                     }
 
                                     // Check if the node's identifier is in the exclElementsDef array
@@ -303,6 +385,10 @@ async function performExtractAndSave(url) {
                                             exclElementsDef.includes(
                                                 node.className
                                             );
+                                        console.log(
+                                            'Node to exclude on identifier? ',
+                                            identifierExcluded
+                                        );
                                     }
 
                                     if (
@@ -322,15 +408,24 @@ async function performExtractAndSave(url) {
                                 }
                             );
 
+                            console.log('Excluded nodes: ', excludedNodes);
                             return filteredElements;
                         }
 
                         let text;
                         if (exclElementsDef || exclElementsText) {
+                            console.log(
+                                'Elements to exclude: ',
+                                exclElementsDef + exclElementsText
+                            );
                             textElements = filterTextElements(
                                 textElements,
                                 exclElementsDef,
                                 exclElementsText
+                            );
+                            console.log(
+                                'Text elements after filtering: ',
+                                textElements
                             );
                         }
 
@@ -351,8 +446,10 @@ async function performExtractAndSave(url) {
                         } else {
                             author = 'auteur-inconnu';
                         }
+                        console.log('Author: ', author);
 
                         let date;
+                        console.log('Date logic: ', dateLogic);
                         if (dateLogic === 'node') {
                             let dateElement =
                                 contentDoc.querySelector(dateElementDef);
@@ -371,13 +468,19 @@ async function performExtractAndSave(url) {
                                         return false;
                                     }
                                 }
+                                console.log('ISO Date?', isIsoDate());
                             }
                             let dateString;
                             let frenchDateString;
                             if (dateElementValue && isIsoDate()) {
+                                console.log(
+                                    'ISO date for ' + url,
+                                    dateElementValue
+                                );
                                 date = dateElement
                                     ? dateElementValue.split('T')[0]
                                     : 'date-inconnue';
+                                console.log('Article date from ISO: ', date);
                             } else if (
                                 (dateElementValue && !isIsoDate()) ||
                                 (dateElement && !dateElementValue)
@@ -385,24 +488,46 @@ async function performExtractAndSave(url) {
                                 dateString = dateElement.textContent
                                     .replace('Publié le', '')
                                     .trim();
+                                console.log(
+                                    'Non ISO date for ' + url,
+                                    dateString
+                                );
                                 if (isFrenchDate(dateString)) {
+                                    console.log(
+                                        'French date identified for ' + url
+                                    );
                                     date = convertFrenchDateToISO(dateString);
+                                    console.log(
+                                        'Article date from French format: ',
+                                        date
+                                    );
                                 } else {
                                     try {
+                                        console.log(
+                                            'Date string exists for ' + url,
+                                            dateString
+                                        );
                                         date =
                                             buildDateFromNumberFormat(
                                                 dateString
                                             );
+                                        console.log(
+                                            'Article date from number format: ',
+                                            date
+                                        );
                                     } catch (error) {
                                         'Error building date for ' + url, error;
                                     }
                                 }
                             } else if (!dateElement) {
                                 const divs = contentDoc.querySelectorAll('*');
+                                console.log('Divs:', divs);
                                 const divArray = Array.from(divs);
+                                console.log('Div array: ', divArray);
                                 const dateDiv = divArray.find((d) =>
                                     d.textContent.includes(dateStringDef)
                                 );
+                                console.log('Date div: ', dateDiv);
                                 if (isFrenchDate(dateDiv)) {
                                     frenchDateString = dateDiv.textContent
                                         .replace('Publié le', '')
@@ -411,12 +536,20 @@ async function performExtractAndSave(url) {
                                         convertFrenchDateToISO(
                                             frenchDateString
                                         );
+                                    console.log(
+                                        'Article date from text in French format: ',
+                                        date
+                                    );
                                 } else {
                                     dateString = dateDiv.textContent
                                         .replace('Publié le')
                                         .trim();
                                     date =
                                         buildDateFromNumberFormat(dateString);
+                                    console.log(
+                                        'Article date from text in number format: ',
+                                        date
+                                    );
                                 }
                             } else if (
                                 !dateElement &&
@@ -425,9 +558,11 @@ async function performExtractAndSave(url) {
                                 !dateString
                             ) {
                                 date = 'date-inconnue';
+                                console.log('Date fallback for ' + url, date);
                             }
                         } else if (dateLogic === 'url') {
                             date = buildDateFromUrl(url);
+                            console.log('Date from URL: ', date);
                         }
 
                         function buildDateFromUrl(url) {
@@ -437,6 +572,7 @@ async function performExtractAndSave(url) {
                             const month = url.match(datePattern)[3];
                             const year = url.match(datePattern)[2];
                             let builtDate = year + '-' + month + '-' + day;
+                            console.log('Built date: ', builtDate);
                             return builtDate;
                         }
 
@@ -489,6 +625,10 @@ async function performExtractAndSave(url) {
                             if (euroLinkBtn) {
                                 euroLink =
                                     euroLinkBtn.getAttribute(euroLinkAttribute);
+                                console.log(
+                                    'Article Europresse link = ',
+                                    euroLink
+                                );
                                 url = euroLink;
                             } else {
                                 url = url.split('&')[0];
@@ -530,13 +670,16 @@ async function performExtractAndSave(url) {
             );
 
             if (abortExtraction) {
+                console.log('Extraction aborted');
                 break;
             }
             if (extractAll) {
                 if (nextPageDef) {
                     nextUrl = await getNextPageUrl(nextUrl);
+                    console.log('Next page URL = ' + nextUrl);
                 }
             } else {
+                console.log('Single page extraction finished');
                 break;
             }
         } catch (error) {
@@ -556,11 +699,11 @@ async function performExtractAndSave(url) {
         .trim()
         .replaceAll(/\s/gu, '_');
 
-    const zipFileName = `${paperName.replaceAll(
-        /\s/g,
-        '_'
-    )}_${searchTerm}_${selectedFormat}_archive.zip`;
-
+        const zipFileName = `${paperName.replaceAll(
+            /\s/g,
+            '_'
+        )}_${searchTerm}_${selectedFormat}_archive.zip`;
+    
     await downloadZip(zipBlob, zipFileName);
 
     return [
@@ -579,9 +722,12 @@ async function getNextPageUrl(nextUrl) {
     const newPageNo = currentPageNo + 1;
     const nextPageUrl = urlParts[0] + `${pageParam}=` + newPageNo;
     const response = await fetch(nextPageUrl);
+    console.log('Next page fetch OK? ', response.ok);
     if (response.redirected || !response.ok) {
+        console.log('Last page reached');
         return null;
     }
+    console.log('Next page found: ' + nextPageUrl);
     return nextPageUrl;
 }
 
@@ -644,6 +790,7 @@ function buildDateFromNumberFormat(dateString) {
 // Function to check if a date is in French format
 function isFrenchDate(div) {
     if (/\d{1,2}\s[/p{L}]{3,}\s\d{4}/u.test(div.textContent)) {
+        console.log('French date located for ' + url);
         return true;
     } else {
         return false;
