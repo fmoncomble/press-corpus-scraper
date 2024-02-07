@@ -29,13 +29,13 @@ Moncomble, F. (2024). *Press Corpus Scraper* (Version 0.4) [JavaScript]. Arras, 
     - [*Le Point*](https://www.lepoint.fr/recherche/index.php)
     - [*The Guardian*](https://www.theguardian.com/)
     - [*The New York Times*](https://www.nytimes.com/)
-- ou le portail Europresse de votre établissement : [liste des établissements pris en charge](europresse-list.md)
-- Sites français :
+- ou le portail **Europresse** de votre établissement : [liste des établissements pris en charge](europresse-list.md)
+- **Sites français / Europresse :**
     - Effectuer une recherche par mot-clef
     - (Facultatif : affiner la recherche)
     - Un encadré apparait en haut de la page de résultats. Exemple du *Monde* :
       <img width="704" alt="Screenshot 2024-02-03 at 08 09 21" src="https://github.com/fmoncomble/press-corpus-scraper/assets/59739627/07b0a58a-1730-4652-9eff-f2d010a0a9ec">  
-- Sites anglophones :
+- **Sites anglophones :**
     - Cliquer sur le bouton `PCScraper` en haut à droite dans la barre de menus du site pour ouvrir la fenêtre de recherche  
         
       Exemple du *New York Times* :  
@@ -45,7 +45,7 @@ Moncomble, F. (2024). *Press Corpus Scraper* (Version 0.4) [JavaScript]. Arras, 
       <img width="303" alt="Screenshot 2024-02-03 at 08 09 46" src="https://github.com/fmoncomble/press-corpus-scraper/assets/59739627/625b57e9-79d0-44e1-a5a8-738a6f3b9de6">
         
     - Construire une requête dans l'interface, puis cliquer sur `Search` 
-- Sélectionner le format de fichier souhaité : TXT ou XML/XTZ (pour import dans [TXM](https://txm.gitpages.huma-num.fr/textometrie/))
+- Sélectionner le format de fichier souhaité : TXT ou XML/XTZ (pour import dans [TXM](https://txm.gitpages.huma-num.fr/textometrie/) à l'aide du module `XML-TEI Zero + CSV`)
 - Cliquer sur « Extraire »
   - Les articles réservés aux abonnés ne sont pas téléchargés mais listés sous forme de liens
   - Les articles que l'extension échoue à extraire sont listés sous forme de liens
@@ -56,7 +56,9 @@ Moncomble, F. (2024). *Press Corpus Scraper* (Version 0.4) [JavaScript]. Arras, 
 
 ### Limites et problèmes connus
 - **Sites français :** même avec un compte abonné actif, l'extension n'a pas accès au texte intégral des articles premium (le cookie n'est pas accepté par le serveur distant). Seuls les articles en accès libre sont donc récupérés, les autres étant listés sous forme de liens.
-- **Europresse** affiche les métadonnées des articles de façon très aléatoire, sans éléments HTML dédiés, ce qui peut donner lieu à des incohérences dans la structure des fichiers téléchargés (chapô en lieu et place du nom d'auteur.e, etc.). Ce n'est pas un problème de l'extension mais d'Europresse !
+- **Europresse :** 
+    - affiche les métadonnées des articles de façon très aléatoire, sans éléments HTML dédiés, ce qui peut donner lieu à des incohérences dans la structure des fichiers téléchargés (chapô en lieu et place du nom d'auteur.e, etc.). Ce n'est pas un problème de l'extension mais d'Europresse !
+    - n'autorise l'extraction que de 20 pages de résultats (1000 articles) à la fois.
 - ***Guardian* et *New York Times* :** la recherche s'appuie sur les API offertes par ces deux publications. Une clef d'accès est requise ; son obtention est gratuite et automatique aux liens suivants :
     - [*The Guardian*](https://bonobo.capi.gutools.co.uk/register/developer)
     - [*The New York Times*](https://developer.nytimes.com/get-started)

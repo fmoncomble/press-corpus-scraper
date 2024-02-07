@@ -30,12 +30,12 @@ Moncomble, F. (2024). *Press Corpus Scraper* (Version 0.4) [JavaScript]. Arras, 
     - [*The Guardian*](https://www.theguardian.com/)
     - [*The New York Times*](https://www.nytimes.com/)
 - or your institution's Europresse portal: [list of supported institutions](europresse-list.md)
-- French websites :
+- **French websites and Europresse:**
     - Search by keyword
     - (Optional: refine your search)
     - A box appears at the top of the results page. Example for *Le Monde* :  
       <img width="704" alt="Screenshot 2024-02-03 at 08 09 21" src="https://github.com/fmoncomble/press-corpus-scraper/assets/59739627/07b0a58a-1730-4652-9eff-f2d010a0a9ec">  
-- English-language sites:
+- **English-language sites:**
     - Click on the `PCScraper` button in the top right-hand corner of the site's menu bar to open the search window  
         
       Example from the *New York Times* :  
@@ -45,7 +45,7 @@ Moncomble, F. (2024). *Press Corpus Scraper* (Version 0.4) [JavaScript]. Arras, 
       <img width="303" alt="Screenshot 2024-02-03 at 08 09 46" src="https://github.com/fmoncomble/press-corpus-scraper/assets/59739627/625b57e9-79d0-44e1-a5a8-738a6f3b9de6">  
         
     - Build a query in the interface, then click `Search` 
-- Select the desired file format: TXT or XML/XTZ (for import into [TXM](https://txm.gitpages.huma-num.fr/textometrie/))
+- Select the desired file format: TXT or XML/XTZ (for import into [TXM](https://txm.gitpages.huma-num.fr/textometrie/) with the `XML-TEI Zero + CSV` module)
 - Click 'Extract'
   - Paywalled articles are not downloaded but listed as links
   - Articles that the extension fails to process are listed as links
@@ -56,7 +56,9 @@ Moncomble, F. (2024). *Press Corpus Scraper* (Version 0.4) [JavaScript]. Arras, 
 
 ### Known issues and limitations
 - **French sites:** even with an active subscription, the extension does not have access to the full text of paywalled articles (the cookie is not accepted by the remote server). Only free-access articles are therefore retrieved, the others being listed as links.
-- **Europresse** handles article metadata rather randomly, with no dedicated HTML elements, which can lead to some inconsistency in the way they are rendered in downloaded files (subheads where author name should belong, etc.). This is not a limitation of the add-on but of Europresse!
+- **Europresse**
+    - handles article metadata rather randomly, with no dedicated HTML elements, which can lead to some inconsistency in the way they are rendered in downloaded files (subheads where author name should belong, etc.). This is not a limitation of the add-on but of Europresse!
+    - only allows scraping 20 pages of results (1000 articles) at a time.
 - ***Guardian* and *New York Times*:** the query and extraction process relies on the APIs offered by these two publications. An access key is required, which can be obtained free of charge from the following links:
     - [*The Guardian*](https://bonobo.capi.gutools.co.uk/register/developer)
     - [*The New York Times*](https://developer.nytimes.com/get-started)
