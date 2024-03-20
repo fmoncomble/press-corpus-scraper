@@ -2,7 +2,7 @@
     "manifest_version": 2,
     "name": "Press corpus scraper",
 
-    "version": "0.4.4",
+    "version": "0.4.5",
 
     "description": "Extraire et télécharger des articles de presse",
     "homepage_url": "https://github.com/fmoncomble/press_corpus_scraper",
