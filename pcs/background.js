@@ -206,18 +206,20 @@ async function performExtractAndSave(url) {
 
             const nextUrlURL = new URL(nextUrl);
             console.log('URL origin: ', nextUrlURL.origin);
-            const urls = Array.from(articles).map(function (p) {
-                let articleAnchor = p.querySelector('a')
-                if (!articleAnchor) {
-                    return null;
-                }
-                let articleUrl = articleAnchor.getAttribute('href');
-                if (!articleUrl.startsWith('http')) {
-                    articleUrl = nextUrlURL.origin + articleUrl;
-                }
-                console.log('Article URL: ', articleUrl);
-                return new URL(articleUrl).href;
-            }).filter(url => url !== null);
+            const urls = Array.from(articles)
+                .map(function (p) {
+                    let articleAnchor = p.querySelector('a');
+                    if (!articleAnchor) {
+                        return null;
+                    }
+                    let articleUrl = articleAnchor.getAttribute('href');
+                    if (!articleUrl.startsWith('http')) {
+                        articleUrl = nextUrlURL.origin + articleUrl;
+                    }
+                    console.log('Article URL: ', articleUrl);
+                    return new URL(articleUrl).href;
+                })
+                .filter((url) => url !== null);
             console.log('Article URLs: ', urls);
 
             await Promise.all(
@@ -659,6 +661,26 @@ async function performExtractAndSave(url) {
                             index++;
                         }
 
+                        function sanitizeFileName(fileName) {
+                            const illegalRe = /[\/\\:*?"<>|]/g;
+                            const controlRe = /[\x00-\x1f\x80-\x9f]/g;
+                            const reservedRe =
+                                /^\.+$|^(con|prn|aux|nul|com[0-9]|lpt[0-9])(\..*)?$/i;
+                            const windowsRe =
+                                /^(con|prn|aux|nul|com[0-9]|lpt[0-9]|[\s\.]+)$/gi;
+
+                            return fileName
+                                .replace(illegalRe, '_') // Replace illegal characters
+                                .replace(controlRe, '_') // Replace control characters
+                                .replace(reservedRe, '_reserved') // Replace reserved words
+                                .replace(windowsRe, '_'); // Replace Windows reserved words
+                        }
+
+                        baseFileName = sanitizeFileName(baseFileName);
+                        baseFileName = baseFileName
+                            .normalize('NFD')
+                            .replace(/[\u0300-\u036f]/g, '');
+
                         fetchedUrls.add(url);
                         addedFileNames.add(baseFileName);
 
@@ -699,11 +721,11 @@ async function performExtractAndSave(url) {
         .trim()
         .replaceAll(/\s/gu, '_');
 
-        const zipFileName = `${paperName.replaceAll(
-            /\s/g,
-            '_'
-        )}_${searchTerm}_${selectedFormat}_archive.zip`;
-    
+    const zipFileName = `${paperName.replaceAll(
+        /\s/g,
+        '_'
+    )}_${searchTerm}_${selectedFormat}_archive.zip`;
+
     await downloadZip(zipBlob, zipFileName);
 
     return [
