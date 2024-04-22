@@ -212,3 +212,8 @@ a:visited {
 a:hover {
     color:#052962;
 }
+
+span#api-counter {
+    font-weight: bold;
+    color:#e60000;
+}

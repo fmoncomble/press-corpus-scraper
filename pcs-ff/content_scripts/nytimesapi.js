@@ -370,7 +370,11 @@ document.addEventListener('DOMContentLoaded', async function () {
     // Ascribe function to search button
     const searchBtn = document.querySelector('.trigger-search');
     searchBtn.addEventListener('click', function () {
-        buildApiQuery();
+        if (!apiKey) {
+            window.alert('You need to enter your API key to continue');
+        } else {
+            buildApiQuery();
+        }
     });
 
     // Function to build the query URL

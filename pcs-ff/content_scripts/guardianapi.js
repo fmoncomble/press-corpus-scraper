@@ -76,6 +76,65 @@ document.addEventListener('DOMContentLoaded', async function () {
         }
     }
 
+    // Manage API rate limit
+    let apiCallTotal;
+    function getApiCallTotal(callback) {
+        chrome.storage.local.get(['guardianapicallnb'], function (result) {
+            apiCallTotal = result.guardianapicallnb;
+            callback(apiCallTotal);
+        });
+    }
+
+    getApiCallTotal(function (callResult) {
+        apiCallTotal = callResult;
+        if (apiCallTotal) {
+            console.log('API calls left today: ', apiCallTotal);
+        } else if (!apiCallTotal) {
+            chrome.storage.local.set({ guardianapicallnb: 500 }, function () {
+                console.log('Number of API calls available set to 500');
+            });
+            // chrome.alarms.create('resetApiCallTotal', {
+            //     periodInMinutes: 24 * 60,
+            // });
+            // console.log('API rate reset countdown created');
+        }
+        updateApiCounter();
+    });
+
+    var now = new Date();
+    var nextMidnight = new Date(
+        now.getFullYear(),
+        now.getMonth(),
+        now.getDate() + 1
+    );
+    var timeToNextMidnight = nextMidnight.getTime() - now.getTime();
+
+    chrome.alarms.create('resetGuardianApiCallTotal', {
+        when: Date.now() + timeToNextMidnight,
+        periodInMinutes: 24 * 60,
+    });
+    console.log(
+        'API rate reset countdown created. Counter will be reset in approximately ' +
+            Math.floor(timeToNextMidnight / 1000 / 60 / 60) +
+            ' hours and ' +
+            Math.floor((timeToNextMidnight / 1000 / 60) % 60) +
+            ' minutes.'
+    );
+
+    chrome.alarms.onAlarm.addListener(function (alarm) {
+        if (alarm.name === 'resetGuardianApiCallTotal') {
+            chrome.storage.local.set({ guardianapicallnb: 500 }, function () {
+                console.log('Number of API calls available reset to 500');
+            });
+        }
+    });
+
+    const apiCounter = document.querySelector('span#api-counter');
+    function updateApiCounter() {
+        console.log('API counter updated');
+        apiCounter.textContent = apiCallTotal;
+    }
+
     // Create search form
     function initiateForm() {
         const initSearchContainer = searchContainer.cloneNode(true);
@@ -293,7 +352,11 @@ document.addEventListener('DOMContentLoaded', async function () {
     // Assign function to search button
     const searchBtn = document.querySelector('.trigger-search');
     searchBtn.addEventListener('click', function () {
-        buildApiQuery();
+        if (!apiKey) {
+            window.alert('You need to enter your API key to continue');
+        } else {
+            buildApiQuery();
+        }
     });
 
     // Function to build the query URL
@@ -393,9 +456,24 @@ document.addEventListener('DOMContentLoaded', async function () {
         try {
             searchSpinner.style.display = 'inline-block';
             const response = await fetch(queryUrl);
-            if (!response || !response.ok) {
+            if (response.status === 429) {
+                window.alert('You have reached your API rate limit');
+                resultsOverview.textContent =
+                    'API rate limit reached. Try again later.';
+                resultsContainer.style.display = 'block';
+                throw new Error('API rate limit reached');
+            } else if (!response || !response.ok) {
                 window.alert('Error fetching results');
                 throw new Error('HTTP error, could not fetch search results');
+            } else if (response.ok) {
+                apiCallTotal = apiCallTotal - 1;
+                chrome.storage.local.set(
+                    { guardianapicallnb: apiCallTotal },
+                    function () {
+                        console.log('API calls left today: ', apiCallTotal);
+                    }
+                );
+                updateApiCounter();
             }
             const data = await response.json();
             const dataContent = data.response;
@@ -511,6 +589,15 @@ document.addEventListener('DOMContentLoaded', async function () {
                     throw new Error(
                         'HTTP error, could not fetch search results'
                     );
+                } else if (response.ok) {
+                    apiCallTotal = apiCallTotal - 1;
+                    chrome.storage.local.set(
+                        { guardianapicallnb: apiCallTotal },
+                        function () {
+                            console.log('API calls left today: ', apiCallTotal);
+                        }
+                    );
+                    updateApiCounter();
                 }
                 const data = await response.json();
                 const dataContent = data.response;
