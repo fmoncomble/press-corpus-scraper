@@ -5,14 +5,29 @@ document.addEventListener('DOMContentLoaded', async function () {
     const wrapper = document.querySelector('.wrapper');
     const apiKeyInput = document.querySelector('#apikey-input');
     const apiKeySaveBtn = wrapper.querySelector('button.save-apikey');
-    const searchContainer = wrapper.querySelector('.search-container');
+    const searchTypeSelect = document.getElementById('search-type');
+    const showSearch = document.getElementById('show-search');
+    const hideSearch = document.getElementById('hide-search');
+    const searchContainer = document.getElementById('search-container');
+    const guidedSearchContainer = document.getElementById('guided-search');
+    const expertSearchContainer = document.getElementById('expert-search');
+    const allWordsInput = document.getElementById('all-words');
+    const anyWordsInput = document.getElementById('any-words');
+    const exactPhraseInput = document.getElementById('exact-phrase');
+    const noWordsInput = document.getElementById('no-words');
+    const keywordsInput = document.getElementById('keywords');
+    const newsdeskSelect = document.getElementById('newsdesk-option');
+    const sectionSelect = document.getElementById('section-option');
+    const tomSelect = document.getElementById('tom-option');
+    const fromDateInput = document.getElementById('from-date');
+    const toDateInput = document.getElementById('to-date');
     const resultsContainer = document.querySelector('div#results-container');
     const queryUrlDiv = document.getElementById('query-url-div');
     const resultsOverview = document.querySelector('div#results-overview');
     const extractContainer = document.querySelector('div#extract-container');
     const extractionCounter = document.querySelector('div#extraction-counter');
     const formatSelector = document.querySelector('#format');
-    const orderOption = document.querySelector('.order-option');
+    const orderOption = document.getElementById('order-option');
     const extractBtn = document.querySelector('.extract-button');
     const searchSpinner = document.querySelector('#search-spinner');
     const abortSearchBtn = document.querySelector('#abort-search-btn');
@@ -135,32 +150,42 @@ document.addEventListener('DOMContentLoaded', async function () {
         apiCounter.textContent = apiCallTotal;
     }
 
-    // Create search form
-    function initiateForm() {
-        const initSearchContainer = searchContainer.cloneNode(true);
-        initSearchContainer.id = 'search-container-1';
-        let input = initSearchContainer.querySelector('.search-input');
-        input.addEventListener('keydown', (event) => {
-            if (event.key === 'Enter') {
-                buildApiQuery();
-            }
-        });
-        initSearchContainer.style.display = 'block';
-        wrapper.appendChild(initSearchContainer);
-        enableUpdateQuery(initSearchContainer);
-    }
-    initiateForm();
+    // Set search type
+    let searchType = 'guided';
+    searchTypeSelect.addEventListener('change', () => {
+        searchType = searchTypeSelect.value;
+        if (searchType === 'expert') {
+            guidedSearchContainer.style.display = 'none';
+            expertSearchContainer.style.display = 'block';
+        } else if (searchType === 'guided') {
+            guidedSearchContainer.style.display = 'block';
+            expertSearchContainer.style.display = 'none';
+        }
+    });
+
+    // Assign function to show-search and hide-search
+    showSearch.addEventListener('click', () => {
+        searchContainer.style.display = 'block';
+        showSearch.style.display = 'none';
+        hideSearch.style.display = 'block';
+    });
+    hideSearch.addEventListener('click', () => {
+        searchContainer.style.display = 'none';
+        showSearch.style.display = 'block';
+        hideSearch.style.display = 'none';
+    });
 
     // Assign function to reset button
     const resetFormBtn = document.querySelector('.reset-form');
     resetFormBtn.addEventListener('click', function () {
         urlInput.value = '';
-        const searchContainerArray =
-            wrapper.querySelectorAll('.search-container');
-        for (i = 1; i < searchContainerArray.length; i++) {
-            const searchContainer = searchContainerArray[i];
-            searchContainer.remove();
+        const searchInputs = searchContainer.querySelectorAll('input, select.search-option');
+        for (s of searchInputs) {
+            s.value = '';
         }
+        searchContainer.style.display = 'block';
+        showSearch.style.display = 'none';
+        hideSearch.style.display = 'none';
         orderOption.value = 'newest';
         searchSpinner.style.display = 'none';
         resultsContainer.style.display = 'none';
@@ -172,206 +197,9 @@ document.addEventListener('DOMContentLoaded', async function () {
         extractSelect.value = '';
         formatSelector.value = 'txt';
         format = 'txt';
-        initiateForm();
-        // enableUpdateQuery();
     });
 
-    // Function to enable updating the type of query element based on the dropdown menu
-    function enableUpdateQuery(searchContainer) {
-        let booleanOpt = searchContainer.querySelector('.boolean');
-        let queryType = searchContainer.querySelector('.query-type');
-        let input = searchContainer.querySelector('.search-input');
-        let newsDeskOpt = searchContainer.querySelector('.newsdesk-option');
-        let sectionOpt = searchContainer.querySelector('.section-option');
-        let tomOpt = searchContainer.querySelector('.tom-option');
-        let removeBtn = searchContainer.querySelector('.remove-search-term');
-        let addBtn = searchContainer.querySelector('.add-search-term');
-        queryType.addEventListener('change', function () {
-            let queryOption = queryType.value;
-            let previousQueryOption =
-                searchContainer.previousElementSibling.querySelector(
-                    '.query-type'
-                ).value;
-            if (queryOption === 'fromDate' || queryOption === 'toDate') {
-                input.style.display = 'inline';
-                newsDeskOpt.style.display = 'none';
-                sectionOpt.style.display = 'none';
-                tomOpt.style.display = 'none';
-                input.setAttribute('type', 'date');
-                booleanOpt.selectedIndex = 1;
-                booleanOpt.options[2].disabled = true;
-                booleanOpt.options[3].disabled = true;
-            } else if (queryOption === 'newsdesk') {
-                if (queryOption === previousQueryOption) {
-                    booleanOpt.options[1].disabled = true;
-                    booleanOpt.options[2].disabled = false;
-                    booleanOpt.selectedIndex = 2;
-                    booleanOpt.options[3].disabled = true;
-                } else {
-                    booleanOpt.options[1].disabled = false;
-                    booleanOpt.selectedIndex = 1;
-                    booleanOpt.options[2].disabled = true;
-                    booleanOpt.options[3].disabled = true;
-                }
-                input.style.display = 'none';
-                newsDeskOpt.style.display = 'inline';
-                sectionOpt.style.display = 'none';
-                tomOpt.style.display = 'none';
-            } else if (queryOption === 'section') {
-                if (queryOption === previousQueryOption) {
-                    booleanOpt.options[1].disabled = true;
-                    booleanOpt.options[2].disabled = false;
-                    booleanOpt.selectedIndex = 2;
-                    booleanOpt.options[3].disabled = true;
-                } else {
-                    booleanOpt.options[1].disabled = false;
-                    booleanOpt.selectedIndex = 1;
-                    booleanOpt.options[2].disabled = true;
-                    booleanOpt.options[3].disabled = true;
-                }
-                input.style.display = 'none';
-                newsDeskOpt.style.display = 'none';
-                sectionOpt.style.display = 'inline';
-                tomOpt.style.display = 'none';
-            } else if (queryOption === 'tom') {
-                if (queryOption === previousQueryOption) {
-                    booleanOpt.options[1].disabled = true;
-                    booleanOpt.options[2].disabled = false;
-                    booleanOpt.selectedIndex = 2;
-                    booleanOpt.options[3].disabled = true;
-                } else {
-                    booleanOpt.options[1].disabled = false;
-                    booleanOpt.selectedIndex = 1;
-                    booleanOpt.options[2].disabled = true;
-                    booleanOpt.options[3].disabled = true;
-                }
-                input.style.display = 'none';
-                newsDeskOpt.style.display = 'none';
-                sectionOpt.style.display = 'none';
-                tomOpt.style.display = 'inline';
-            } else if (queryOption === 'keywords') {
-                input.style.display = 'inline';
-                newsDeskOpt.style.display = 'none';
-                sectionOpt.style.display = 'none';
-                tomOpt.style.display = 'none';
-                input.setAttribute('type', 'text');
-                booleanOpt.options[1].disabled = false;
-                booleanOpt.options[2].disabled = false;
-                booleanOpt.options[3].disabled = false;
-            }
-        });
-        addClickListener(addBtn, searchContainer, removeBtn, input);
-    }
-
-    // Function to add a click listener to the 'add search term' button
-    // and assign a function to the 'add search term' button
-    function addClickListener(addBtn, searchContainer, removeBtn, input) {
-        addBtn.addEventListener('click', function addClick() {
-            try {
-                let newSearchContainer = searchContainer.cloneNode(true);
-                wrapper.appendChild(newSearchContainer);
-                newSearchContainer.style.display = 'block';
-                const booleanOpt = newSearchContainer.querySelector('.boolean');
-                booleanOpt.selectedIndex = 1;
-                booleanOpt.style.display = 'block';
-                addBtn.style.display = 'none';
-                addBtn.removeEventListener('click', addClick);
-                let input =
-                    newSearchContainer.querySelector('input.search-input');
-                input.addEventListener('keydown', (event) => {
-                    if (event.key === 'Enter') {
-                        buildApiQuery();
-                    }
-                });
-                let searchContainerArray;
-                let firstRmvBtn;
-                let firstBooleanOpt;
-                // Function to dynamically update the array of search containers
-                function updateSearchContainerArray() {
-                    searchContainerArray =
-                        wrapper.querySelectorAll('.search-container');
-                    firstRmvBtn = searchContainerArray[1].querySelector(
-                        '.remove-search-term'
-                    );
-                    firstBooleanOpt =
-                        searchContainerArray[1].querySelector('.boolean');
-                }
-                updateSearchContainerArray();
-                const index = searchContainerArray.length - 1;
-                newSearchContainer.id = 'search-container-' + index;
-                if (firstRmvBtn.style.display === 'none') {
-                    firstRmvBtn.style.display = 'inline';
-                    firstRmvBtn.addEventListener('click', function rmv1st() {
-                        searchContainerArray[1].remove();
-                        firstRmvBtn.removeEventListener('click', rmv1st);
-                        updateSearchContainerArray();
-                        firstBooleanOpt.value = '';
-                        firstBooleanOpt.style.display = 'none';
-                        if (searchContainerArray.length === 2) {
-                            firstRmvBtn.style.display = 'none';
-                        }
-                    });
-                }
-                removeBtn = newSearchContainer.querySelector(
-                    'button.remove-search-term'
-                );
-                removeBtn.style.display = 'inline';
-                removeBtn.addEventListener('click', function removeClick() {
-                    try {
-                        if (newSearchContainer === wrapper.lastElementChild) {
-                            const previousSearchContainer =
-                                newSearchContainer.previousElementSibling;
-                            const previousAddBtn =
-                                previousSearchContainer.querySelector(
-                                    'button.add-search-term'
-                                );
-                            previousAddBtn.style.display = 'inline';
-                            const previousRemoveBtn =
-                                previousSearchContainer.querySelector(
-                                    'button.remove-search-term'
-                                );
-                            const previousInput =
-                                previousSearchContainer.querySelector(
-                                    '.search-input'
-                                );
-                            addClickListener(
-                                previousAddBtn,
-                                previousSearchContainer,
-                                previousRemoveBtn,
-                                previousInput
-                            );
-                        }
-                        input.value = '';
-                        addBtn.removeEventListener('click', addClick);
-                        removeBtn.removeEventListener('click', removeClick);
-                        newSearchContainer.remove();
-                        updateSearchContainerArray();
-                        firstBooleanOpt.value = '';
-                        firstBooleanOpt.style.display = 'none';
-                        if (searchContainerArray.length === 2) {
-                            firstRmvBtn.style.display = 'none';
-                        }
-                    } catch (error) {
-                        console.error(error);
-                    }
-                });
-                input.setAttribute('type', 'text');
-                input.value = '';
-                let selects = newSearchContainer.querySelectorAll(
-                    'select.search-option'
-                );
-                selects.forEach((s) => {
-                    s.style.display = 'none';
-                });
-                input.style.display = 'inline';
-                enableUpdateQuery(newSearchContainer);
-            } catch (error) {
-                console.error(error);
-            }
-        });
-    }
-
-    // Ascribe function to search button
+    // Assign function to search button
     const searchBtn = document.querySelector('.trigger-search');
     searchBtn.addEventListener('click', function () {
         if (!apiKey) {
@@ -386,12 +214,16 @@ document.addEventListener('DOMContentLoaded', async function () {
     let pagesTotal;
     let resultsTotal;
     let nextQueryUrl;
-    let keywords = '';
-    let newsdesk = '';
-    let section = '';
-    let tom = '';
-    let fromDate = '';
-    let toDate = '';
+    let allWords;
+    let anyWords;
+    let exactPhrase;
+    let noWords;
+    let keywords;
+    let newsdesk;
+    let section;
+    let tom;
+    let fromDate;
+    let toDate;
 
     async function buildApiQuery() {
         resultsContainer.style.display = 'none';
@@ -407,73 +239,61 @@ document.addEventListener('DOMContentLoaded', async function () {
         } else {
             const baseUrl =
                 'https://api.nytimes.com/svc/search/v2/articlesearch.json?';
-            keywords = '';
-            newsdesk = '';
-            section = '';
-            tom = '';
-            fromDate = '';
-            toDate = '';
-            const searchContainers =
-                wrapper.querySelectorAll('.search-container');
-            searchContainers.forEach((sc) => {
-                const queryType = sc.querySelector('.query-type').value;
-                const input = sc.querySelector('.search-input').value;
-                const newsdeskOpt = sc.querySelector('.newsdesk-option').value;
-                const sectionOpt = sc.querySelector('.section-option').value;
-                const tomOpt = sc.querySelector('.tom-option').value;
-                const booleanOpt = sc.querySelector('.boolean').value;
-                if (queryType === 'keywords') {
-                    if (keywords) {
-                        keywords = `${keywords} ${booleanOpt} ${input.trim()}`;
-                        keywords = keywords.trim();
-                    } else {
-                        keywords = `${input.trim()}`;
-                    }
-                } else if (queryType === 'newsdesk') {
-                    if (newsdesk) {
-                        newsdesk = `${newsdesk} ${booleanOpt} "${newsdeskOpt}"`;
-                    } else {
-                        newsdesk = `"${newsdeskOpt}"`;
-                    }
-                } else if (queryType === 'section') {
-                    if (section) {
-                        section = `${section} ${booleanOpt} "${sectionOpt}"`;
-                    } else {
-                        section = `"${sectionOpt}"`;
-                    }
-                } else if (queryType === 'tom') {
-                    if (tom) {
-                        tom = `${tom} ${booleanOpt} "${tomOpt}"`;
-                    } else {
-                        tom = `"${tomOpt}"`;
-                    }
-                } else if (queryType === 'fromDate') {
-                    fromDate = input.replaceAll('-', '');
-                } else if (queryType === 'toDate') {
-                    toDate = input.replaceAll('-', '');
-                }
-            });
+            allWords = allWordsInput.value.replaceAll(' ', ' AND ');
+            anyWords = anyWordsInput.value.replaceAll(' ', ' OR ');
+            exactPhrase = exactPhraseInput.value;
+            noWords = noWordsInput.value.replaceAll(' ', ' OR ');
+            keywords = keywordsInput.value;
+            newsdesk = newsdeskSelect.value;
+            section = sectionSelect.value;
+            tom = tomSelect.value;
+            fromDate = fromDateInput.value;
+            toDate = toDateInput.value;
+
             queryUrl = baseUrl + '&api-key=' + apiKey + '&fq=';
-            if (keywords) {
-                queryUrl = queryUrl + '(' + keywords + ')';
+            if (searchType === 'expert') {
+                if (!keywords) {
+                    window.alert('Please enter keywords');
+                    keywordsInput.focus();
+                    return;
+                }
+                queryUrl = queryUrl + `(${keywords})`;
+            } else if (searchType === 'guided') {
+                if (!allWords && !anyWords && !exactPhrase) {
+                    window.alert('Please enter search terms');
+                    allWordsInput.focus();
+                    return;
+                }
+                if (allWords) {
+                    queryUrl = queryUrl + `(${allWords})`;
+                }
+                if (anyWords) {
+                    if (allWords) {
+                        queryUrl = queryUrl + ' AND ';
+                    }
+                    queryUrl = queryUrl + `(${anyWords})`;
+                }
+                if (exactPhrase) {
+                    if (allWords || anyWords) {
+                        queryUrl = queryUrl + ' AND ';
+                    }
+                    queryUrl = queryUrl + `("${exactPhrase}")`;
+                }
+                if (noWords) {
+                    if (allWords || anyWords || exactPhrase) {
+                        queryUrl = queryUrl + ' NOT ';
+                    }
+                    queryUrl = queryUrl + `(${noWords})`;
+                }
             }
             if (newsdesk) {
-                if (keywords) {
-                    queryUrl = queryUrl + ' AND ';
-                }
                 queryUrl = queryUrl + ' AND news_desk:(' + newsdesk + ')';
             }
             if (section) {
-                if (newsdesk) {
-                    queryUrl = queryUrl + ' AND ';
-                }
-                queryUrl = queryUrl + 'section_name:(' + section + ')';
+                queryUrl = queryUrl + ' AND section_name:(' + section + ')';
             }
             if (tom) {
-                if (newsdesk || section) {
-                    queryUrl = queryUrl + ' AND ';
-                }
-                queryUrl = queryUrl + 'type_of_material:(' + tom + ')';
+                queryUrl = queryUrl + ' AND type_of_material:(' + tom + ')';
             }
             if (fromDate) {
                 queryUrl = queryUrl + '&begin_date=' + fromDate;
@@ -483,25 +303,22 @@ document.addEventListener('DOMContentLoaded', async function () {
             }
             queryUrl = queryUrl + '&sort=' + orderOption.value + '&page=';
             queryUrl = encodeURI(queryUrl);
-            if (
-                !keywords &&
-                !newsdesk &&
-                !tom &&
-                !section &&
-                !fromDate &&
-                !toDate
-            ) {
-                window.alert('Please enter search terms');
-                return;
-            }
-            const queryLink = document.createElement('a');
-            queryLink.id = 'query-link';
-            queryLink.setAttribute('href', queryUrl);
-            queryLink.setAttribute('target', '_blank');
-            queryLink.textContent = queryUrl + '0';
-            queryUrlDiv.textContent = 'Query URL: ';
-            queryUrlDiv.appendChild(queryLink);
         }
+        const queryLink = document.createElement('a');
+        queryLink.id = 'query-link';
+        queryLink.textContent = queryUrl + '0';
+        queryUrlDiv.textContent = 'Query URL (click to copy): ';
+        queryLink.addEventListener('click', () => {
+            writeToClipboard(queryUrl);
+            queryLink.style.color = 'green';
+            queryLink.style.fontWeight = 'bold';
+            queryLink.textContent = 'Copied!'
+            setTimeout(() => {
+                queryLink.textContent = queryUrl + '0';
+                queryLink.removeAttribute('style');
+            }, 1000);
+        });
+        queryUrlDiv.appendChild(queryLink);
 
         try {
             searchSpinner.style.display = 'inline-block';
@@ -531,17 +348,31 @@ document.addEventListener('DOMContentLoaded', async function () {
                 const data = await queryResponse.json();
                 const dataContent = data.response;
                 resultsTotal = dataContent.meta.hits;
-                resultsOverview.textContent = `${resultsTotal} results found.`;
+                resultsOverview.textContent = `${resultsTotal} result(s) found.`;
                 resultsContainer.style.display = 'block';
 
                 if (resultsTotal > 0) {
                     if (resultsTotal > 1000) {
+                        const span = document.createElement('span');
+                        span.textContent = 'refining your search';
+                        span.addEventListener('click', () => {
+                            searchContainer.style.display = 'block';
+                            showSearch.style.display = 'none';
+                            hideSearch.style.display = 'block';
+                        });
+                        span.style.fontWeight = 'bold';
+                        span.style.textDecoration = 'underline';
+                        span.style.cursor = 'pointer';
                         resultsOverview.append(
-                            ' Only the first 1,000 results will be processed. Consider refining your search before continuing.'
+                            ' Only the first 1,000 results will be processed. Consider '
                         );
+                        resultsOverview.append(span);
+                        resultsOverview.append(' before continuing.');
                     } else {
                         resultsOverview.append(' Begin extraction?');
                     }
+                    searchContainer.style.display = 'none';
+                    showSearch.style.display = 'block';
                     resultsOverview.style.display = 'block';
                     resultsContainer.style.display = 'block';
                     extractContainer.style.display = 'block';
@@ -557,6 +388,26 @@ document.addEventListener('DOMContentLoaded', async function () {
             console.error('There was an error getting results number: ', error);
         }
         searchSpinner.style.display = 'none';
+    }
+
+    function writeToClipboard(text) {
+        const textarea = document.createElement('textarea');
+        textarea.value = text;
+
+        textarea.select();
+
+        try {
+            navigator.clipboard
+                .writeText(textarea.value)
+                .then(() => {
+                    console.log('Text copied to clipboard:', text);
+                })
+                .catch((err) => {
+                    console.error('Failed to copy text to clipboard:', err);
+                });
+        } catch (err) {
+            console.error('Clipboard write operation not supported:', err);
+        }
     }
 
     // Assign function to the output format selector
@@ -599,6 +450,9 @@ document.addEventListener('DOMContentLoaded', async function () {
 
     // Assign function to the extract button
     extractBtn.addEventListener('click', function () {
+        searchContainer.style.display = 'none';
+        showSearch.style.display = 'block';
+        hideSearch.style.display = 'none';
         extractArticles();
     });
 
@@ -699,7 +553,6 @@ document.addEventListener('DOMContentLoaded', async function () {
                     const data = await response.json();
                     const dataContent = data.response;
                     results = results.concat(dataContent.docs);
-                    console.log('Number of results: ', results.length);
                     if (results.length === 0) {
                         resolve();
                         return;
@@ -1055,7 +908,17 @@ document.addEventListener('DOMContentLoaded', async function () {
         abortBtn.style.display = 'none';
         extractBtn.style.display = 'inline';
 
-        const searchTerm = keywords.replaceAll('"', '').replaceAll(' ', '_');
+        let searchTerm;
+        if (searchType === 'expert') {
+            searchTerm = keywords;
+        } else if (searchType === 'guided') {
+            searchTerm = allWords + ' ' + anyWords + ' ' + exactPhrase;
+        }
+        searchTerm = searchTerm
+            .trim()
+            .slice(0, 15)
+            .replaceAll('"', '')
+            .replaceAll(' ', '_');
         const zipFileName = `NYT_${searchTerm}_${format}_archive.zip`;
         await downloadZip(zipBlob, zipFileName);
         extractSpinner.style.display = 'none';

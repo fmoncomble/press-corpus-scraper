@@ -29,11 +29,22 @@ legend {
     width: 130px;
 }
 
-.search-container {
-    font-size: large;
-    color: #041F4A;
-    font-family: 'GuardianTextSans', 'Guardian Text Sans Web', 'Helvetica Neue',
-    Helvetica, Arial, 'Lucida Grande', sans-serif;
+div.show-search {
+    width: 637px;
+    cursor: pointer;
+    background-color: #f2f2f2;
+    border-radius: 4px;
+    padding: 5px;
+    margin-bottom: 10px;
+}
+
+div.show-search:hover {
+    text-decoration: underline;
+}
+
+label.search-ui {
+    display: inline-block;
+    width: 150px;
 }
 
 input {
@@ -42,6 +53,17 @@ input {
     color: #041F4A;
     padding-left: 10px;
     width: 480px;
+}
+
+select.search-option {
+    border: none;
+    background-color: #f2f2f2;
+    color: #041F4A;
+    width: 492px;
+}
+
+select.search-option:hover {
+    background-color: #f2f2f2;
 }
 
 select,
@@ -67,77 +89,24 @@ button {
     margin-right: 10px;
 }
 
+a#query-link {
+    text-decoration: underline;
+    cursor: pointer;
+    transition: color 0.5s ease-out;
+}
+
 select:focus-visible,
 button:focus-visible {
     outline: none;
-}
-
-select.query-type {
-    width: 130px;
-}
-
-.boolean {
-    width: 70px;
-    margin-left: 60px;
 }
 
 input:focus-visible {
     outline: solid 1px #041F4A;
 }
 
-.section-option,
-.tag-option {
-    background-color: #f0f0f0;
-    color: #041F4A;
-    width: 490px;
-}
-
-.section-option:hover,
-.tag-option:hover {
-    background-color: #f0f0f0;
-}
-
-.section-option:focus-visible,
-.tag-option:focus-visible {
-    outline: solid 1px #041F4A;
-}
-
 button {
     cursor: pointer;
 }
-
-.add-search-term,
-.remove-search-term {
-    background-color: white;
-    border-radius: 50%;
-    font-weight: 700;
-    height: 32px;
-    width: 32px;
-}
-
-.add-search-term {
-    border: solid 2px #041F4A;
-    color: #041F4A;
-}
-
-.add-search-term:hover {
-    background-color: white;
-    color: #052962;
-}
-
-.remove-search-term {
-    border: solid 2px #e60000;
-    color: #e60000;
-}
-
-.remove-search-term:hover {
-    background-color: white;
-    color: #ff1a1a;
-}
-
-/* .trigger-search {
-    float: right;
-} */
 
 #extract-select {
     width: 50px;

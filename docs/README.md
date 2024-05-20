@@ -6,7 +6,7 @@ Une extension pour extraire et télécharger des articles de presse à des fins 
 ### Citer ce programme
 Si vous utilisez cette extension pour vos travaux de recherche, merci de la référencer de la façon suivante :  
   
-Moncomble, F. (2024). *Press Corpus Scraper* (Version 0.4) [JavaScript]. Arras, France : Université d’Artois. Disponible à l'adresse : https://fmoncomble.github.io/press-corpus-scraper/
+Moncomble, F. (2024). *Press Corpus Scraper* (Version 0.5) [JavaScript]. Arras, France : Université d’Artois. Disponible à l'adresse : https://fmoncomble.github.io/press-corpus-scraper/
 
 
 ## Installation

@@ -5,13 +5,27 @@ document.addEventListener('DOMContentLoaded', async function () {
     const wrapper = document.querySelector('.wrapper');
     const apiKeyInput = document.querySelector('#apikey-input');
     const apiKeySaveBtn = wrapper.querySelector('button.save-apikey');
-    const searchContainer = wrapper.querySelector('.search-container');
+    const searchTypeSelect = document.getElementById('search-type');
+    const showSearch = document.getElementById('show-search');
+    const hideSearch = document.getElementById('hide-search');
+    const searchContainer = document.getElementById('search-container');
+    const guidedSearchContainer = document.getElementById('guided-search');
+    const expertSearchContainer = document.getElementById('expert-search');
+    const allWordsInput = document.getElementById('all-words');
+    const anyWordsInput = document.getElementById('any-words');
+    const exactPhraseInput = document.getElementById('exact-phrase');
+    const noWordsInput = document.getElementById('no-words');
+    const keywordsInput = document.getElementById('keywords');
+    const sectionSelect = document.getElementById('section-option');
+    const tagSelect = document.getElementById('tag-option');
+    const fromDateInput = document.getElementById('from-date');
+    const toDateInput = document.getElementById('to-date');
     const resultsContainer = document.querySelector('div#results-container');
     const queryUrlDiv = document.getElementById('query-url-div');
     const resultsOverview = document.querySelector('div#results-overview');
     const extractContainer = document.querySelector('div#extract-container');
     const formatSelector = document.querySelector('#format');
-    const orderOption = document.querySelector('.order-option');
+    const orderOption = document.getElementById('order-option');
     const extractBtn = document.querySelector('.extract-button');
     const searchSpinner = document.querySelector('#search-spinner');
     const extractSpinner = document.querySelector('#extract-spinner');
@@ -129,32 +143,42 @@ document.addEventListener('DOMContentLoaded', async function () {
         apiCounter.textContent = apiCallTotal;
     }
 
-    // Create search form
-    function initiateForm() {
-        const initSearchContainer = searchContainer.cloneNode(true);
-        initSearchContainer.id = 'search-container-1';
-        let input = initSearchContainer.querySelector('.search-input');
-        input.addEventListener('keydown', (event) => {
-            if (event.key === 'Enter') {
-                buildApiQuery();
-            }
-        });
-        initSearchContainer.style.display = 'block';
-        wrapper.appendChild(initSearchContainer);
-        enableUpdateQuery(initSearchContainer);
-    }
-    initiateForm();
+    // Set search type
+    let searchType = 'guided';
+    searchTypeSelect.addEventListener('change', () => {
+        searchType = searchTypeSelect.value;
+        if (searchType === 'expert') {
+            guidedSearchContainer.style.display = 'none';
+            expertSearchContainer.style.display = 'block';
+        } else if (searchType === 'guided') {
+            guidedSearchContainer.style.display = 'block';
+            expertSearchContainer.style.display = 'none';
+        }
+    });
+
+    // Assign function to show-search and hide-search
+    showSearch.addEventListener('click', () => {
+        searchContainer.style.display = 'block';
+        showSearch.style.display = 'none';
+        hideSearch.style.display = 'block';
+    });
+    hideSearch.addEventListener('click', () => {
+        searchContainer.style.display = 'none';
+        showSearch.style.display = 'block';
+        hideSearch.style.display = 'none';
+    });
 
     // Assign function to reset button
     const resetFormBtn = document.querySelector('.reset-form');
     resetFormBtn.addEventListener('click', function () {
         urlInput.value = '';
-        const searchContainerArray =
-            wrapper.querySelectorAll('.search-container');
-        for (i = 1; i < searchContainerArray.length; i++) {
-            const searchContainer = searchContainerArray[i];
-            searchContainer.remove();
+        const searchInputs = searchContainer.querySelectorAll('input, select.search-option');
+        for (s of searchInputs) {
+            s.value = '';
         }
+        searchContainer.style.display = 'block';
+        showSearch.style.display = 'none';
+        hideSearch.style.display = 'none';
         orderOption.value = 'newest';
         searchSpinner.style.display = 'none';
         resultsContainer.style.display = 'none';
@@ -166,182 +190,7 @@ document.addEventListener('DOMContentLoaded', async function () {
         extractSelect.value = '';
         formatSelector.value = 'txt';
         format = 'txt';
-        initiateForm();
-        // enableUpdateQuery();
     });
-
-    // Function to enable updating the type of query element based on the dropdown menu
-    function enableUpdateQuery(searchContainer) {
-        let booleanOpt = searchContainer.querySelector('.boolean');
-        let queryType = searchContainer.querySelector('.query-type');
-        let input = searchContainer.querySelector('.search-input');
-        let sectionOpt = searchContainer.querySelector('.section-option');
-        let tagOpt = searchContainer.querySelector('.tag-option');
-        let removeBtn = searchContainer.querySelector('.remove-search-term');
-        let addBtn = searchContainer.querySelector('.add-search-term');
-        queryType.addEventListener('change', function () {
-            let queryOption = queryType.value;
-            let previousQueryOption =
-                searchContainer.previousElementSibling.querySelector(
-                    '.query-type'
-                ).value;
-            if (queryOption === 'fromDate' || queryOption === 'toDate') {
-                input.style.display = 'inline';
-                sectionOpt.style.display = 'none';
-                tagOpt.style.display = 'none';
-                input.setAttribute('type', 'date');
-                booleanOpt.selectedIndex = 1;
-                booleanOpt.options[2].disabled = true;
-                booleanOpt.options[3].disabled = true;
-            } else if (queryOption === 'sections') {
-                if (queryOption === previousQueryOption) {
-                    booleanOpt.options[1].disabled = true;
-                    booleanOpt.options[2].disabled = false;
-                    booleanOpt.selectedIndex = 2;
-                    booleanOpt.options[3].disabled = true;
-                } else {
-                    booleanOpt.options[1].disabled = false;
-                    booleanOpt.selectedIndex = 1;
-                    booleanOpt.options[2].disabled = true;
-                    booleanOpt.options[3].disabled = true;
-                }
-                input.style.display = 'none';
-                sectionOpt.style.display = 'inline';
-                tagOpt.style.display = 'none';
-            } else if (queryOption === 'tags') {
-                if (queryOption === previousQueryOption) {
-                    booleanOpt.options[1].disabled = true;
-                    booleanOpt.options[2].disabled = false;
-                    booleanOpt.selectedIndex = 2;
-                    booleanOpt.options[3].disabled = true;
-                } else {
-                    booleanOpt.options[1].disabled = false;
-                    booleanOpt.selectedIndex = 1;
-                    booleanOpt.options[2].disabled = true;
-                    booleanOpt.options[3].disabled = true;
-                }
-                input.style.display = 'none';
-                sectionOpt.style.display = 'none';
-                tagOpt.style.display = 'inline';
-            } else if (queryOption === 'keywords') {
-                input.style.display = 'inline';
-                sectionOpt.style.display = 'none';
-                tagOpt.style.display = 'none';
-                input.setAttribute('type', 'text');
-                booleanOpt.options[1].disabled = false;
-                booleanOpt.options[2].disabled = false;
-                booleanOpt.options[3].disabled = false;
-            }
-        });
-        addClickListener(addBtn, searchContainer, removeBtn, input);
-    }
-
-    // Function to add a click listener to the 'add search term' button
-    // and assign a function to the 'add search term' button
-    function addClickListener(addBtn, searchContainer, removeBtn, input) {
-        addBtn.addEventListener('click', function addClick() {
-            try {
-                let newSearchContainer = searchContainer.cloneNode(true);
-                wrapper.appendChild(newSearchContainer);
-                newSearchContainer.style.display = 'block';
-                const booleanOpt = newSearchContainer.querySelector('.boolean');
-                booleanOpt.selectedIndex = 1;
-                booleanOpt.style.display = 'block';
-                addBtn.style.display = 'none';
-                addBtn.removeEventListener('click', addClick);
-                input = newSearchContainer.querySelector('input.search-input');
-                input.addEventListener('keydown', (event) => {
-                    if (event.key === 'Enter') {
-                        buildApiQuery();
-                    }
-                });
-                let searchContainerArray;
-                let firstRmvBtn;
-                let firstBooleanOpt;
-                // Function to dynamically update the array of search containers
-                function updateSearchContainerArray() {
-                    searchContainerArray =
-                        wrapper.querySelectorAll('.search-container');
-                    firstRmvBtn = searchContainerArray[1].querySelector(
-                        '.remove-search-term'
-                    );
-                    firstBooleanOpt =
-                        searchContainerArray[1].querySelector('.boolean');
-                }
-                updateSearchContainerArray();
-                const index = searchContainerArray.length - 1;
-                newSearchContainer.id = 'search-container-' + index;
-                if (firstRmvBtn.style.display === 'none') {
-                    firstRmvBtn.style.display = 'inline';
-                    firstRmvBtn.addEventListener('click', function rmv1st() {
-                        searchContainerArray[1].remove();
-                        firstRmvBtn.removeEventListener('click', rmv1st);
-                        updateSearchContainerArray();
-                        firstBooleanOpt.value = '';
-                        firstBooleanOpt.style.display = 'none';
-                        if (searchContainerArray.length === 2) {
-                            firstRmvBtn.style.display = 'none';
-                        }
-                    });
-                }
-                removeBtn = newSearchContainer.querySelector(
-                    'button.remove-search-term'
-                );
-                removeBtn.style.display = 'inline';
-                removeBtn.addEventListener('click', function removeClick() {
-                    try {
-                        if (newSearchContainer === wrapper.lastElementChild) {
-                            const previousSearchContainer =
-                                newSearchContainer.previousElementSibling;
-                            const previousAddBtn =
-                                previousSearchContainer.querySelector(
-                                    'button.add-search-term'
-                                );
-                            previousAddBtn.style.display = 'inline';
-                            const previousRemoveBtn =
-                                previousSearchContainer.querySelector(
-                                    'button.remove-search-term'
-                                );
-                            const previousInput =
-                                previousSearchContainer.querySelector(
-                                    '.search-input'
-                                );
-                            addClickListener(
-                                previousAddBtn,
-                                previousSearchContainer,
-                                previousRemoveBtn,
-                                previousInput
-                            );
-                        }
-                        input.value = '';
-                        addBtn.removeEventListener('click', addClick);
-                        removeBtn.removeEventListener('click', removeClick);
-                        newSearchContainer.remove();
-                        updateSearchContainerArray();
-                        firstBooleanOpt.value = '';
-                        firstBooleanOpt.style.display = 'none';
-                        if (searchContainerArray.length === 2) {
-                            firstRmvBtn.style.display = 'none';
-                        }
-                    } catch (error) {
-                        console.error(error);
-                    }
-                });
-                input.setAttribute('type', 'text');
-                input.value = '';
-                let selects = newSearchContainer.querySelectorAll(
-                    'select.search-option'
-                );
-                selects.forEach((s) => {
-                    s.style.display = 'none';
-                });
-                input.style.display = 'inline';
-                enableUpdateQuery(newSearchContainer);
-            } catch (error) {
-                console.error(error);
-            }
-        });
-    }
 
     // Assign function to search button
     const searchBtn = document.querySelector('.trigger-search');
@@ -359,11 +208,15 @@ document.addEventListener('DOMContentLoaded', async function () {
     let resultsTotal;
     let results;
     let nextQueryUrl;
-    let keywords = '';
-    let section = '';
-    let tag = '';
-    let fromDate = '';
-    let toDate = '';
+    let allWords;
+    let anyWords;
+    let exactPhrase;
+    let noWords;
+    let keywords;
+    let section;
+    let tag;
+    let fromDate;
+    let toDate;
 
     async function buildApiQuery() {
         resultsContainer.style.display = 'none';
@@ -376,47 +229,51 @@ document.addEventListener('DOMContentLoaded', async function () {
         } else {
             const baseUrl =
                 'https://content.guardianapis.com/search?page-size=50';
-            keywords = '';
-            section = '';
-            tag = '';
-            fromDate = '';
-            toDate = '';
-            const searchContainers =
-                wrapper.querySelectorAll('.search-container');
-            searchContainers.forEach((sc) => {
-                const queryType = sc.querySelector('.query-type').value;
-                const input = sc.querySelector('.search-input').value;
-                const sectionOpt = sc.querySelector('.section-option').value;
-                const tagOpt = sc.querySelector('.tag-option').value;
-                const booleanOpt = sc.querySelector('.boolean').value;
-                if (queryType === 'keywords') {
-                    if (keywords) {
-                        keywords = `${keywords} ${booleanOpt} ${input}`;
-                        keywords = keywords.trim();
-                    } else {
-                        keywords = input.trim();
-                    }
-                } else if (queryType === 'sections') {
-                    if (section) {
-                        section = `${section} ${booleanOpt} ${sectionOpt}`;
-                    } else {
-                        section = sectionOpt;
-                    }
-                } else if (queryType === 'tags') {
-                    if (tag) {
-                        tag = `${tag} ${booleanOpt} ${tagOpt}`;
-                    } else {
-                        tag = tagOpt;
-                    }
-                } else if (queryType === 'fromDate') {
-                    fromDate = input;
-                } else if (queryType === 'toDate') {
-                    toDate = input;
+            allWords = allWordsInput.value.replaceAll(' ', ' AND ');
+            anyWords = anyWordsInput.value.replaceAll(' ', ' OR ');
+            exactPhrase = exactPhraseInput.value;
+            noWords = noWordsInput.value.replaceAll(' ', ' OR ');
+            keywords = keywordsInput.value;
+            section = sectionSelect.value;
+            tag = tagSelect.value;
+            fromDate = fromDateInput.value;
+            toDate = toDateInput.value;
+
+            queryUrl = baseUrl + '&api-key=' + apiKey + '&q=';
+            if (searchType === 'expert') {
+                if (!keywords) {
+                    window.alert('Please enter keywords');
+                    keywordsInput.focus();
+                    return;
                 }
-            });
-            queryUrl = baseUrl + '&api-key=' + apiKey;
-            if (keywords) {
-                queryUrl = queryUrl + '&q=' + keywords;
+                queryUrl = queryUrl + `(${keywords})`;
+            } else if (searchType === 'guided') {
+                if (!allWords && !anyWords && !exactPhrase) {
+                    window.alert('Please enter search terms');
+                    allWordsInput.focus();
+                    return;
+                }
+                if (allWords) {
+                    queryUrl = queryUrl + `(${allWords})`;
+                }
+                if (anyWords) {
+                    if (allWords) {
+                        queryUrl = queryUrl + ' AND ';
+                    }
+                    queryUrl = queryUrl + `(${anyWords})`;
+                }
+                if (exactPhrase) {
+                    if (allWords || anyWords) {
+                        queryUrl = queryUrl + ' AND ';
+                    }
+                    queryUrl = queryUrl + `("${exactPhrase}")`;
+                }
+                if (noWords) {
+                    if (allWords || anyWords || exactPhrase) {
+                        queryUrl = queryUrl + ' AND NOT ';
+                    }
+                    queryUrl = queryUrl + `(${noWords})`;
+                }
             }
             if (section) {
                 queryUrl = queryUrl + '&section=' + section;
@@ -435,18 +292,22 @@ document.addEventListener('DOMContentLoaded', async function () {
                 '&show-fields=headline,standfirst,trailText,body,byline&show-tags=contributor&order-by=' +
                 orderOption.value;
             queryUrl = encodeURI(queryUrl);
-            if (!keywords && !tag && !section && !fromDate && !toDate) {
-                window.alert('Please enter search terms');
-                return;
-            }
-            const queryLink = document.createElement('a');
-            queryLink.id = 'query-link';
-            queryLink.setAttribute('href', queryUrl);
-            queryLink.setAttribute('target', '_blank');
-            queryLink.textContent = queryUrl;
-            queryUrlDiv.textContent = 'Query URL: ';
-            queryUrlDiv.appendChild(queryLink);
         }
+        const queryLink = document.createElement('a');
+        queryLink.id = 'query-link';
+        queryLink.textContent = queryUrl;
+        queryUrlDiv.textContent = 'Query URL (click to copy): ';
+        queryLink.addEventListener('click', () => {
+            writeToClipboard(queryUrl);
+            queryLink.style.color = 'green';
+            queryLink.style.fontWeight = 'bold';
+            queryLink.textContent = 'Copied!';
+            setTimeout(() => {
+                queryLink.textContent = queryUrl + '0';
+                queryLink.removeAttribute('style');
+            }, 1000);
+        });
+        queryUrlDiv.appendChild(queryLink);
         try {
             searchSpinner.style.display = 'inline-block';
             const response = await fetch(queryUrl);
@@ -474,12 +335,14 @@ document.addEventListener('DOMContentLoaded', async function () {
             pagesTotal = dataContent.pages;
             resultsTotal = dataContent.total;
             pageNo = dataContent.currentPage;
-            resultsOverview.textContent = `Search returned ${resultsTotal} results over ${pagesTotal} pages.`;
+            resultsOverview.textContent = `Search returned ${resultsTotal} result(s) over ${pagesTotal} page(s).`;
             if (resultsTotal > 0) {
                 resultsOverview.append(' Begin extraction?');
                 resultsOverview.style.display = 'block';
                 resultsContainer.style.display = 'block';
                 extractContainer.style.display = 'block';
+                searchContainer.style.display = 'none';
+                showSearch.style.display = 'block';
             } else {
                 resultsOverview.append(' Restart search.');
                 resultsOverview.style.display = 'block';
@@ -489,6 +352,26 @@ document.addEventListener('DOMContentLoaded', async function () {
             searchSpinner.style.display = 'none';
         } catch (error) {
             console.error(error);
+        }
+    }
+
+    function writeToClipboard(text) {
+        const textarea = document.createElement('textarea');
+        textarea.value = text;
+
+        textarea.select();
+
+        try {
+            navigator.clipboard
+                .writeText(textarea.value)
+                .then(() => {
+                    console.log('Text copied to clipboard:', text);
+                })
+                .catch((err) => {
+                    console.error('Failed to copy text to clipboard:', err);
+                });
+        } catch (err) {
+            console.error('Clipboard write operation not supported:', err);
         }
     }
 
@@ -530,6 +413,9 @@ document.addEventListener('DOMContentLoaded', async function () {
 
     // Assign function to the extract button
     extractBtn.addEventListener('click', function () {
+        searchContainer.style.display = 'none';
+        showSearch.style.display = 'block';
+        hideSearch.style.display = 'none';
         extractArticles();
     });
 
@@ -666,7 +552,7 @@ document.addEventListener('DOMContentLoaded', async function () {
 
                     let textHtml = fields.body;
                     const doc = parser.parseFromString(textHtml, 'text/html');
-                    const paragraphs = doc.querySelectorAll('p');
+                    const paragraphs = doc.querySelectorAll('p, h2');
                     let text = '';
                     for (p of paragraphs) {
                         const pText = p.textContent;
@@ -726,7 +612,20 @@ document.addEventListener('DOMContentLoaded', async function () {
         abortBtn.style.display = 'none';
         extractBtn.style.display = 'inline';
 
-        const searchTerm = keywords.replaceAll('"', '').replaceAll(' ', '_');
+        let searchTerm;
+        const urlValue = urlInput.value;
+        if (urlValue) {
+            searchTerm = 'custom_search';
+        } else if (searchType === 'expert') {
+            searchTerm = keywords;
+        } else if (searchType === 'guided') {
+            searchTerm = allWords + ' ' + anyWords + ' ' + exactPhrase;
+        }
+        searchTerm = searchTerm
+            .trim()
+            .slice(0, 15)
+            .replaceAll('"', '')
+            .replaceAll(' ', '_');
         const zipFileName = `Guardian_${searchTerm}_${format}_archive.zip`;
         await downloadZip(zipBlob, zipFileName);
         extractSpinner.style.display = 'none';

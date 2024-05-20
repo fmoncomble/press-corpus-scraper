@@ -29,17 +29,18 @@
                     >
                 </div>
                 <div>
-                    Reminder:
-                    The <a
+                    Reminder: The
+                    <a
                         href="https://open-platform.theguardian.com/access/"
                         target="_blank"
                         >current API rate limit</a
                     >
-                    is 500 requests per day. You have <span id="api-counter"></span> requests left today.
+                    is 500 requests per day. You have
+                    <span id="api-counter"></span> requests left today.
                     <br /><br />
                 </div>
                 <div>
-                    <label for="url-input">Enter a query URL: </label>
+                    <label for="url-input" class="search-ui">Enter a query URL: </label>
                     <input
                         class="url-input"
                         id="url-input"
@@ -47,145 +48,246 @@
                         placeholder="Query URL"
                     />
                 </div>
-                <div style="margin-bottom: 10px">
-                    Or build your search query:
+                <div
+                    id="show-search"
+                    class="show-search"
+                    style="display: none; text-align: center"
+                >
+                    <b>Show query builder</b>
                 </div>
                 <div
-                    id="search-container-0"
-                    class="search-container"
-                    style="display: none"
+                    id="hide-search"
+                    class="show-search"
+                    style="display: none; text-align: center"
                 >
-                    <select class="boolean" style="display: none">
-                        <option value="" selected disabled>—</option>
-                        <option value="AND">AND</option>
-                        <option value="OR">OR</option>
-                        <option value="AND NOT">NOT</option>
-                    </select>
-                    <select class="query-type">
-                        <option value="keywords">Keywords</option>
-                        <option value="sections">Sections</option>
-                        <option value="tags">Tags</option>
-                        <option value="fromDate">From date</option>
-                        <option value="toDate">To date</option>
-                    </select>
-                    <input
-                        type="text"
-                        placeholder="Enter keywords. Use double quotes to search for exact phrases."
-                        class="search-input"
-                        name="search-input"
-                    />
-                    <select class="section-option search-option" style="display: none">
-                        <optgroup label="News">
-                            <option value="world">World</option>
-                            <option value="uk-news">UK</option>
-                            <option value="environment">Environment</option>
-                            <option value="science">Science</option>
-                            <option value="global-development">
-                                Global development
-                            </option>
-                            <option value="technology">Tech</option>
-                            <option value="business">Business</option>
-                            <option value="obituaries">Obituaries</option>
-                        </optgroup>
-                        <optgroup label="Opinion">
-                            <option value="commentisfree">Opinion</option>
-                        </optgroup>
-                        <optgroup label="Sport">
-                            <option value="sport">Sport</option>
-                            <option value="football">Football</option>
-                        </optgroup>
-                        <optgroup label="Culture">
-                            <option value="culture">Culture</option>
-                            <option value="books">Books</option>
-                            <option value="music">Music</option>
-                            <option value="tv-and-radio">TV & Radio</option>
-                            <option value="artanddesign">Art & Design</option>
-                            <option value="film">Film</option>
-                            <option value="games">Games</option>
-                            <option value="stage">Stage</option>
-                        </optgroup>
-                        <optgroup label="Lifestyle">
-                            <option value="lifeandstyle">Lifestyle</option>
-                            <option value="fashion">Fashion</option>
-                            <option value="food">Food</option>
-                            <option value="travel">Travel</option>
-                            <option value="money">Money</option>
-                        </optgroup>
-                    </select>
-                    <select class="tag-option search-option" style="display: none">
-                        <optgroup label="Environment">
-                            <option value="environment/climate-crisis">
-                                Climate crisis
-                            </option>
-                        </optgroup>
-                        <optgroup label="World news">
-                            <option value="world/ukraine">Ukraine</option>
-                        </optgroup>
-                        <optgroup label="Opinion">
-                            <option value="profile/editorial">
-                                The Guardian View
-                            </option>
-                            <option value="index/contributors">
-                                Columnists
-                            </option>
-                            <option value="tone/letters">Letters</option>
-                        </optgroup>
-                        <optgroup label="Sport">
-                            <option value="sport/cricket">Cricket</option>
-                            <option value="sport/rugby-union">
-                                Rugby Union
-                            </option>
-                            <option value="sport/tennis">Tennis</option>
-                            <option value="sport/cycling">Cycling</option>
-                            <option value="sport/formulaone">F1</option>
-                            <option value="sport/golf">Golf</option>
-                            <option value="sport/us-sport">US Sports</option>
-                        </optgroup>
-                        <optgroup label="Culture">
-                            <option value="music/classical-music-and-opera">
-                                Classical Music
-                            </option>
-                        </optgroup>
-                        <optgroup label="Lifestyle">
-                            <option value="tone/recipes">Recipes</option>
-                            <option value="lifeandstyle/love-and-sex">
-                                Love & Sex
-                            </option>
-                            <option value="lifeandstyle/health-and-wellbeing">
-                                Health & Fitness
-                            </option>
-                            <option value="lifeandstyle/home-and-garden">
-                                Home & Garden
-                            </option>
-                            <option value="lifeandstyle/women">Women</option>
-                            <option value="lifeandstyle/men">Men</option>
-                            <option value="lifeandstyle/family">Family</option>
-                        </optgroup>
-                    </select>
-                    <button class="remove-search-term" style="display: none">
-                        –
-                    </button>
-                    <button class="add-search-term">+</button>
+                    <b>Hide query builder</b>
                 </div>
+                <div id="search-container">
+                    <div style="margin-bottom: 10px">
+                        <br />
+                        <b>Or build your search query:</b>
+                    </div>
+                    <div style="text-align: center">
+                        <select id="search-type">
+                            <option value="guided">Guided mode</option>
+                            <option value="expert">Expert mode</option>
+                        </select>
+                    </div>
+                    <div id="guided-search">
+                        <div>
+                            <label for="all-words" class="search-ui"
+                                >All of these words:</label
+                            >
+                            <input
+                                type="text"
+                                placeholder="All of these words"
+                                class="search-input"
+                                name="all-words"
+                                id="all-words"
+                            />
+                        </div>
+                        <div>
+                            <label for="any-words" class="search-ui"
+                                >Any of these words:</label
+                            >
+                            <input
+                                type="text"
+                                placeholder="Any of these words"
+                                class="search-input"
+                                name="any-words"
+                                id="any-words"
+                            />
+                        </div>
+                        <div>
+                            <label for="exact-phrase" class="search-ui"
+                                >Exact phrase:</label
+                            >
+                            <input
+                                type="text"
+                                placeholder="Exact phrase"
+                                class="search-input"
+                                name="exact-phrase"
+                                id="exact-phrase"
+                            />
+                        </div>
+                        <div>
+                            <label for="no-words" class="search-ui"
+                                >Words to exclude:</label
+                            >
+                            <input
+                                type="text"
+                                placeholder="Words to exclude"
+                                class="search-input"
+                                name="no-words"
+                                id="no-words"
+                            />
+                        </div>
+                    </div>
+                    <div id="expert-search" style="display: none">
+                        <p style="text-align: center">
+                            Enter the keywords you want to search for below.<br />You
+                            may use booleans (AND, OR, AND NOT), double quotes and parentheses for
+                            grouping.
+                        </p>
+                        <label for="keywords" class="search-ui"
+                            >Keywords:</label
+                        >
+                        <input
+                            name="keywords"
+                            id="keywords"
+                            type="text"
+                            placeholder="Keywords"
+                        />
+                    </div>
+                    <div>
+                        <label for="section-option" class="search-ui"
+                            >Section:</label
+                        >
+                        <select
+                            name="section-option"
+                            id="section-option"
+                            class="search-option"
+                        >
+                            <option value="" selected>—</option>
+                            <optgroup label="News">
+                                <option value="world">World</option>
+                                <option value="uk-news">UK</option>
+                                <option value="environment">Environment</option>
+                                <option value="science">Science</option>
+                                <option value="global-development">
+                                    Global development
+                                </option>
+                                <option value="technology">Tech</option>
+                                <option value="business">Business</option>
+                                <option value="obituaries">Obituaries</option>
+                            </optgroup>
+                            <optgroup label="Opinion">
+                                <option value="commentisfree">Opinion</option>
+                            </optgroup>
+                            <optgroup label="Sport">
+                                <option value="sport">Sport</option>
+                                <option value="football">Football</option>
+                            </optgroup>
+                            <optgroup label="Culture">
+                                <option value="culture">Culture</option>
+                                <option value="books">Books</option>
+                                <option value="music">Music</option>
+                                <option value="tv-and-radio">TV & Radio</option>
+                                <option value="artanddesign">
+                                    Art & Design
+                                </option>
+                                <option value="film">Film</option>
+                                <option value="games">Games</option>
+                                <option value="stage">Stage</option>
+                            </optgroup>
+                            <optgroup label="Lifestyle">
+                                <option value="lifeandstyle">Lifestyle</option>
+                                <option value="fashion">Fashion</option>
+                                <option value="food">Food</option>
+                                <option value="travel">Travel</option>
+                                <option value="money">Money</option>
+                            </optgroup>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="tag-option" class="search-ui">Tag:</label>
+                        <select
+                            name="tag-option"
+                            id="tag-option"
+                            class="search-option"
+                        >
+                            <option value="" selected>—</option>
+                            <optgroup label="Environment">
+                                <option value="environment/climate-crisis">
+                                    Climate crisis
+                                </option>
+                            </optgroup>
+                            <optgroup label="World news">
+                                <option value="world/ukraine">Ukraine</option>
+                            </optgroup>
+                            <optgroup label="Opinion">
+                                <option value="profile/editorial">
+                                    The Guardian View
+                                </option>
+                                <option value="index/contributors">
+                                    Columnists
+                                </option>
+                                <option value="tone/letters">Letters</option>
+                            </optgroup>
+                            <optgroup label="Sport">
+                                <option value="sport/cricket">Cricket</option>
+                                <option value="sport/rugby-union">
+                                    Rugby Union
+                                </option>
+                                <option value="sport/tennis">Tennis</option>
+                                <option value="sport/cycling">Cycling</option>
+                                <option value="sport/formulaone">F1</option>
+                                <option value="sport/golf">Golf</option>
+                                <option value="sport/us-sport">
+                                    US Sports
+                                </option>
+                            </optgroup>
+                            <optgroup label="Culture">
+                                <option value="music/classical-music-and-opera">
+                                    Classical Music
+                                </option>
+                            </optgroup>
+                            <optgroup label="Lifestyle">
+                                <option value="tone/recipes">Recipes</option>
+                                <option value="lifeandstyle/love-and-sex">
+                                    Love & Sex
+                                </option>
+                                <option
+                                    value="lifeandstyle/health-and-wellbeing"
+                                >
+                                    Health & Fitness
+                                </option>
+                                <option value="lifeandstyle/home-and-garden">
+                                    Home & Garden
+                                </option>
+                                <option value="lifeandstyle/women">
+                                    Women
+                                </option>
+                                <option value="lifeandstyle/men">Men</option>
+                                <option value="lifeandstyle/family">
+                                    Family
+                                </option>
+                            </optgroup>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="from-date" class="search-ui">From:</label>
+                        <input name="from-date" id="from-date" type="date" />
+                    </div>
+                    <div>
+                        <label for="to-date" class="search-ui">To:</label>
+                        <input name="to-date" id="to-date" type="date" />
+                    </div>
+                    <div>
+                        <label for="order-option" class="search-ui"
+                            >Sort by:</label
+                        >
+                        <select
+                            name="order-option"
+                            class="search-option"
+                            id="order-option"
+                        >
+                            <option value="newest">Newest first</option>
+                            <option value="oldest">Oldest first</option>
+                            <option value="relevance">Relevance</option>
+                        </select>
+                    </div>
+                    <button class="trigger-search" style="display: inline">
+                        Search
+                    </button>
+                    <div
+                        class="spinner"
+                        id="search-spinner"
+                        style="display: none"
+                    ></div>
+                </div>
+                <button class="reset-form">Reset form</button>
             </div>
-            <div>
-                <select class="order-option" id="order-option">
-                    <option value="newest">Newest first</option>
-                    <option value="oldest">Oldest first</option>
-                    <option value="relevance">Relevance</option>
-                </select>
-            </div>
-            <button class="trigger-search" style="display: inline">
-                Search
-            </button>
-            <button class="reset-form" style="display: inline">
-                Reset form
-            </button>
-            <div
-                class="spinner"
-                id="search-spinner"
-                style="display: none"
-            ></div>
             <br />
             <br />
             <div id="results-container" style="display: none">
@@ -198,12 +300,12 @@
                             <option value="all">Extract all</option>
                             <option value="selection">Extract selection</option>
                         </select>
-                        <span id="extract-select-container" style="display: none">
+                        <span
+                            id="extract-select-container"
+                            style="display: none"
+                        >
                             <label for="extract-select">Extract first </label>
-                            <input
-                                id="extract-select"
-                                type="number"
-                            />
+                            <input id="extract-select" type="number" />
                             <span> results</span>
                         </span>
                     </div>
