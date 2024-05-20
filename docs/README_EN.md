@@ -55,7 +55,8 @@ Moncomble, F. (2024). *Press Corpus Scraper* (Version 0.4) [JavaScript]. Arras, 
 - Unzip the resulting archive to load the files into text analysis software
 
 ### Known issues and limitations
-- **French sites:** even with an active subscription, the extension does not have access to the full text of paywalled articles (the cookie is not accepted by the remote server). Only free-access articles are therefore retrieved, the others being listed as links.
+- **French sites:** even with an active subscription, the extension may not have access to the full text of paywalled articles (if the cookie is not accepted by the remote server). In that case, only free-access articles are retrieved, the others being listed as links.
+    - *L'Humanité:* without a subscription, it is advised to create a free account.
 - **Europresse**
     - handles article metadata rather randomly, with no dedicated HTML elements, which can lead to some inconsistency in the way they are rendered in downloaded files (subheads where author name should belong, etc.). This is not a limitation of the add-on but of Europresse!
     - only allows scraping 20 pages of results (1000 articles) at a time.

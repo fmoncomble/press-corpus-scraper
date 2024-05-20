@@ -59,7 +59,7 @@ const nextButtonDef = null;
 // Identifier le bouton d'abonnement
 const aboBtnDef = 'a.Button.Button--premium';
 // Pour les articles réservés aux abonné.e.s : élément contenant la bannière "Réservé aux abonnés"
-const premiumBannerDef = 'h1.premium';
+const premiumBannerDef = 'aside#article-reserve-aux-abonnes';
 // Si la bannière se situe dans l'en-tête d'article : élément de l'en-tête
 const articleHeaderDef = 'header#haut';
 // Elément du titre de l'article
@@ -84,11 +84,12 @@ const textElementsDef = 'p, h2';
 // Éléments textuels à exclure (le cas échéant, publicités, liens vers d'autres contenus, etc. partageant les mêmes identifiants que les éléments à inclure) sous forme d'array de contenus de texte (ex. ['LIRE AUSSI', 'VOIR AUSSI']).
 const exclElementsText = [
     'À LIRE AUSSI',
-    "Votre inscription à bien été prise en compte avec l'adresse email :",
+    "Votre inscription a bien été prise en compte avec l'adresse email :",
     'Pour découvrir toutes nos autres newsletters, rendez-vous ici',
     'En vous inscrivant, vous acceptez les conditions générales d’utilisations',
     'Recevez en avant-première les informations et analyses politiques de la rédaction du Point',
     'Recevez l’information analysée et décryptée par la rédaction du Point.',
+    'Recevez l’actualité culturelle de la semaine à ne pas manquer',
 ];
 // Éléments à exclure, sous forme d'array de classes d'éléments (ex. ['advert', 'ext-link'])
 const exclElementsDef = [

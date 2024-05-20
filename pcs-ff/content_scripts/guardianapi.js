@@ -79,53 +79,47 @@ document.addEventListener('DOMContentLoaded', async function () {
     // Manage API rate limit
     let apiCallTotal;
     function getApiCallTotal(callback) {
-        chrome.storage.local.get(['guardianapicallnb'], function (result) {
-            apiCallTotal = result.guardianapicallnb;
-            callback(apiCallTotal);
-        });
+        chrome.storage.local.get(
+            ['guardianapicallnb', 'nextResetTime'],
+            function (result) {
+                apiCallTotal = result.guardianapicallnb;
+                const now = new Date().getTime();
+                const nextResetTime = result.nextResetTime || 0;
+
+                if (now > nextResetTime) {
+                    apiCallTotal = 500;
+                    chrome.storage.local.set({
+                        guardianapicallnb: apiCallTotal,
+                        nextResetTime: getNextMidnightTime(),
+                    });
+                    console.log('Number of API calls available reset to 500');
+                }
+                callback(apiCallTotal);
+            }
+        );
+    }
+
+    function getNextMidnightTime() {
+        const now = new Date();
+        const nextMidnight = new Date(
+            now.getFullYear(),
+            now.getMonth(),
+            now.getDate() + 1
+        );
+        return nextMidnight.getTime();
     }
 
     getApiCallTotal(function (callResult) {
         apiCallTotal = callResult;
         if (apiCallTotal) {
             console.log('API calls left today: ', apiCallTotal);
-        } else if (!apiCallTotal) {
-            chrome.storage.local.set({ guardianapicallnb: 500 }, function () {
-                console.log('Number of API calls available set to 500');
-            });
-            // chrome.alarms.create('resetApiCallTotal', {
-            //     periodInMinutes: 24 * 60,
-            // });
-            // console.log('API rate reset countdown created');
         }
         updateApiCounter();
     });
 
-    var now = new Date();
-    var nextMidnight = new Date(
-        now.getFullYear(),
-        now.getMonth(),
-        now.getDate() + 1
-    );
-    var timeToNextMidnight = nextMidnight.getTime() - now.getTime();
-
-    chrome.alarms.create('resetGuardianApiCallTotal', {
-        when: Date.now() + timeToNextMidnight,
-        periodInMinutes: 24 * 60,
-    });
-    console.log(
-        'API rate reset countdown created. Counter will be reset in approximately ' +
-            Math.floor(timeToNextMidnight / 1000 / 60 / 60) +
-            ' hours and ' +
-            Math.floor((timeToNextMidnight / 1000 / 60) % 60) +
-            ' minutes.'
-    );
-
-    chrome.alarms.onAlarm.addListener(function (alarm) {
-        if (alarm.name === 'resetGuardianApiCallTotal') {
-            chrome.storage.local.set({ guardianapicallnb: 500 }, function () {
-                console.log('Number of API calls available reset to 500');
-            });
+    chrome.storage.local.get('nextResetTime', function (result) {
+        if (!result.nextResetTime) {
+            chrome.storage.local.set({ nextResetTime: getNextMidnightTime() });
         }
     });
 

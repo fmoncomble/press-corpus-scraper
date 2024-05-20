@@ -55,7 +55,8 @@ Moncomble, F. (2024). *Press Corpus Scraper* (Version 0.4) [JavaScript]. Arras, 
 - Décompresser l'archive obtenue pour charger les fichiers dans une application d'analyse textuelle
 
 ### Limites et problèmes connus
-- **Sites français :** même avec un compte abonné actif, l'extension n'a pas accès au texte intégral des articles premium (le cookie n'est pas accepté par le serveur distant). Seuls les articles en accès libre sont donc récupérés, les autres étant listés sous forme de liens.
+- **Sites français :** même avec un compte abonné actif, il se peut que l'extension n'ait pas accès au texte intégral des articles premium (lorsque le cookie n'est pas accepté par le serveur distant). Dans ce cas, seuls les articles en accès libre sont récupérés, les autres étant listés sous forme de liens.
+    - *L'Humanité :* à défaut d'abonnement, il est conseillé de créer un compte gratuit sur le site.
 - **Europresse :** 
     - affiche les métadonnées des articles de façon très aléatoire, sans éléments HTML dédiés, ce qui peut donner lieu à des incohérences dans la structure des fichiers téléchargés (chapô en lieu et place du nom d'auteur.e, etc.). Ce n'est pas un problème de l'extension mais d'Europresse !
     - n'autorise l'extraction que de 20 pages de résultats (1000 articles) à la fois.

@@ -46,7 +46,7 @@ const nextButtonDef = null;
 // Identifier le bouton d'abonnement
 const aboBtnDef = '.js-btn-premium';
 // Pour les articles réservés aux abonné.e.s : élément contenant la bannière "Réservé aux abonnés"
-const premiumBannerDef = 'p.article__status';
+const premiumBannerDef = 'div.lmd-paywall__header';
 // Si la bannière se situe dans l'en-tête d'article : élément de l'en-tête
 const articleHeaderDef = '.article__header, .article__header-wrap';
 // Elément du titre de l'article

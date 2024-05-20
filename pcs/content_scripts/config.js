@@ -305,7 +305,11 @@ extractButton.addEventListener('click', function (event) {
                     const skippedFilesWrapper = document.createElement('div');
                     skippedFilesWrapper.classList.add('list-wrapper');
                     skippedFilesWrapper.style.color = '#ffa500';
-                    skippedFilesWrapper.textContent = `\n${response.skippedFiles.length} articles réservés aux abonné·e·s ont été ignorés.\n\n`;
+                    if (response.skippedFiles.length === 1) {
+                        skippedFilesWrapper.textContent = `\n1 article réservé aux abonné·e·s a été ignoré.\n\n`;
+                    } else {
+                        skippedFilesWrapper.textContent = `\n${response.skippedFiles.length} articles réservés aux abonné·e·s ont été ignorés.\n\n`;
+                    }
                     downloadedFilesContainer.appendChild(skippedFilesWrapper);
                     const skippedFilesContainer = document.createElement('div');
                     skippedFilesContainer.classList.add('list-container');
@@ -461,7 +465,7 @@ extractButton.addEventListener('click', function (event) {
                         const lostFilesContainer =
                             document.createElement('div');
                         lostFilesContainer.style.color = 'blue';
-                        lostFilesContainer.textContent = `\n${fileDiff} résultat(s) non trouvé(s)... 👀`;
+                        lostFilesContainer.textContent = `\n${fileDiff} résultat(s) non traité(s)`;
                         downloadedFilesContainer.appendChild(
                             lostFilesContainer
                         );

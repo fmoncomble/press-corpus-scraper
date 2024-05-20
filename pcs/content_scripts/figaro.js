@@ -47,7 +47,7 @@ const nextButtonDef = null;
 // Identifier le bouton d'abonnement
 const aboBtnDef = '.fh-subscribe.fh-subscribe--desktop';
 // Pour les articles réservés aux abonné.e.s : élément contenant la bannière "Réservé aux abonnés"
-const premiumBannerDef = 'div.fig-premium-mark-article';
+const premiumBannerDef = 'div.fig-premium-paywall__wrapper';
 // Si la bannière se situe dans l'en-tête d'article : élément de l'en-tête
 const articleHeaderDef = null;
 // Elément du titre de l'article
