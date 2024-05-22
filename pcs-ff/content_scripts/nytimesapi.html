@@ -139,8 +139,8 @@
                     <div id="expert-search" style="display: none">
                         <p style="text-align: center">
                             Enter the keywords you want to search for below.<br />You
-                            may use booleans (AND, OR, NOT), double quotes and parentheses for
-                            grouping.
+                            may use booleans (AND, OR, NOT), double quotes and
+                            parentheses for grouping.
                         </p>
                         <label for="keywords" class="search-ui"
                             >Keywords:</label
@@ -531,9 +531,7 @@
                         style="display: none"
                     ></div>
                 </div>
-                <button class="reset-form">
-                    Reset form
-                </button>
+                <button class="reset-form">Reset form</button>
             </div>
             <br />
             <br />
@@ -563,11 +561,11 @@
                             <span> results</span>
                         </span>
                     </div>
-                    <select id="format">
+                    <!-- <select id="format">
                         <option value="txt">TXT</option>
                         <option value="xml">XML/XTZ</option>
                         <option value="ira">Iramuteq</option>
-                    </select>
+                    </select> -->
                     <button class="extract-button">Extract articles</button>
                     <button
                         class="abort-button"
@@ -615,7 +613,7 @@
                 </div>
                 <div id="output-container"></div>
                 <div id="list-wrapper">
-                    <div id="file-list"></div>
+                    <!-- <div id="file-list"></div> -->
                     <br />
                     <div id="premium-list" style="display: none">
                         <span id="premium-nb"></span> skipped.
@@ -680,7 +678,19 @@
                         </div>
                         <ul id="no-content-links" style="display: none"></ul>
                     </div>
+                    <br />
                 </div>
+                <div id="dl-container" style="display: none">
+                    <select id="format" style="display: inline-block">
+                        <option value="txt">TXT</option>
+                        <option value="xml">XML/XTZ</option>
+                        <option value="ira">Iramuteq</option>
+                    </select>
+                    <button id="dl-button" style="display: inline-block">
+                        Download
+                    </button>
+                </div>
+                <div id="file-list"></div>
             </div>
         </fieldset>
     </body>

@@ -71,7 +71,8 @@ button {
     background-color: #121212;
     color: white;
     padding: 4px 10px;
-    transition: background-color 0.3s ease-out;
+    transition: background-color 0.1s ease-in-out;
+    cursor: pointer;
 }
 
 select:hover,
@@ -101,10 +102,6 @@ a#query-link {
 
 input:focus-visible {
     outline: solid 1px #121212;
-}
-
-button {
-    cursor: pointer;
 }
 
 #extract-select {

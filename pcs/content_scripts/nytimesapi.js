@@ -189,6 +189,8 @@ document.addEventListener('DOMContentLoaded', async function () {
         orderOption.value = 'newest';
         searchSpinner.style.display = 'none';
         resultsContainer.style.display = 'none';
+        extractContainer.style.display = 'none';
+        extractBtn.removeAttribute('style');
         processMsg.textContent = '';
         outputContainer.textContent = '';
         fileList.textContent = '';
@@ -207,6 +209,45 @@ document.addEventListener('DOMContentLoaded', async function () {
         } else {
             buildApiQuery();
         }
+    });
+
+    keywordsInput.addEventListener('keydown', function (e) {
+        if (!apiKey) {
+            window.alert('You need to enter your API key to continue');
+        } else {
+            if (e.key === 'Enter') {
+                buildApiQuery();
+            }
+        }
+    });
+
+    urlInput.addEventListener('keydown', function (e) {
+        if (!apiKey) {
+            window.alert('You need to enter your API key to continue');
+        } else {
+            if (e.key === 'Enter') {
+                buildApiQuery();
+            }
+        }
+    });
+
+    searchBtn.addEventListener('mousedown', () => {
+        searchBtn.style.backgroundColor = '#666666';
+    });
+    searchBtn.addEventListener('mouseup', () => {
+        searchBtn.removeAttribute('style');
+    });
+    resetFormBtn.addEventListener('mousedown', () => {
+        resetFormBtn.style.backgroundColor = '#666666';
+    });
+    resetFormBtn.addEventListener('mouseup', () => {
+        resetFormBtn.removeAttribute('style');
+    });
+    extractBtn.addEventListener('mousedown', () => {
+        extractBtn.style.backgroundColor = '#666666';
+    });
+    extractBtn.addEventListener('mouseup', () => {
+        extractBtn.removeAttribute('style');
     });
 
     // Function to build the query URL
@@ -311,8 +352,6 @@ document.addEventListener('DOMContentLoaded', async function () {
         queryLink.addEventListener('click', () => {
             writeToClipboard(queryUrl);
             queryLink.style.color = 'green';
-            queryLink.style.fontWeight = 'bold';
-            queryLink.textContent = 'Copied!'
             setTimeout(() => {
                 queryLink.textContent = queryUrl + '0';
                 queryLink.removeAttribute('style');
@@ -414,7 +453,6 @@ document.addEventListener('DOMContentLoaded', async function () {
     // Assign function to the output format selector
     let format = 'txt';
     formatSelector.addEventListener('change', function () {
-        outputContainer.textContent = '';
         fileList.textContent = '';
         format = formatSelector.value;
     });
@@ -422,6 +460,8 @@ document.addEventListener('DOMContentLoaded', async function () {
     // Assign function to the extract option selector
     extractOption.addEventListener('change', function () {
         outputContainer.textContent = '';
+        dlContainer.style.display = 'none';
+        extractBtn.style.display = 'block';
         fileList.textContent = '';
         if (extractOption.value === 'selection') {
             extractSelectContainer.style.display = 'inline';
@@ -445,23 +485,39 @@ document.addEventListener('DOMContentLoaded', async function () {
     const outputContainer = document.querySelector('#output-container');
     const fileList = document.querySelector('#file-list');
 
+    const dlContainer = document.getElementById('dl-container');
+    const dlBtn = document.getElementById('dl-button');
+
+    let articles = [];
+
     // Assign function to the extract button
-    extractBtn.addEventListener('click', function () {
-        searchContainer.style.display = 'none';
-        showSearch.style.display = 'block';
-        hideSearch.style.display = 'none';
-        extractArticles();
+    extractBtn.addEventListener('click', async function () {
+        await extractArticles();
+        extractBtn.style.display = 'none';
+        processContainer.style.display = 'none';
+        dlContainer.style.display = 'block';
     });
 
-    extractSelect.addEventListener('keydown', function (e) {
-        if (e.key === 'Enter') {
-            extractArticles();
+    extractSelect.addEventListener('keydown', async function (e) {
+        if (isFinite(e.key)) {
+            extractBtn.style.display = 'block';
+            dlContainer.style.display = 'none';
+        } else if (e.key === 'Enter') {
+            extractBtn.style.display = 'none';
+            await extractArticles();
+            processContainer.style.display = 'none';
+            dlContainer.style.display = 'block';
         }
     });
 
     // Function to extract results
     let rIndex = 1;
+
     async function extractArticles() {
+        articles = [];
+        searchContainer.style.display = 'none';
+        showSearch.style.display = 'block';
+        hideSearch.style.display = 'none';
         abortBtn.style.display = 'inline';
         abort = false;
         extractBtn.style.display = 'none';
@@ -472,8 +528,6 @@ document.addEventListener('DOMContentLoaded', async function () {
         errorLinks.textContent = '';
         extractSpinner.style.display = 'inline-block';
         let results = [];
-        const zip = new JSZip();
-        const addedArticles = new Set();
         const premiumArticles = [];
         const errorArticles = [];
         const noContentArticles = [];
@@ -733,64 +787,28 @@ document.addEventListener('DOMContentLoaded', async function () {
                     return;
                 }
 
-                let fileContent = `${title}\n\n${authorName}\n\n${date}\n\n${subhed}\n\n${text}`;
+                let article = {};
+                article['article'] = {
+                    title: `${title}`,
+                    author: `${authorName}`,
+                    date: `${date}`,
+                    subhed: `${subhed}`,
+                    text: `${text}`,
+                    link: `${link}`,
+                };
 
-                if (format === 'xml') {
-                    let xmltitle = title
-                        .replaceAll('&', '&amp;')
-                        .replaceAll('"', '&quot;')
-                        .replaceAll(/<.+?>/g, '')
-                        .trim();
-                    let xmlauthor = authorName
-                        .replaceAll('&', '&amp;')
-                        .replaceAll('"', '&quot;')
-                        .trim();
-                    let xmlsubhed = subhed.replaceAll('&', '&amp;').trim();
-                    let xmltext = text
-                        .replaceAll('&', '&amp;')
-                        .replaceAll('<', '&lt;')
-                        .replaceAll('>', '&gt;')
-                        .replaceAll('\n', '<lb></lb>');
-                    fileContent = `<text source="The New York Times" title="${xmltitle}" author="${xmlauthor}" date="${date}">\n<ref target="${link}">Link to article</ref><lb></lb><lb></lb>${xmlsubhed}<lb></lb><lb></lb>${xmltext}<lb></lb></text>`;
-                }
+                articles.push(article);
 
-                if (format === 'ira') {
-                    fileContent = `\n**** *source_nyt *title_${title.replaceAll(/[\.\?\!:;,]/g, '_').replaceAll(/\s/g, '_')} *author_${authorName.replaceAll(/[\.\?\!:;,]/g, '_').replaceAll(/\s/g, '_')} *date_${date}\n\n${subhed}\n\n${text}`;
-                }
-
-                let fileAuthorName = authorName
-                    .replaceAll(/\p{P}/gu, '')
-                    .replaceAll(/\s/g, '_');
-                let ext = format;
-                if (format === 'ira') {
-                    ext = 'txt';
-                }
-                let baseFileName = `${date}_${fileAuthorName}.${ext}`;
-                let index = 1;
-                while (addedArticles.has(baseFileName)) {
-                    baseFileName = `${date}_${fileAuthorName}_${index}.${ext}`;
-                    index++;
-                }
-
-                addedArticles.add(baseFileName);
-
-                zip.file(baseFileName, fileContent);
             }
         } catch (error) {
             console.error(error);
         }
 
-        const zipBlob = await zip.generateAsync({
-            type: 'blob',
-        });
-
         processContainer.style.display = 'none';
         extractionCounter.textContent = '';
-        let downloadedFiles = Array.from(addedArticles);
         outputContainer.style.display = 'block';
-        outputContainer.textContent = `${downloadedFiles.length} out of ${maxResults} articles downloaded:\n\n`;
+        outputContainer.textContent = `${articles.length} out of ${maxResults} articles extracted.`;
         listWrapper.style.display = 'block';
-        fileList.textContent = `${downloadedFiles.slice(0, 20).join(', ')}...`;
         if (premiumArticles.length > 0) {
             try {
                 const premiumList = document.querySelector('div#premium-list');
@@ -911,10 +929,112 @@ document.addEventListener('DOMContentLoaded', async function () {
             }
         }
         abortBtn.style.display = 'none';
-        extractBtn.style.display = 'inline';
+        extractSpinner.style.display = 'none';
+    }
+
+    dlBtn.addEventListener('mousedown', () => {
+        dlBtn.style.backgroundColor = '#666666';
+    });
+    dlBtn.addEventListener('mouseup', () => {
+        dlBtn.removeAttribute('style');
+    });
+
+    dlBtn.addEventListener('click', () => {
+        buildFiles();
+    });
+
+    // Function to build article files
+    async function buildFiles() {
+        const zip = new JSZip();
+        const addedArticles = new Set();
+
+        try {
+            for (a of articles) {
+                const title = a.article.title;
+                const author = a.article.author;
+                const date = a.article.date;
+                const subhed = a.article.subhed;
+                const text = a.article.text;
+                const link = a.article.link;
+
+                let fileContent;
+
+                if (format === 'txt') {
+                    fileContent = `${title}\n\n${author}\n\n${date}\n\n${subhed}\n\n${text}`;
+                }
+
+                if (format === 'xml') {
+                    let xmltitle = title
+                        .replaceAll('&', '&amp;')
+                        .replaceAll('"', '&quot;');
+                    let xmlauthor = author
+                        .replaceAll('&', '&amp;')
+                        .replaceAll('"', '&quot;');
+                    let xmlsubhed = subhed.replaceAll('&', '&amp;');
+                    let xmltext = text
+                        .replaceAll('&', '&amp;')
+                        .replaceAll('<', '&lt;')
+                        .replaceAll('>', '&gt;')
+                        .replaceAll('\n', '<lb></lb>');
+                    fileContent = `<text source="The New York Times" title="${xmltitle}" author="${xmlauthor}" date="${date}">\n<ref target="${link}">Link to article</ref><lb></lb><lb></lb>${xmlsubhed}<lb></lb><lb></lb>${xmltext}<lb></lb></text>`;
+                }
+
+                if (format === 'ira') {
+                    fileContent = `\n**** *source_nyt *title_${title
+                        .replaceAll(/\p{P}/gu, ' ')
+                        .trim()
+                        .replaceAll(/\s/g, '_')
+                        .replaceAll('__', '_')} *author_${author
+                        .replaceAll(/\p{P}/gu, ' ')
+                        .trim()
+                        .replaceAll(/\s/g, '_')
+                        .replaceAll(
+                            '__',
+                            '_'
+                        )} *date_${date}\n\n${subhed}\n\n${text}`;
+                }
+
+                let fileAuthorName = author
+                    .replaceAll(/\p{P}/gu, '')
+                    .replaceAll(/\s/g, '_');
+                let ext = format;
+                if (format === 'ira') {
+                    ext = 'txt';
+                }
+                let baseFileName = `${date}_${fileAuthorName.slice(
+                    0,
+                    20
+                )}.${ext}`;
+                let index = 1;
+                while (addedArticles.has(baseFileName)) {
+                    baseFileName = `${date}_${fileAuthorName}_${index}.${ext}`;
+                    index++;
+                }
+
+                addedArticles.add(baseFileName);
+
+                zip.file(baseFileName, fileContent);
+            }
+        } catch (error) {
+            console.error(error);
+        }
+
+        const zipBlob = await zip.generateAsync({
+            type: 'blob',
+        });
+
+        const downloadedFiles = Array.from(addedArticles);
+        fileList.textContent = `Files created: ${downloadedFiles
+            .slice(0, 20)
+            .join(', ')}...`;
+        abortBtn.style.display = 'none';
+        extractBtn.style.display = 'none';
 
         let searchTerm;
-        if (searchType === 'expert') {
+        const urlValue = urlInput.value;
+        if (urlValue) {
+            searchTerm = 'custom_search';
+        } else if (searchType === 'expert') {
             searchTerm = keywords;
         } else if (searchType === 'guided') {
             searchTerm = allWords + ' ' + anyWords + ' ' + exactPhrase;
@@ -924,9 +1044,9 @@ document.addEventListener('DOMContentLoaded', async function () {
             .slice(0, 15)
             .replaceAll('"', '')
             .replaceAll(' ', '_');
+
         const zipFileName = `NYT_${searchTerm}_${format}_archive.zip`;
         await downloadZip(zipBlob, zipFileName);
-        extractSpinner.style.display = 'none';
     }
 
     // Function to download zip file

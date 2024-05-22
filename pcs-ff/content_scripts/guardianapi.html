@@ -40,7 +40,9 @@
                     <br /><br />
                 </div>
                 <div>
-                    <label for="url-input" class="search-ui">Enter a query URL: </label>
+                    <label for="url-input" class="search-ui"
+                        >Enter a query URL:
+                    </label>
                     <input
                         class="url-input"
                         id="url-input"
@@ -126,8 +128,8 @@
                     <div id="expert-search" style="display: none">
                         <p style="text-align: center">
                             Enter the keywords you want to search for below.<br />You
-                            may use booleans (AND, OR, AND NOT), double quotes and parentheses for
-                            grouping.
+                            may use booleans (AND, OR, AND NOT), double quotes
+                            and parentheses for grouping.
                         </p>
                         <label for="keywords" class="search-ui"
                             >Keywords:</label
@@ -309,11 +311,6 @@
                             <span> results</span>
                         </span>
                     </div>
-                    <select id="format">
-                        <option value="txt">TXT</option>
-                        <option value="xml">XML/XTZ</option>
-                        <option value="ira">Iramuteq</option>
-                    </select>
                     <button class="extract-button">Extract articles</button>
                     <button class="abort-button" style="display: none">
                         Abort
@@ -326,6 +323,17 @@
                 </div>
                 <div id="process-container"></div>
                 <div id="output-container"></div>
+                <br />
+                <div id="dl-container" style="display: none">
+                    <select id="format" style="display: inline-block">
+                        <option value="txt">TXT</option>
+                        <option value="xml">XML/XTZ</option>
+                        <option value="ira">Iramuteq</option>
+                    </select>
+                    <button id="dl-button" style="display: inline-block">
+                        Download
+                    </button>
+                </div>
                 <div id="file-list"></div>
             </div>
         </fieldset>
