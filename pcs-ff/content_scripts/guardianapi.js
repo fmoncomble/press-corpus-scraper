@@ -342,6 +342,7 @@ document.addEventListener('DOMContentLoaded', async function () {
                 resultsContainer.style.display = 'block';
                 extractContainer.style.display = 'block';
                 searchContainer.style.display = 'none';
+                hideSearch.style.display = 'none';
                 showSearch.style.display = 'block';
             } else {
                 resultsOverview.append(' Restart search.');
@@ -380,11 +381,7 @@ document.addEventListener('DOMContentLoaded', async function () {
     formatSelector.addEventListener('change', function () {
         outputContainer.textContent = '';
         fileList.textContent = '';
-        if (formatSelector.value === 'xml') {
-            format = 'xml';
-        } else if (formatSelector.value === 'txt') {
-            format = 'txt';
-        }
+        format = formatSelector.value;
     });
 
     // Assign function to the extract option selector
@@ -559,16 +556,6 @@ document.addEventListener('DOMContentLoaded', async function () {
                         text = text + `\n${pText}\n`;
                     }
 
-                    let fileAuthorName = authorName
-                        .replaceAll(/\p{P}/gu, '')
-                        .replaceAll(/\s/g, '_');
-                    let baseFileName = `${date}_${fileAuthorName}.${format}`;
-                    let index = 1;
-                    while (addedArticles.has(baseFileName)) {
-                        baseFileName = `${date}_${fileAuthorName}_${index}.${format}`;
-                        index++;
-                    }
-
                     let fileContent = `${title}\n\n${author}\n\n${date}\n\n${subhed}\n\n${text}`;
 
                     if (format === 'xml') {
@@ -585,6 +572,24 @@ document.addEventListener('DOMContentLoaded', async function () {
                             .replaceAll('>', '&gt;')
                             .replaceAll('\n', '<lb></lb>');
                         fileContent = `<text source="The Guardian" title="${xmltitle}" author="${xmlauthor}" date="${date}">\n<ref target="${link}">Link to article</ref><lb></lb><lb></lb>${xmlsubhed}<lb></lb><lb></lb>${xmltext}<lb></lb></text>`;
+                    }
+
+                    if (format === 'ira') {
+                        fileContent = `\n**** *source_guardian *title_${title.replaceAll(/[\.\?\!:;,\"'‘’“”]/g, ' ').trim().replaceAll(/\s/g, '_').replaceAll('__', '_')} *author_${authorName.replaceAll(/[\.\?\!:;,\"'‘’“”]/g, ' ').trim().replaceAll(/\s/g, '_').replaceAll('__', '_')} *date_${date}\n\n${subhed}\n\n${text}`;
+                    }
+
+                    let fileAuthorName = authorName
+                        .replaceAll(/\p{P}/gu, '')
+                        .replaceAll(/\s/g, '_');
+                    let ext = format;
+                    if (format === 'ira') {
+                        ext = 'txt';
+                    }
+                    let baseFileName = `${date}_${fileAuthorName}.${ext}`;
+                    let index = 1;
+                    while (addedArticles.has(baseFileName)) {
+                        baseFileName = `${date}_${fileAuthorName}_${index}.${ext}`;
+                        index++;
                     }
 
                     addedArticles.add(baseFileName);

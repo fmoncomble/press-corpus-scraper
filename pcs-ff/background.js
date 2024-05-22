@@ -502,6 +502,14 @@ async function performExtractAndSave(url) {
                             fileContent = `<text source="${pubName}" author="${author}" title="${title}" date="${date}">\n<ref target="${url}">Link to original document</ref><lb></lb><lb></lb>\n\n${subhed}<lb></lb><lb></lb>\n\n${text}\n</text>`;
                         }
 
+                        if (selectedFormat === 'ira') {
+                            extension = '.txt';
+                            const title = titleDiv.textContent.replaceAll(/[\.\?\!:;,\"'‘’“”«»]/g, ' ').trim().replaceAll(/\s/g, '_').replaceAll('__', '_');
+                            author = author.replaceAll(/[\.\?\!:;,\"'‘’“”«»]/g, ' ').trim().replaceAll(/\s/g, '_').replaceAll('__', '_');
+                            pubName = pubName.replaceAll(/[\.\?\!:;,\"'‘’“”]/g, ' ').trim().replaceAll(/\s/g, '_').replaceAll('__', '_');
+                            fileContent = `\n**** *source_${pubName} *title_${title} *author_${author} *date_${date}\n\n${subhed}\n\n${text}`;
+                        }
+
                         let baseFileName = `${date}_${pubName.replaceAll(
                             /\s/g,
                             '_'

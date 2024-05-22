@@ -120,8 +120,10 @@ const select = document.createElement('select');
 select.classList.add('pcs-ui');
 const txt = new Option('TXT', 'txt');
 const xml = new Option('XML/XTZ', 'xml');
+const ira = new Option('Iramuteq', 'ira');
 select.appendChild(txt);
 select.appendChild(xml);
+select.appendChild(ira);
 
 console.log('Output format: ', selectedFormat);
 
@@ -523,7 +525,7 @@ extractButton.addEventListener('click', function (event) {
                         const lostFilesContainer =
                             document.createElement('div');
                         lostFilesContainer.style.color = 'blue';
-                        lostFilesContainer.textContent = `\n${fileDiff} résultat(s) non trouvé(s)... 👀`;
+                        lostFilesContainer.textContent = `\n${fileDiff} résultat(s) non traité(s)...`;
                         downloadedFilesContainer.appendChild(
                             lostFilesContainer
                         );
