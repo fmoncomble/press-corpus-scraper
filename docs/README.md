@@ -6,7 +6,7 @@ Une extension pour extraire et télécharger des articles de presse à des fins 
 ### Citer ce programme
 Si vous utilisez cette extension pour vos travaux de recherche, merci de la référencer de la façon suivante :  
   
-Moncomble, F. (2024). *Press Corpus Scraper* (Version 0.5) [JavaScript]. Arras, France : Université d’Artois. Disponible à l'adresse : https://fmoncomble.github.io/press-corpus-scraper/
+Moncomble, F. (2024). *Press Corpus Scraper* (Version 0.6) [JavaScript]. Arras, France : Université d’Artois. Disponible à l'adresse : https://fmoncomble.github.io/press-corpus-scraper/
 
 
 ## Installation
@@ -45,7 +45,7 @@ Moncomble, F. (2024). *Press Corpus Scraper* (Version 0.5) [JavaScript]. Arras, 
       <img width="303" alt="Screenshot 2024-02-03 at 08 09 46" src="https://github.com/fmoncomble/press-corpus-scraper/assets/59739627/625b57e9-79d0-44e1-a5a8-738a6f3b9de6">
         
     - Construire une requête dans l'interface, puis cliquer sur `Search` 
-- Sélectionner le format de fichier souhaité : TXT ou XML/XTZ (pour import dans [TXM](https://txm.gitpages.huma-num.fr/textometrie/) à l'aide du module `XML-TEI Zero + CSV`)
+- Sélectionner le format de fichier souhaité : `TXT`, `XML/XTZ` (pour import dans [TXM](https://txm.gitpages.huma-num.fr/textometrie/) à l'aide du module `XML-TEI Zero + CSV`) ou `Iramuteq`
 - Cliquer sur « Extraire »
   - Les articles réservés aux abonnés ne sont pas téléchargés mais listés sous forme de liens
   - Les articles que l'extension échoue à extraire sont listés sous forme de liens

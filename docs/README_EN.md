@@ -6,7 +6,7 @@ An extension for extracting and downloading press articles for text mining.
 ### Cite this program
 If you use this extension for your research, please reference it as follows:  
   
-Moncomble, F. (2024). *Press Corpus Scraper* (Version 0.5) [JavaScript]. Arras, France: Université d'Artois. Available at: https://fmoncomble.github.io/press-corpus-scraper/
+Moncomble, F. (2024). *Press Corpus Scraper* (Version 0.6) [JavaScript]. Arras, France: Université d'Artois. Available at: https://fmoncomble.github.io/press-corpus-scraper/
 
 
 ## Installation
@@ -45,7 +45,7 @@ Moncomble, F. (2024). *Press Corpus Scraper* (Version 0.5) [JavaScript]. Arras, 
       <img width="303" alt="Screenshot 2024-02-03 at 08 09 46" src="https://github.com/fmoncomble/press-corpus-scraper/assets/59739627/625b57e9-79d0-44e1-a5a8-738a6f3b9de6">  
         
     - Build a query in the interface, then click `Search` 
-- Select the desired file format: TXT or XML/XTZ (for import into [TXM](https://txm.gitpages.huma-num.fr/textometrie/) with the `XML-TEI Zero + CSV` module)
+- Select the desired file format: `TXT`, `XML/XTZ` (for import into [TXM](https://txm.gitpages.huma-num.fr/textometrie/) with the `XML-TEI Zero + CSV` module) or `Iramuteq`
 - Click 'Extract'
   - Paywalled articles are not downloaded but listed as links
   - Articles that the extension fails to process are listed as links
