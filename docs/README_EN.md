@@ -37,7 +37,7 @@ Remember to pin the extension to the toolbar
     -   [_Le Point_](https://www.lepoint.fr/recherche/index.php)
     -   [_The Guardian_](https://www.theguardian.com/)
     -   [_The New York Times_](https://www.nytimes.com/)
-    -   [_Deutsches Zeintungsportal_](https://www.deutsche-digitale-bibliothek.de/newspaper)
+    -   [_Deutsches Zeitungsportal_](https://www.deutsche-digitale-bibliothek.de/newspaper)
     -   or your institution's Europresse portal: [list of supported institutions](europresse-list.md)
 -   **French websites and Europresse:**
     -   Search by keyword

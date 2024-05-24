@@ -32,7 +32,7 @@ Pensez à épingler l'extension à la barre d'outils
     - [*Le Point*](https://www.lepoint.fr/recherche/index.php)
     - [*The Guardian*](https://www.theguardian.com/)
     - [*The New York Times*](https://www.nytimes.com/)
-    - [*Deutsches Zeintungsportal*](https://www.deutsche-digitale-bibliothek.de/newspaper)
+    - [*Deutsches Zeitungsportal*](https://www.deutsche-digitale-bibliothek.de/newspaper)
     - ou le portail **Europresse** de votre établissement : [liste des établissements pris en charge](europresse-list.md)
 - **Sites français / Europresse :**
     - Effectuer une recherche par mot-clef
