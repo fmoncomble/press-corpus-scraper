@@ -2,7 +2,7 @@
     "manifest_version": 2,
     "name": "Press corpus scraper",
 
-    "version": "0.8.1",
+    "version": "0.8.2",
 
     "description": "Extraire et télécharger des articles de presse",
     "homepage_url": "https://github.com/fmoncomble/press_corpus_scraper",
@@ -185,5 +185,12 @@
             "js": ["europresse/europresse.js"],
             "css": ["content_scripts/config.css", "europresse/europresse.css"]
         }
-    ]
+    ],
+
+    "browser_specific_settings": {
+      "gecko": {
+        "id": "{9e9c5f35-dcd0-4eae-b11e-089f14e97361}",
+        "update_url": "https://github.com/fmoncomble/press-corpus-scraper/releases/latest/download/update_manifest.json"
+      }
+    }
 }
