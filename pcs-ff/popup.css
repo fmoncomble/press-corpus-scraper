@@ -1,0 +1,38 @@
+html {
+    border: none;
+    border-radius: 10px;
+    width: 272px;
+}
+
+body {
+    background-color: white;
+    text-align: center;
+    font-family: 'GuardianTextSans', 'Guardian Text Sans Web', 'Helvetica Neue',
+        Helvetica, Arial, 'Lucida Grande', sans-serif;
+    font-size: small;
+    width: 236px;
+    height: 210px;
+    padding: 10px;
+    color: #00254c;
+}
+
+select,
+button {
+    background-color: white;
+    border: solid 1px #00254c;
+    color: #00254c;
+    cursor: pointer;
+    width: 195px;
+    overflow: hidden;
+    padding: 5px;
+    border-radius: 5px;
+    margin: 5px;
+    font-family: 'GuardianTextSans', 'Guardian Text Sans Web', 'Helvetica Neue',
+        Helvetica, Arial, 'Lucida Grande', sans-serif;
+}
+
+div#title {
+    font-weight: bold;
+    font-size: x-large;
+    margin-bottom: 20px;
+}

@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8" />
+        <title>The DZP corpus scraper</title>
+        <script type="text/javascript" src="dzpapi.js"></script>
+        <script type="text/javascript" src="../jszip.min.js"></script>
+        <link rel="stylesheet" type="text/css" href="dzpapi.css" />
+        <link href="../icons/favicon.ico" rel="icon" type="image/x-icon" />
+    </head>
+    <body>
+        <fieldset>
+            <legend><img src="../icons/dzp.svg" height="24" /></legend>
+            <div class="wrapper">
+                <div class="apikey-container">
+                    <input
+                        type="password"
+                        placeholder="Enter your API key"
+                        id="apikey-input"
+                        name="apikey-input"
+                        autocomplete="on"
+                        required
+                    />
+                    <button class="save-apikey">Save</button>
+                    <a
+                        href="https://www.deutsche-digitale-bibliothek.de/user/apikey"
+                        target="_blank"
+                        >Get your API key</a
+                    >
+                </div>
+                <br />
+                <div>
+                    <label for="url-input" class="search-ui"
+                        >Enter a query URL:
+                    </label>
+                    <input
+                        class="url-input"
+                        id="url-input"
+                        type="url"
+                        placeholder="Query URL"
+                    />
+                </div>
+                <div
+                    id="show-search"
+                    class="show-search"
+                    style="display: none; text-align: center"
+                >
+                    <b>Show query builder</b>
+                </div>
+                <div
+                    id="hide-search"
+                    class="show-search"
+                    style="display: none; text-align: center"
+                >
+                    <b>Hide query builder</b>
+                </div>
+                <div id="search-container">
+                    <div style="margin-bottom: 10px">
+                        <br />
+                        <b>Or build your search query:</b>
+                    </div>
+                    <div style="text-align: center">
+                        <select id="search-type">
+                            <option value="guided">Guided mode</option>
+                            <option value="expert">Expert mode</option>
+                        </select>
+                    </div>
+                    <div id="guided-search">
+                        <div>
+                            <label for="all-words" class="search-ui"
+                                >All of these words:</label
+                            >
+                            <input
+                                type="text"
+                                placeholder="All of these words"
+                                class="search-input"
+                                name="all-words"
+                                id="all-words"
+                            />
+                        </div>
+                        <div>
+                            <label for="any-words" class="search-ui"
+                                >Any of these words:</label
+                            >
+                            <input
+                                type="text"
+                                placeholder="Any of these words"
+                                class="search-input"
+                                name="any-words"
+                                id="any-words"
+                            />
+                        </div>
+                        <div>
+                            <label for="exact-phrase" class="search-ui"
+                                >Exact phrase:</label
+                            >
+                            <input
+                                type="text"
+                                placeholder="Exact phrase"
+                                class="search-input"
+                                name="exact-phrase"
+                                id="exact-phrase"
+                            />
+                        </div>
+                        <div>
+                            <label for="no-words" class="search-ui"
+                                >Words to exclude:</label
+                            >
+                            <input
+                                type="text"
+                                placeholder="Words to exclude"
+                                class="search-input"
+                                name="no-words"
+                                id="no-words"
+                            />
+                        </div>
+                    </div>
+                    <div id="expert-search" style="display: none">
+                        <p style="text-align: center">
+                            Enter the keywords you want to search for below.<br />You
+                            may use booleans (AND, OR, NOT), double quotes and
+                            parentheses for grouping.
+                        </p>
+                        <label for="keywords" class="search-ui"
+                            >Keywords:</label
+                        >
+                        <input
+                            name="keywords"
+                            id="keywords"
+                            type="text"
+                            placeholder="Keywords"
+                        />
+                    </div>
+                    <div>
+                        <label for="paper-title" class="search-ui"
+                            >Paper title:</label
+                        >
+                        <input
+                            name="paper-title"
+                            id="paper-title"
+                            type="text"
+                            placeholder="Paper title words"
+                        />
+                    </div>
+                    <div>
+                        <label for="from-date" class="search-ui">From:</label>
+                        <input name="from-date" id="from-date" type="date" />
+                    </div>
+                    <div>
+                        <label for="to-date" class="search-ui">To:</label>
+                        <input name="to-date" id="to-date" type="date" />
+                    </div>
+                    <button class="trigger-search" style="display: inline">
+                        Search
+                    </button>
+                    <div
+                        class="spinner"
+                        id="search-spinner"
+                        style="display: none"
+                    ></div>
+                </div>
+                <button class="reset-form">Reset form</button>
+            </div>
+            <br />
+            <br />
+            <div id="results-container" style="display: none">
+                <div id="query-url-div"></div>
+                <div id="results-overview"></div>
+                <br />
+                <div id="extract-container" style="display: none">
+                    <div>
+                        <select id="extract-option">
+                            <option value="all">Extract all</option>
+                            <option value="selection">Extract sample</option>
+                        </select>
+                        <span
+                            id="extract-select-container"
+                            style="display: none"
+                        >
+                            <label for="extract-select">Extract first </label>
+                            <input id="extract-select" type="number" />
+                            <span> results</span>
+                        </span>
+                    </div>
+                    <!-- <select id="format">
+                        <option value="txt">TXT</option>
+                        <option value="xml">XML/XTZ</option>
+                        <option value="ira">Iramuteq</option>
+                    </select> -->
+                    <button class="extract-button">Extract articles</button>
+                    <button
+                        class="abort-button"
+                        id="abort-extract-btn"
+                        style="display: none"
+                    >
+                        Abort
+                    </button>
+                    <div
+                        class="spinner"
+                        id="extract-spinner"
+                        style="display: none"
+                    ></div>
+                </div>
+                <div id="process-container">
+                    <div id="process-message" style="display: none">
+                        Finished fetching results, extracting text...
+                    </div>
+                    <br />
+                    <div id="extraction-counter"></div>
+                    <br />
+                    <!-- <div id="pause-message" style="display: none">
+                        <span id="confirm-message" style="display: none"
+                            >NYT server is getting suspicious: click
+                            <a
+                                id="confirm-link"
+                                style="color: red"
+                                target="_blank"
+                                >here</a
+                            >
+                            to confirm you are human, then come back to resume.
+                        </span>
+                        <span id="premium-message" style="display: none"
+                            >You seem to be logged out of your account: click
+                            <a
+                                style="color: #ff9900"
+                                href="https://myaccount.nytimes.com/auth/login"
+                                target="_blank"
+                                >here</a
+                            >
+                            to log in, then come back to resume.
+                        </span>
+                        <button id="resume-btn">Resume</button>
+                    </div> -->
+                </div>
+                <div id="output-container"></div>
+                <br />
+                <!-- <div id="list-wrapper">
+                    <div id="file-list"></div> -->
+                <!-- <br /> -->
+                <!-- <div id="premium-list" style="display: none">
+                        <span id="premium-nb"></span> skipped.
+                        <a
+                            href="https://myaccount.nytimes.com/auth/login"
+                            target="_blank"
+                            >Log into your NYT account</a
+                        >
+                        and retry.
+                        <br />
+                        <div
+                            id="show-premium-list"
+                            class="show-list"
+                            style="display: inline"
+                        >
+                            Show list 🔽
+                        </div>
+                        <div
+                            id="hide-premium-list"
+                            class="hide-list"
+                            style="display: none"
+                        >
+                            Hide list 🔼
+                        </div>
+                        <ul id="premium-links" style="display: none"></ul>
+                    </div>
+                    <div id="error-list" style="display: none">
+                        <span id="error-nb"></span>
+                        <span>responded with an error. </span>
+                        <div
+                            id="show-list"
+                            class="show-list"
+                            style="display: inline"
+                        >
+                            Show list 🔽
+                        </div>
+                        <div
+                            id="hide-list"
+                            class="hide-list"
+                            style="display: none"
+                        >
+                            Hide list 🔼
+                        </div>
+                        <ul id="error-links" style="display: none"></ul>
+                    </div>
+                    <div id="no-content-list" style="display: none">
+                        <span id="no-content-nb"></span>
+                        <span>could not be processed. </span>
+                        <div
+                            id="show-nc-list"
+                            class="show-list"
+                            style="display: inline"
+                        >
+                            Show list 🔽
+                        </div>
+                        <div
+                            id="hide-nc-list"
+                            class="hide-list"
+                            style="display: none"
+                        >
+                            Hide list 🔼
+                        </div>
+                        <ul id="no-content-links" style="display: none"></ul>
+                    </div>
+                    <br />
+                </div> -->
+                <div id="dl-container" style="display: none">
+                    <select id="format" style="display: inline-block">
+                        <option value="txt">TXT</option>
+                        <option value="xml">XML/XTZ</option>
+                        <option value="ira">Iramuteq</option>
+                    </select>
+                    <button id="dl-button" style="display: inline-block">
+                        Download
+                    </button>
+                </div>
+                <div id="file-list"></div>
+            </div>
+        </fieldset>
+    </body>
+</html>

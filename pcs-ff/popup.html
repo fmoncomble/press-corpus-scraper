@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+        <script type="text/javascript" src="popup.js"></script>
+        <link rel="stylesheet" type="text/css" href="popup.css" />
+    </head>
+    <body>
+        <div id="title">
+            <img src="icons/pcs-title.svg" width="230" />
+        </div>
+        <div>
+            <label for="source-select">Select source:</label>
+            <select name="source-select" id="source-select">
+                <option value="lemonde">Le Monde</option>
+                <option value="lefigaro">Le Figaro</option>
+                <option value="lepoint">Le Point</option>
+                <option value="lhumanite">L'Humanité</option>
+                <option value="guardian">The Guardian</option>
+                <option value="nyt">The New York Times</option>
+                <option value="dzp">Deutsches Zeitungsportal</option>
+                <option value="europresse">Europresse</option>
+            </select>
+        </div>
+        <div id="europartner"></div>
+        <div>
+            <button id="euro-reset" style="display: none">
+                Reset Institution
+            </button>
+        </div>
+        <div id="europresse-select" style="display: none">
+            <label for="inst-input">Select your institution:</label>
+            <select id="inst-select">
+                <option value="" disabled>Select your institution</option>
+            </select>
+        </div>
+        <div>
+            <button id="go-btn">Go</button>
+        </div>
+
+        <template id="inst-template">
+            <label>
+                <input type="radio" id="inst-choice" />
+                <span id="inst-name">Institution</span>
+            </label>
+        </template>
+    </body>
+</html>

@@ -1,0 +1,19 @@
+#pcs-btn {
+    cursor: pointer;
+    margin-left: 17px;
+}
+
+#pcs-btn:hover {
+    text-decoration: underline;
+    color: white;
+}
+
+#pcs-link {
+    font-weight: 600;
+    color: white;
+    text-decoration: none;
+}
+
+#pcs-link:focus {
+    text-decoration: none;
+}

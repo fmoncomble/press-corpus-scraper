@@ -352,8 +352,6 @@ document.addEventListener('DOMContentLoaded', async function () {
         queryLink.addEventListener('click', () => {
             writeToClipboard(queryUrl);
             queryLink.style.color = 'green';
-            // queryLink.style.fontWeight = 'bold';
-            // queryLink.textContent = 'Copied!'
             setTimeout(() => {
                 queryLink.textContent = queryUrl + '0';
                 queryLink.removeAttribute('style');
@@ -455,7 +453,6 @@ document.addEventListener('DOMContentLoaded', async function () {
     // Assign function to the output format selector
     let format = 'txt';
     formatSelector.addEventListener('change', function () {
-        // outputContainer.textContent = '';
         fileList.textContent = '';
         format = formatSelector.value;
     });
@@ -495,9 +492,6 @@ document.addEventListener('DOMContentLoaded', async function () {
 
     // Assign function to the extract button
     extractBtn.addEventListener('click', async function () {
-        // searchContainer.style.display = 'none';
-        // showSearch.style.display = 'block';
-        // hideSearch.style.display = 'none';
         await extractArticles();
         extractBtn.style.display = 'none';
         processContainer.style.display = 'none';
@@ -505,9 +499,6 @@ document.addEventListener('DOMContentLoaded', async function () {
     });
 
     extractSelect.addEventListener('keydown', async function (e) {
-        // if (e.key === 'Enter') {
-        //     extractArticles();
-        // }
         if (isFinite(e.key)) {
             extractBtn.style.display = 'block';
             dlContainer.style.display = 'none';
@@ -537,8 +528,6 @@ document.addEventListener('DOMContentLoaded', async function () {
         errorLinks.textContent = '';
         extractSpinner.style.display = 'inline-block';
         let results = [];
-        // const zip = new JSZip();
-        // const addedArticles = new Set();
         const premiumArticles = [];
         const errorArticles = [];
         const noContentArticles = [];
@@ -810,64 +799,16 @@ document.addEventListener('DOMContentLoaded', async function () {
 
                 articles.push(article);
 
-                // let fileContent = `${title}\n\n${authorName}\n\n${date}\n\n${subhed}\n\n${text}`;
-
-                // if (format === 'xml') {
-                //     let xmltitle = title
-                //         .replaceAll('&', '&amp;')
-                //         .replaceAll('"', '&quot;')
-                //         .replaceAll(/<.+?>/g, '')
-                //         .trim();
-                //     let xmlauthor = authorName
-                //         .replaceAll('&', '&amp;')
-                //         .replaceAll('"', '&quot;')
-                //         .trim();
-                //     let xmlsubhed = subhed.replaceAll('&', '&amp;').trim();
-                //     let xmltext = text
-                //         .replaceAll('&', '&amp;')
-                //         .replaceAll('<', '&lt;')
-                //         .replaceAll('>', '&gt;')
-                //         .replaceAll('\n', '<lb></lb>');
-                //     fileContent = `<text source="The New York Times" title="${xmltitle}" author="${xmlauthor}" date="${date}">\n<ref target="${link}">Link to article</ref><lb></lb><lb></lb>${xmlsubhed}<lb></lb><lb></lb>${xmltext}<lb></lb></text>`;
-                // }
-
-                // if (format === 'ira') {
-                //     fileContent = `\n**** *source_nyt *title_${title.replaceAll(/[\.\?\!:;,]/g, '_').replaceAll(/\s/g, '_')} *author_${authorName.replaceAll(/[\.\?\!:;,]/g, '_').replaceAll(/\s/g, '_')} *date_${date}\n\n${subhed}\n\n${text}`;
-                // }
-
-                // let fileAuthorName = authorName
-                //     .replaceAll(/\p{P}/gu, '')
-                //     .replaceAll(/\s/g, '_');
-                // let ext = format;
-                // if (format === 'ira') {
-                //     ext = 'txt';
-                // }
-                // let baseFileName = `${date}_${fileAuthorName}.${ext}`;
-                // let index = 1;
-                // while (addedArticles.has(baseFileName)) {
-                //     baseFileName = `${date}_${fileAuthorName}_${index}.${ext}`;
-                //     index++;
-                // }
-
-                // addedArticles.add(baseFileName);
-
-                // zip.file(baseFileName, fileContent);
             }
         } catch (error) {
             console.error(error);
         }
 
-        // const zipBlob = await zip.generateAsync({
-        //     type: 'blob',
-        // });
-
         processContainer.style.display = 'none';
         extractionCounter.textContent = '';
-        // let downloadedFiles = Array.from(addedArticles);
         outputContainer.style.display = 'block';
         outputContainer.textContent = `${articles.length} out of ${maxResults} articles extracted.`;
         listWrapper.style.display = 'block';
-        // fileList.textContent = `${downloadedFiles.slice(0, 20).join(', ')}...`;
         if (premiumArticles.length > 0) {
             try {
                 const premiumList = document.querySelector('div#premium-list');
@@ -988,21 +929,6 @@ document.addEventListener('DOMContentLoaded', async function () {
             }
         }
         abortBtn.style.display = 'none';
-        // extractBtn.style.display = 'inline';
-
-        // let searchTerm;
-        // if (searchType === 'expert') {
-        //     searchTerm = keywords;
-        // } else if (searchType === 'guided') {
-        //     searchTerm = allWords + ' ' + anyWords + ' ' + exactPhrase;
-        // }
-        // searchTerm = searchTerm
-        //     .trim()
-        //     .slice(0, 15)
-        //     .replaceAll('"', '')
-        //     .replaceAll(' ', '_');
-        // const zipFileName = `NYT_${searchTerm}_${format}_archive.zip`;
-        // await downloadZip(zipBlob, zipFileName);
         extractSpinner.style.display = 'none';
     }
 

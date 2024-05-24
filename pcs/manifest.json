@@ -2,7 +2,7 @@
     "manifest_version": 2,
     "name": "Press corpus scraper",
 
-    "version": "0.7",
+    "version": "0.8.1",
 
     "description": "Extraire et télécharger des articles de presse",
     "homepage_url": "https://github.com/fmoncomble/press_corpus_scraper",
@@ -23,6 +23,7 @@
         "*://*.theguardian.com/*",
         "*://*.nytimes.com/*",
         "*://*.humanite.fr/*",
+        "*://*.deutsche-digitale-bibliothek.de/user/apikey",
         "<all_urls>"
     ],
 
@@ -32,6 +33,7 @@
     },
 
     "browser_action": {
+        "default_popup": "popup.html",
         "default_icon": {
             "32": "icons/icon-32.png",
             "48": "icons/icon-48.png",
@@ -41,7 +43,8 @@
 
     "web_accessible_resources": [
         "content_scripts/guardianapi.html",
-        "content_scripts/nytimesapi.html"
+        "content_scripts/nytimesapi.html",
+        "content_scripts/dzpapi.html"
     ],
 
     "content_scripts": [
@@ -69,6 +72,19 @@
             "matches": ["https://www.nytimes.com/*"],
             "js": ["content_scripts/nytimes.js"],
             "css": ["content_scripts/nytimes.css"]
+        },
+        {
+            "matches": [
+                "https://www.deutsche-digitale-bibliothek.de/newspaper*"
+            ],
+            "js": ["content_scripts/dzp.js"],
+            "css": ["content_scripts/dzp.css"]
+        },
+        {
+            "matches": [
+                "https://www.deutsche-digitale-bibliothek.de/user/apikey"
+            ],
+            "js": ["content_scripts/dzpapikey.js"]
         },
         {
             "matches": ["https://www.humanite.fr/?*"],
@@ -103,6 +119,7 @@
                 "https://nouveau-europresse-com.proxy.unice.fr/Search/ResultMobile",
                 "https://nouveau-europresse-com.acces.bibliotheque-diderot.fr/Search/ResultMobile",
                 "https://nouveau-europresse-com.scd-proxy.uha.fr/Search/ResultMobile",
+                "https://nouveau-europresse-com.ezproxy.ensta-bretagne.fr/Search/ResultMobile",
                 "https://nouveau-europresse-com.ezproxy.u-paris.fr/Search/ResultMobile",
                 "https://nouveau-europresse-com.faraway.parisnanterre.fr/Search/ResultMobile",
                 "https://nouveau-europresse-com.scd1.univ-fcomte.fr/Search/ResultMobile",
@@ -159,7 +176,11 @@
                 "https://nouveau-europresse-com.proxy.utt.fr/Search/ResultMobile",
                 "https://nouveau-europresse-com.proxy.bnl.lu/Search/ResultMobile",
                 "https://nouveau-europresse-com.revproxy.escpeurope.eu/Search/ResultMobile",
-                "https://nouveau-europresse-com.univ-eiffel.idm.oclc.org/Search/ResultMobile"
+                "https://nouveau-europresse-com.univ-eiffel.idm.oclc.org/",
+                "https://nouveau-europresse-com.ezproxy.unilim.fr/Search/ResultMobile",
+                "https://nouveau-europresse-com.ezproxy.uphf.fr/Search/ResultMobile",
+                "https://nouveau-europresse-com.rennes-sb.idm.oclc.org/",
+                "https://nouveau-europresse-com.hub.tbs-education.fr/"
             ],
             "js": ["europresse/europresse.js"],
             "css": ["content_scripts/config.css", "europresse/europresse.css"]
