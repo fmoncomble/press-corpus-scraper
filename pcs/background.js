@@ -1,6 +1,6 @@
 chrome.runtime.onInstalled.addListener((details) => {
     if (details.reason === 'update') {
-        chrome.tabs.create({ url: 'changelog.html' });
+        chrome.tabs.create({ url: 'https://fmoncomble.github.io/press-corpus-scraper/changelog.html' });
     }
 });
 

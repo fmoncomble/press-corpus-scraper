@@ -1,8 +1,11 @@
 # Changelog
 
+**_Press Corpus Scraper_** has been updated! Here are the new features:
+
 ### 0.8.1-0.8.3
 
--   Bug fixes
+-   Bug fixes.
+-   Added changelog.
 
 ## 0.8
 
