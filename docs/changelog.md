@@ -11,10 +11,13 @@
 
 -   Enhanced user interaction with toolbar button and popup for source selection.  
     <img src="images/pcs-popup.png" style="display: inline"/><img src="images/pcs-popup-europresse.png" style="display: inline"/>
-    -   Remember to pin the extension to the toolbar!
+    -   Remember to pin the extension to the toolbar!  
         <img src="images/pin-firefox.png" style="display: inline"/><img src="images/pin-chrome.png" style="display: inline"/>
--   **New!** Added support for the [**_Deutsches Zeitungsportal_**](https://www.deutsche-digitale-bibliothek.de/newspaper?lang=en), a collection of historical German newspapers from 1671 to 1994.
+-   **New!** Added support for the [**_Deutsches Zeitungsportal_**](https://www.deutsche-digitale-bibliothek.de/newspaper?lang=en), a collection of historical German newspapers from 1671 to 1994.  
     <img src="images/dzp.png"/>
+    - Limitations:
+        - The API returns whole newspaper pages rather than individual articles.
+        - The digitization of older newspaper issues printed in Fraktur may not be reliable.
 
 ## 0.7
 
