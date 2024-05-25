@@ -1,4 +1,28 @@
 document.addEventListener('DOMContentLoaded', () => {
+    async function checkNewVersion() {
+        const response = await fetch(
+            'https://www.github.com/fmoncomble/press-corpus-scraper/releases/latest'
+        );
+        if (response.redirected) {
+            const redirectUrl = response.url;
+            const manifest = chrome.runtime.getManifest();
+            const currentVersion = manifest.version;
+            const newVersion = redirectUrl.split('tag/v')[1];
+            if (currentVersion < newVersion) {
+                const updateDiv = document.getElementById('update');
+                const updateLink = updateDiv.querySelector('a');
+                if (typeof chrome !== 'undefined') {
+                    updateLink.setAttribute('href', 'https://github.com/fmoncomble/press-corpus-scraper/releases/latest/download/pcs.zip');
+                } else if (typeof browser !== 'undefined') {
+                    updateLink.setAttribute('href', 'https://github.com/fmoncomble/press-corpus-scraper/releases/latest/download/pcs.xpi');
+                }
+                updateDiv.style.display = 'block';
+            }
+        }
+    }
+
+    checkNewVersion();
+
     const sourceSelect = document.getElementById('source-select');
     const euroResetBtn = document.getElementById('euro-reset');
     const europresseSelect = document.getElementById('europresse-select');
@@ -8,7 +32,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const partnersFileUrl = chrome.runtime.getURL('europartners.json');
 
-    const guardianapiurl = chrome.runtime.getURL('content_scripts/guardianapi.html');
+    const guardianapiurl = chrome.runtime.getURL(
+        'content_scripts/guardianapi.html'
+    );
     const nytapiurl = chrome.runtime.getURL('content_scripts/nytimesapi.html');
     const dzpapiurl = chrome.runtime.getURL('content_scripts/dzpapi.html');
 
