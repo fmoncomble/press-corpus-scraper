@@ -5,7 +5,7 @@
     "version": "0.8.3",
 
     "description": "Extraire et télécharger des articles de presse",
-    "homepage_url": "https://github.com/fmoncomble/press_corpus_scraper",
+    "homepage_url": "https://fmoncomble.github.io/press-corpus-scraper",
     "icons": {
         "48": "icons/icon-48.png",
         "96": "icons/icon-96.png"
