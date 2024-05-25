@@ -22,7 +22,7 @@ Moncomble, F. (2024). *Press Corpus Scraper* (Version 0.8) [JavaScript]. Arras, 
   - Sélectionner le dossier décompressé
   
 Pensez à épingler l'extension à la barre d'outils :  
-<img src="images/pin-firefox.png" style="display: inline"/><img src="images/pin-chrome.png" style="display: inline"/>
+<img src="images/pin-firefox.png" style="display: inline" max-width="50%"/> <img src="images/pin-chrome.png" style="display: inline" max-width="50%"/>
  
 ## Mode d'emploi
 - Cliquer sur l'icône dans la barre d'outils et sélectionner une source,
