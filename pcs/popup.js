@@ -1,4 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
+    // Check for update
+    console.log('Firefox? ', navigator.userAgent.indexOf('Firefox'));
     async function checkNewVersion() {
         const response = await fetch(
             'https://www.github.com/fmoncomble/press-corpus-scraper/releases/latest'
@@ -11,27 +13,34 @@ document.addEventListener('DOMContentLoaded', () => {
             if (currentVersion < newVersion) {
                 const updateDiv = document.getElementById('update');
                 const updateLink = updateDiv.querySelector('a');
-                if (typeof chrome !== 'undefined') {
-                    updateLink.setAttribute('href', 'https://github.com/fmoncomble/press-corpus-scraper/releases/latest/download/pcs.zip');
-                } else if (typeof browser !== 'undefined') {
-                    updateLink.setAttribute('href', 'https://github.com/fmoncomble/press-corpus-scraper/releases/latest/download/pcs.xpi');
+                if (navigator.userAgent.indexOf('Firefox') != -1) {
+                    updateLink.setAttribute(
+                        'href',
+                        'https://github.com/fmoncomble/press-corpus-scraper/releases/latest/download/pcs.xpi'
+                    );
+                } else {
+                    updateLink.setAttribute(
+                        'href',
+                        'https://github.com/fmoncomble/press-corpus-scraper/releases/latest/download/pcs.zip'
+                    );
+                    updateLink.textContent = 'Download update';
                 }
                 updateDiv.style.display = 'block';
             }
         }
     }
-
     checkNewVersion();
 
+    // Declare popup elements
     const sourceSelect = document.getElementById('source-select');
     const euroResetBtn = document.getElementById('euro-reset');
     const europresseSelect = document.getElementById('europresse-select');
-    const instSelect = document.getElementById('inst-select');
+    const instInput = document.getElementById('inst-input');
     const europartnerDiv = document.getElementById('europartner');
     const goBtn = document.getElementById('go-btn');
 
+    // Get resources & URLs
     const partnersFileUrl = chrome.runtime.getURL('europartners.json');
-
     const guardianapiurl = chrome.runtime.getURL(
         'content_scripts/guardianapi.html'
     );
@@ -53,21 +62,7 @@ document.addEventListener('DOMContentLoaded', () => {
     let partners = {};
     let euroSource;
 
-    function getEuroSource(callback) {
-        chrome.storage.local.get(['eurosource'], function (result) {
-            const euroSource = result.eurosource || '';
-            callback(euroSource);
-        });
-    }
-
-    async function saveEuroSource() {
-        chrome.storage.local.set({ eurosource: euroSource });
-    }
-
-    getEuroSource(function (euroSourceResult) {
-        euroSource = euroSourceResult;
-    });
-
+    // Listen for source selection
     sourceSelect.addEventListener('change', async () => {
         source = sourceSelect.value;
         if (source === 'europresse') {
@@ -77,18 +72,105 @@ document.addEventListener('DOMContentLoaded', () => {
             } else if (!euroSource) {
                 euroResetBtn.style.display = 'none';
                 europresseSelect.style.display = 'block';
-                buildSelect();
+                const euroPartners = document.querySelectorAll(
+                    'label.inst-choice-div'
+                );
+                console.log('List of Europresse partners: ', Array.from(euroPartners));
+                if (Array.from(euroPartners).length === 0) {
+                    buildSelect();
+                }
+                instInput.focus();
             }
         } else {
             europresseSelect.style.display = 'none';
+            europartnerDiv.textContent = '';
+            euroResetBtn.style.display = 'none';
         }
     });
 
-    instSelect.addEventListener('change', () => {
-        euroSource = instSelect.value;
-        saveEuroSource();
+    // Handle storage of Europresse partner
+    function getEuroSource(callback) {
+        chrome.storage.local.get(['eurosource'], function (result) {
+            const euroSource = result.eurosource || '';
+            callback(euroSource);
+        });
+    }
+    async function saveEuroSource() {
+        chrome.storage.local.set({ eurosource: euroSource });
+    }
+    getEuroSource(function (euroSourceResult) {
+        euroSource = euroSourceResult;
     });
 
+    // Listen to filter input
+    instInput.oninput = () => {
+        const searchTerm = instInput.value;
+        const instList = document.getElementById('inst-list');
+        const choices = instList.getElementsByClassName('inst-choice-div');
+        Array.from(choices).forEach((choice) => {
+            const choice_name = choice.textContent;
+            choice.hidden = !choice_name
+                .toLowerCase()
+                .includes(searchTerm.toLowerCase());
+        });
+        const hiddenChoices = instList.querySelectorAll('label[hidden]');
+        console.log('Hidden choices: ', hiddenChoices);
+    };
+
+    // Set Europresse partner choice and save it to storage
+    function getInstChoice() {
+        const instChoiceInputs = document.querySelectorAll('input.inst-choice');
+        if (instChoiceInputs) {
+            for (i of instChoiceInputs) {
+                if (i.checked) {
+                    euroSource = i.value;
+                    saveEuroSource();
+                }
+            }
+        }
+    }
+
+    // Listen to Europresse partner reset button
+    euroResetBtn.addEventListener('click', async () => {
+        europartnerDiv.textContent = '';
+        euroSource = '';
+        saveEuroSource();
+        euroResetBtn.style.display = 'none';
+        europresseSelect.style.display = 'block';
+        buildSelect();
+        instInput.focus();
+    });
+
+    // Build list of Europresse partner
+    async function buildSelect() {
+        await getPartners();
+        for (p of partners) {
+            const instList = document.getElementById('inst-list');
+            const label = document.createElement('label');
+            label.classList.add('inst-choice-div');
+            const input = document.createElement('input');
+            input.setAttribute('type', 'radio');
+            const name = p.name;
+            input.value = name;
+            input.id = name;
+            input.classList.add('inst-choice');
+            input.name = 'inst';
+            label.appendChild(input);
+            const span = document.createElement('span');
+            span.textContent = name;
+            label.appendChild(span);
+            instList.appendChild(label);
+        }
+    }
+
+    // Retrieve list of Europresse partners from JSON file
+    async function getPartners() {
+        const partnersFile = await fetch(partnersFileUrl);
+        const data = await partnersFile.json();
+        partners = data.partners;
+    }
+
+    // Listen to 'Go' button
     goBtn.addEventListener('click', async () => {
         if (source !== 'europresse') {
             for (src in sources) {
@@ -97,6 +179,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         } else if (source === 'europresse') {
             await getPartners();
+            getInstChoice();
             const selectedPartner = partners.find((p) => p.name === euroSource);
             if (selectedPartner) {
                 sourceUrl = selectedPartner.AUTH_URL;
@@ -107,31 +190,4 @@ document.addEventListener('DOMContentLoaded', () => {
         chrome.tabs.create({ url: sourceUrl });
         window.close();
     });
-
-    euroResetBtn.addEventListener('click', async () => {
-        europartnerDiv.textContent = '';
-        euroSource = '';
-        saveEuroSource();
-        euroResetBtn.style.display = 'none';
-        europresseSelect.style.display = 'block';
-        buildSelect();
-    });
-
-    async function buildSelect() {
-        await getPartners();
-        for (p of partners) {
-            const option = document.createElement('option');
-            const name = p.name;
-            option.value = name;
-            option.textContent = name;
-            instSelect.appendChild(option);
-        }
-        instSelect.value = '';
-    }
-
-    async function getPartners() {
-        const partnersFile = await fetch(partnersFileUrl);
-        const data = await partnersFile.json();
-        partners = data.partners;
-    }
 });

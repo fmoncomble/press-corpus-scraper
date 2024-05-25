@@ -1,6 +1,11 @@
 # Changelog
 
-**_Press Corpus Scraper_** has been updated! Here are the new features:
+**_Press Corpus Scraper_ has been updated!** Here are the new features:
+
+### 0.8.4
+
+-   Added update notification mechanism for Firefox users.
+-   Improved UI for choosing Europresse institutional partner.
 
 ### 0.8.1-0.8.3
 

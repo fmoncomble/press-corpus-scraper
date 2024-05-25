@@ -9,6 +9,10 @@
         <div id="title">
             <img src="icons/pcs-title.svg" width="230" />
         </div>
+        <div id="update" style="display: none">
+            New version available!<br /><a id="update-link">Update</a
+            ><br /><br />
+        </div>
         <div>
             <label for="source-select">Select source:</label>
             <select name="source-select" id="source-select">
@@ -28,12 +32,13 @@
                 Reset Institution
             </button>
         </div>
-        <div id="europresse-select" style="display: none">
-            <label for="inst-input">Select your institution:</label>
-            <select id="inst-select">
-                <option value="" disabled>Select your institution</option>
-            </select>
-        </div>
+        <form id="europresse-select" style="display: none">
+            <fieldset>
+            <legend>Select your institution:</legend>
+            <input id="inst-input" type="search" placeholder="Filter by name..." />
+                <div id="inst-list"></div>
+            </fieldset>
+        </form>
         <div>
             <button id="go-btn">Go</button>
         </div>

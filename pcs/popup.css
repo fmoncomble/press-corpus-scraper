@@ -1,7 +1,7 @@
 html {
     border: none;
     border-radius: 10px;
-    width: 272px;
+    width: 300px;
 }
 
 body {
@@ -10,25 +10,12 @@ body {
     font-family: 'GuardianTextSans', 'Guardian Text Sans Web', 'Helvetica Neue',
         Helvetica, Arial, 'Lucida Grande', sans-serif;
     font-size: small;
-    width: 236px;
-    height: 210px;
+    width: 250px;
+    height: auto;
     padding: 10px;
+    padding-bottom: 20px;
     color: #00254c;
-}
-
-select,
-button {
-    background-color: white;
-    border: solid 1px #00254c;
-    color: #00254c;
-    cursor: pointer;
-    width: 195px;
     overflow: hidden;
-    padding: 5px;
-    border-radius: 5px;
-    margin: 5px;
-    font-family: 'GuardianTextSans', 'Guardian Text Sans Web', 'Helvetica Neue',
-        Helvetica, Arial, 'Lucida Grande', sans-serif;
 }
 
 div#title {
@@ -40,4 +27,86 @@ div#title {
 a#update-link {
     font-weight: bold;
     color: #00254c;
+}
+
+a#update-link:hover {
+    color: #0056b3;
+}
+
+a#update-link:active {
+    color: #006fe6;
+}
+
+select,
+button {
+    background-color: white;
+    border: solid 1px #00254c;
+    color: #00254c;
+    width: 195px;
+    overflow: hidden;
+    padding: 5px;
+    border-radius: 5px;
+    margin: 5px;
+    font-family: 'GuardianTextSans', 'Guardian Text Sans Web', 'Helvetica Neue',
+        Helvetica, Arial, 'Lucida Grande', sans-serif;
+}
+
+button {
+    cursor: pointer;
+}
+
+select:hover,
+button:hover {
+    background-color: #eee;
+}
+
+input#inst-input {
+    background-color: white;
+    border: solid 1px #00254c;
+    color: #00254c;
+    width: 100%;
+    padding: 5px;
+    border-radius: 4px;
+    margin-bottom: 5px;
+}
+
+fieldset {
+    border: solid 1px #ddd;
+    border-radius: 4px;
+    padding: 4px;
+    margin-bottom: 10px;
+}
+
+div#inst-list {
+    max-height: 320px;
+    overflow: hidden scroll;
+    text-align: left;
+    scrollbar-width: thin;
+}
+
+label.inst-choice-div {
+    border: solid 1px #00254c;
+    height: auto;
+    border-radius: 4px;
+    margin-bottom: 4px;
+    margin-right: 4px;
+    padding: 4px;
+    display: block;
+    cursor: pointer;
+}
+
+label.inst-choice-div:hover {
+    background-color: #eee;
+}
+
+label.inst-choice-div:active {
+    background-color: #ddd;
+}
+
+label[hidden] {
+    display: none;
+}
+
+span {
+    margin-left: 10px;
 }

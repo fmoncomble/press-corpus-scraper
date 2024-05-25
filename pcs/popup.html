@@ -32,12 +32,13 @@
                 Reset Institution
             </button>
         </div>
-        <div id="europresse-select" style="display: none">
-            <label for="inst-input">Select your institution:</label>
-            <select id="inst-select">
-                <option value="" disabled>Select your institution</option>
-            </select>
-        </div>
+        <form id="europresse-select" style="display: none">
+            <fieldset>
+            <legend>Select your institution:</legend>
+            <input id="inst-input" type="search" placeholder="Filter by name..." />
+                <div id="inst-list"></div>
+            </fieldset>
+        </form>
         <div>
             <button id="go-btn">Go</button>
         </div>
