@@ -30,7 +30,8 @@ Remember to pin the extension to the toolbar:
 
 ## Instructions for use
 
--   Click the icon in the toolbar and choose a source,
+-   Click the icon in the toolbar and choose a source:
+    <img src="images/pcs-popup.png"/>
 -   or navigate to a supported website:
     -   [_Le Figaro_](https://recherche.lefigaro.fr/)
     -   [_L'Humanité_](https://www.humanite.fr/)
