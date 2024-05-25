@@ -25,7 +25,8 @@ Moncomble, F. (2024). _Press Corpus Scraper_ (Version 0.8) [JavaScript]. Arras, 
     -   Click "Load unpacked".
     -   Select the unzipped folder
 
-Remember to pin the extension to the toolbar
+Remember to pin the extension to the toolbar:  
+<img src="images/pin-firefox.png" style="display: inline"/><img src="images/pin-chrome.png" style="display: inline"/>
 
 ## Instructions for use
 

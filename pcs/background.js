@@ -1,3 +1,9 @@
+chrome.runtime.onInstalled.addListener((details) => {
+    if (details.reason === 'update') {
+        chrome.tabs.create({ url: 'changelog.html' });
+    }
+});
+
 let url;
 let doc;
 let pageNo;
@@ -336,15 +342,15 @@ async function performExtractAndSave(url) {
                             )
                             .join('\n\n');
 
-                            if (!text) {
-                                errorMessage =
-                                    '“' +
-                                    titleDiv.textContent.trim() +
-                                    '...” n’est pas un article.';
-                                errorFiles.push(url);
-                                errorMessages.push(errorMessage);
-                                return;
-                            }
+                        if (!text) {
+                            errorMessage =
+                                '“' +
+                                titleDiv.textContent.trim() +
+                                '...” n’est pas un article.';
+                            errorFiles.push(url);
+                            errorMessages.push(errorMessage);
+                            return;
+                        }
 
                         let author;
                         if (authorElement) {
@@ -504,9 +510,21 @@ async function performExtractAndSave(url) {
 
                         if (selectedFormat === 'ira') {
                             extension = '.txt';
-                            const title = titleDiv.textContent.replaceAll(/[\.\?\!:;,\"'‘’“”«»]/g, ' ').trim().replaceAll(/\s/g, '_').replaceAll('__', '_');
-                            author = author.replaceAll(/[\.\?\!:;,\"'‘’“”«»]/g, ' ').trim().replaceAll(/\s/g, '_').replaceAll('__', '_');
-                            pubName = pubName.replaceAll(/[\.\?\!:;,\"'‘’“”]/g, ' ').trim().replaceAll(/\s/g, '_').replaceAll('__', '_');
+                            const title = titleDiv.textContent
+                                .replaceAll(/[\.\?\!:;,\"'‘’“”«»]/g, ' ')
+                                .trim()
+                                .replaceAll(/\s/g, '_')
+                                .replaceAll('__', '_');
+                            author = author
+                                .replaceAll(/[\.\?\!:;,\"'‘’“”«»]/g, ' ')
+                                .trim()
+                                .replaceAll(/\s/g, '_')
+                                .replaceAll('__', '_');
+                            pubName = pubName
+                                .replaceAll(/[\.\?\!:;,\"'‘’“”]/g, ' ')
+                                .trim()
+                                .replaceAll(/\s/g, '_')
+                                .replaceAll('__', '_');
                             fileContent = `\n**** *source_${pubName} *title_${title} *author_${author} *date_${date}\n\n${subhed}\n\n${text}`;
                         }
 
