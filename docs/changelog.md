@@ -6,6 +6,7 @@
 
 -   Bug fixes.
 -   Added changelog.
+-   Added update notification mechanism for Chrome/Edge users.
 
 ## 0.8
 
@@ -15,9 +16,9 @@
         <img src="images/pin-firefox.png" style="display: inline"/><img src="images/pin-chrome.png" style="display: inline"/>
 -   **New!** Added support for the [**_Deutsches Zeitungsportal_**](https://www.deutsche-digitale-bibliothek.de/newspaper?lang=en), a collection of historical German newspapers from 1671 to 1994.  
     <img src="images/dzp.png"/>
-    - Limitations:
-        - The API returns whole newspaper pages rather than individual articles.
-        - The digitization of older newspaper issues printed in Fraktur may not be reliable.
+    -   Limitations:
+        -   The API returns whole newspaper pages rather than individual articles.
+        -   The digitization of older newspaper issues printed in Fraktur may not be reliable.
 
 ## 0.7
 
