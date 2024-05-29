@@ -2,6 +2,10 @@
 
 **_Press Corpus Scraper_ has been updated!** Here are the new features:
 
+### 0.9.1
+
+-   Fixed bug when _Süddeutsche Zeitung_ search returns less than 50 results.
+
 ## 0.9
 
 -   **New!** Added support for the _Süddeutsche Zeitung_.
