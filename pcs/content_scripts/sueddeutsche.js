@@ -22,11 +22,7 @@ window.onload = function () {
         .value.trim();
     // S'il est présent : définir le nombre total de résultats
     const resultsNumberContainer = document.querySelector('p.css-1ycagq6');
-    const resultsNumber = Number(
-        resultsNumberContainer.textContent
-            .replaceAll(/\D/gu, '')
-            .trim()
-    );
+    const resultsNumber = null;
     // S'il est pertinent : nombre de résultats par page
     const resultsNumberPerPageDef = 50;
     let pagesNumber; // S'il est présent sur la page (ex. boutons de pagination en bas de la page) : nombre total de pages de résultats. Sinon, passer les lignes suivantes en commentaire (les faire précéder de deux barres obliques //)

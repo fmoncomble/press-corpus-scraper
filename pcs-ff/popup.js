@@ -34,7 +34,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const manifest = chrome.runtime.getManifest();
     const currentVersion = manifest.version;
     const versionDiv = document.getElementById('version');
-    versionDiv.textContent = `v${currentVersion}`;
+    versionDiv.textContent = `${currentVersion}`;
 
     // Declare popup elements
     const sourceSelect = document.getElementById('source-select');
@@ -57,7 +57,7 @@ document.addEventListener('DOMContentLoaded', () => {
         lefigaro: 'https://recherche.lefigaro.fr/',
         lepoint: 'https://www.lepoint.fr/recherche/',
         lhumanite: 'https://www.humanite.fr/',
-        sueddeutsche: 'https://www.sueddeutsche.de/suche',
+        sueddeutsche: 'https://www.sueddeutsche.de/suche?search=',
         guardian: guardianapiurl,
         nyt: nytapiurl,
         dzp: dzpapiurl,

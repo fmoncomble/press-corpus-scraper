@@ -18,9 +18,7 @@ const searchTermContainerDef = 'input[name="search"]';
 const searchTerm = document.querySelector(searchTermContainerDef).value.trim();
 // S'il est présent : définir le nombre total de résultats
 const resultsNumberContainer = document.querySelector('p.css-1ycagq6');
-const resultsNumber = Number(
-    resultsNumberContainer.textContent.replaceAll(/\D/gu, '').trim()
-);
+const resultsNumber = null;
 // S'il est pertinent : nombre de résultats par page
 const resultsNumberPerPageDef = 50;
 let pagesNumber; // S'il est présent sur la page (ex. boutons de pagination en bas de la page) : nombre total de pages de résultats. Sinon, passer les lignes suivantes en commentaire (les faire précéder de deux barres obliques //)
@@ -117,9 +115,9 @@ variableDiv.textContent = JSON.stringify(variables);
 document.body.appendChild(variableDiv);
 
 var jsZipScript = document.createElement('script');
-jsZipScript.src = browser.extension.getURL('jszip.min.js');
+jsZipScript.src = browser.runtime.getURL('jszip.min.js');
 document.documentElement.appendChild(jsZipScript);
 
 var scrollerScript = document.createElement('script');
-scrollerScript.src = browser.extension.getURL('content_scripts/scroller.js');
+scrollerScript.src = browser.runtime.getURL('content_scripts/scroller.js');
 document.documentElement.appendChild(scrollerScript);
