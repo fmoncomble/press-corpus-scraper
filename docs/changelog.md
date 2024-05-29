@@ -2,6 +2,10 @@
 
 **_Press Corpus Scraper_ has been updated!** Here are the new features:
 
+### 0.9.5
+
+-   Improved method for expanding list of search results on _SZ_.
+
 ### 0.9.1 - 0.9.4
 
 -   Fixed bug when _Süddeutsche Zeitung_ search returns less than 50 results.
@@ -10,7 +14,7 @@
 
 ## 0.9
 
--   **New!** Added support for the _Süddeutsche Zeitung_.
+-   📣 **New!** Added support for the _Süddeutsche Zeitung_.
 -   Better popup layout.
 -   Bug fixes.
 
@@ -31,7 +35,7 @@
     <img src="images/pcs-popup.png" style="display: inline"/><img src="images/pcs-popup-europresse.png" style="display: inline"/>
     -   Remember to pin the extension to the toolbar!  
         <img src="images/pin-firefox.png" style="display: inline"/><img src="images/pin-chrome.png" style="display: inline"/>
--   **New!** Added support for the [**_Deutsches Zeitungsportal_**](https://www.deutsche-digitale-bibliothek.de/newspaper?lang=en), a collection of historical German newspapers from 1671 to 1994.  
+-   📣 **New!** Added support for the [**_Deutsches Zeitungsportal_**](https://www.deutsche-digitale-bibliothek.de/newspaper?lang=en), a collection of historical German newspapers from 1671 to 1994.  
     <img src="images/dzp.png"/>
     -   Limitations:
         -   The API returns whole newspaper pages rather than individual articles.
@@ -43,7 +47,7 @@
 
 ## 0.6
 
--   **New!** Added support for the generation of text files formatted for Iramuteq.
+-   📣 **New!** Added support for the generation of text files formatted for Iramuteq.
 -   UI bug fixes.
 
 ## 0.5
@@ -66,7 +70,7 @@
 
 ## 0.4
 
--   **New!** Added support for Europresse
+-   📣 **New!** Added support for Europresse
 
 ### 0.3.7
 
@@ -78,7 +82,7 @@
 
 ### 0.3.5
 
--   **New!** Added support for _L'Humanité_.
+-   📣 **New!** Added support for _L'Humanité_.
 -   Bug fixes.
 
 ### 0.3.1 - 0.3.4
@@ -87,11 +91,11 @@
 
 ## 0.3
 
--   **New!** Added support for _The Guardian_ and _The New York Times_ APIs.
+-   📣 **New!** Added support for _The Guardian_ and _The New York Times_ APIs.
 
 ### 0.2.3
 
--   **New!** Added support for _Le Point_.
+-   📣 **New!** Added support for _Le Point_.
 -   Code optimization.
 
 ### 0.2.2
