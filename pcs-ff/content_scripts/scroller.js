@@ -433,21 +433,20 @@ async function performExtractAndSave(url) {
         nextUrl = url;
     }
 
+    resultsNumber = Number(
+        document
+            .querySelector('p.css-1ycagq6')
+            .textContent.replaceAll(/\D/gu, '')
+            .trim()
+    );
+
     if (extractAll) {
         maxResults = resultsNumber;
     }
 
-    console.log('Max results: ', maxResults);
-
-    // if (maxResults > resultsNumberPerPageDef) {
-    //     console.log(
-    //         'Need to click next button: ',
-    //         document.querySelector(nextButtonDef)
-    //     );
-    //     await clickNext();
-    // }
-
-    await clickNext();
+    if (resultsNumber > resultsNumberPerPageDef) {
+        await clickNext();
+    }
 
     function clickNext() {
         const numberOfPages =

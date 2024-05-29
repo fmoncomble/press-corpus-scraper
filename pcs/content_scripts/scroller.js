@@ -434,21 +434,23 @@ window.addEventListener('script1Loaded', function () {
             nextUrl = url;
         }
 
+        resultsNumber = Number(
+            document
+                .querySelector('p.css-1ycagq6')
+                .textContent.replaceAll(/\D/gu, '')
+                .trim()
+        );
+        console.log('Number of results: ', resultsNumber);
+
         if (extractAll) {
             maxResults = resultsNumber;
         }
 
         console.log('Max results: ', maxResults);
 
-        // if (maxResults > resultsNumberPerPageDef) {
-        //     console.log(
-        //         'Need to click next button: ',
-        //         document.querySelector(nextButtonDef)
-        //     );
-        //     await clickNext();
-        // }
-
-        await clickNext();
+        if (resultsNumber > resultsNumberPerPageDef) {
+            await clickNext();
+        }
 
         function clickNext() {
             const numberOfPages =
@@ -995,7 +997,4 @@ window.addEventListener('script1Loaded', function () {
         }
         return null;
     }
-
-    // });
-    // })();
 });

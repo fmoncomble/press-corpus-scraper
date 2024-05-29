@@ -10,7 +10,6 @@ window.onload = function () {
 
     // Désigner le point d'insertion de l'encadré de l'extension
     const anchorDef = 'div.css-xowju8';
-    console.log('Anchor = ', document.querySelector(anchorDef));
 
     // --- Structure de la page de résultats --- //
 
@@ -21,16 +20,13 @@ window.onload = function () {
     const searchTerm = document
         .querySelector(searchTermContainerDef)
         .value.trim();
-    console.log('Search term = ', searchTerm);
     // S'il est présent : définir le nombre total de résultats
     const resultsNumberContainer = document.querySelector('p.css-1ycagq6');
-    console.log('Results number : ', resultsNumberContainer.textContent);
     const resultsNumber = Number(
         resultsNumberContainer.textContent
             .replaceAll(/\D/gu, '')
             .trim()
     );
-    console.log('Number of results = ', resultsNumber);
     // S'il est pertinent : nombre de résultats par page
     const resultsNumberPerPageDef = 50;
     let pagesNumber; // S'il est présent sur la page (ex. boutons de pagination en bas de la page) : nombre total de pages de résultats. Sinon, passer les lignes suivantes en commentaire (les faire précéder de deux barres obliques //)
@@ -43,10 +39,8 @@ window.onload = function () {
     // }
     // Elément contenant la liste des résultats de recherche
     const articleListDef = 'section.css-1x9agfi';
-    console.log('Article list = ', document.querySelector(articleListDef));
     // Elément contenant chaque résultat
     const articlesDef = 'article[data-manual="teaser-s"]';
-    console.log('First article: ', document.querySelector(articlesDef));
     // Logique de pagination : si les pages sont numérotées dans l'URL (parfois seulement à partir de la 2e page de résultats, ex. https://www.journal.fr/recherche/?keywords=termes%20de%20recherche&page=2), indiquer 'true', sinon 'false' (sans guillemets), puis indiquer le nom du paramètre ('page', 'p' ou autre).
     const nextPageDef = false;
     const pageParam = null;
@@ -127,7 +121,6 @@ window.onload = function () {
     };
     variableDiv.textContent = JSON.stringify(variables);
     document.body.appendChild(variableDiv);
-    console.log('Variables div = ', variableDiv);
     
     const event = new CustomEvent('script1Loaded');
     window.dispatchEvent(event);
