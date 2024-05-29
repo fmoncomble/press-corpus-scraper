@@ -1,4 +1,4 @@
-# Changelog
+# Release notes
 
 **_Press Corpus Scraper_ has been updated!** Here are the new features:
 
