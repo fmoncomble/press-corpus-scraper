@@ -131,13 +131,11 @@ window.addEventListener('script1Loaded', function () {
 
     checkbox.addEventListener('change', function () {
         if (checkbox.checked) {
-            console.log('Full extraction ahead');
             extractButton.textContent = 'Tout extraire';
             label.style.opacity = '1';
             maxDiv.style.display = 'none';
             extractAll = true;
         } else {
-            console.log('Select extraction');
             extractButton.textContent = `Extraire l'échantillon`;
             label.style.opacity = '0.6';
             maxDiv.style.display = 'block';
@@ -151,7 +149,6 @@ window.addEventListener('script1Loaded', function () {
     abortButton.textContent = 'Annuler';
     abortButton.addEventListener('click', function (event) {
         event.preventDefault();
-        console.log('Abort button clicked');
         abortButton.textContent = 'Annulation en cours...';
         abortExtraction = true;
     });
@@ -190,7 +187,6 @@ window.addEventListener('script1Loaded', function () {
     // Listen to extraction button
     extractButton.addEventListener('click', async function (event) {
         event.preventDefault();
-        console.log('Button clicked: firing extraction');
         // Hide the extraction buttons
         extractButtonsContainer.style.display = 'none';
         abortButton.style.display = 'inline';
@@ -440,13 +436,10 @@ window.addEventListener('script1Loaded', function () {
                 .textContent.replaceAll(/\D/gu, '')
                 .trim()
         );
-        console.log('Number of results: ', resultsNumber);
 
         if (extractAll) {
             maxResults = resultsNumber;
         }
-
-        console.log('Max results: ', maxResults);
 
         if (resultsNumber > resultsNumberPerPageDef) {
             await clickNext();
@@ -455,7 +448,6 @@ window.addEventListener('script1Loaded', function () {
         function clickNext() {
             const numberOfPages =
                 Math.ceil(maxResults / resultsNumberPerPageDef) + 1;
-            console.log('Number of pages to parse:', numberOfPages);
 
             return new Promise((resolve, reject) => {
                 let count = 0;
@@ -465,7 +457,9 @@ window.addEventListener('script1Loaded', function () {
                         try {
                             const nextButton =
                                 document.querySelector(nextButtonDef);
-                            console.log('Clicking next button: ', nextButton);
+                            if (!nextButton) {
+                                resolve();
+                            }
                             nextButton.click();
                             count++;
                             extractionMessage.textContent = `Expansion de la liste de résultats x${count}...`;
@@ -492,7 +486,6 @@ window.addEventListener('script1Loaded', function () {
         errorMessages = [];
 
         try {
-            console.log('Processing URL ', nextUrl);
             let articles;
 
             let articleList = document.querySelector(articleListDef);
@@ -531,14 +524,11 @@ window.addEventListener('script1Loaded', function () {
                     return new URL(articleUrl).href;
                 })
                 .filter((url) => url !== null);
-            console.log('Number of articles to process = ', urls.length);
 
             for (u of urls) {
                 if (resultIndex >= maxResults || abortExtraction) {
-                    console.log('Max results reached');
                     break;
                 }
-                console.log('Processing ', u);
                 try {
                     let errorMessage;
                     const contentResponse = await fetch(u);
@@ -547,7 +537,6 @@ window.addEventListener('script1Loaded', function () {
                             ' (' + u.substring(0, 20) + '... ne répond pas.)';
                         errorFiles.push(u);
                         errorMessages.push(errorMessage);
-                        console.log('Skipping');
                         continue;
                     }
                     const content = await contentResponse.text();
@@ -564,10 +553,8 @@ window.addEventListener('script1Loaded', function () {
                             '... > n’est pas un article.';
                         errorFiles.push(u);
                         errorMessages.push(errorMessage);
-                        console.log('Skipping');
                         continue;
                     }
-                    console.log('Title: ', titleDiv.textContent);
 
                     const articleHeader =
                         contentDoc.querySelector(articleHeaderDef);
@@ -586,7 +573,6 @@ window.addEventListener('script1Loaded', function () {
                     if (premiumBanner) {
                         skippedFiles.push(u);
                         skippedTitles.push(titleDiv.textContent);
-                        console.log('Skipping');
                         continue;
                     }
 
@@ -610,7 +596,6 @@ window.addEventListener('script1Loaded', function () {
                             '...” n’est pas un article.';
                         errorFiles.push(u);
                         errorMessages.push(errorMessage);
-                        console.log('Skipping');
                         continue;
                     }
 
@@ -683,7 +668,6 @@ window.addEventListener('script1Loaded', function () {
                             '...” n’est pas un article.';
                         errorFiles.push(u);
                         errorMessages.push(errorMessage);
-                        console.log('Skipping');
                         continue;
                     }
 
@@ -889,7 +873,6 @@ window.addEventListener('script1Loaded', function () {
                     zip.file(baseFileName, fileContent);
                     resultIndex++;
                     extractionMessage.textContent = `Extraction de l'article ${resultIndex} sur ${maxResults} au format ${selectedFormat}...`;
-                    console.log('Articles processed: ', resultIndex);
                 } catch (error) {
                     console.error('Error: ', error);
                 }
