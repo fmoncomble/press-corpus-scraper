@@ -2,9 +2,10 @@
 
 **_Press Corpus Scraper_ has been updated!** Here are the new features:
 
-### 0.9.5
+### 0.9.5 - 0.9.6
 
 -   Improved method for expanding list of search results on _SZ_.
+-   Bug fix.
 
 ### 0.9.1 - 0.9.4
 

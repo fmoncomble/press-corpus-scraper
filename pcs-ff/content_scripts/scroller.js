@@ -850,7 +850,9 @@ async function performExtractAndSave(url) {
                     console.error('Error: ', error);
                 }
             }
-            if (
+            if (abortExtraction) {
+                break;
+            } else if (
                 resultIndex >= maxResults ||
                 Array.from(processedArticles).length >= resultsNumber
             ) {

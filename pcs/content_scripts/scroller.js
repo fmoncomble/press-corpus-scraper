@@ -874,7 +874,12 @@ window.addEventListener('script1Loaded', function () {
                         console.error('Error: ', error);
                     }
                 }
-                if (resultIndex >= maxResults || Array.from(processedArticles).length >= resultsNumber) {
+                if (abortExtraction) {
+                    break;
+                } else if (
+                    resultIndex >= maxResults ||
+                    Array.from(processedArticles).length >= resultsNumber
+                ) {
                     break;
                 } else {
                     await clickNext();
