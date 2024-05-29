@@ -2,9 +2,10 @@
 
 **_Press Corpus Scraper_ has been updated!** Here are the new features:
 
-### 0.9.1
+### 0.9.1 - 0.9.2
 
 -   Fixed bug when _Süddeutsche Zeitung_ search returns less than 50 results.
+-   Fixed bug when bottom of search page was reached.
 
 ## 0.9
 
@@ -17,7 +18,7 @@
 -   Added update notification mechanism for Firefox users.
 -   Improved UI for choosing Europresse institutional partner.
 
-### 0.8.1-0.8.3
+### 0.8.1 - 0.8.3
 
 -   Bug fixes.
 -   Added changelog.
@@ -49,7 +50,7 @@
 -   Overhauled query building for _Guardian_ and _NYT_ with two modes, `Guided` and `Expert`.
     <img src="images/guardian.png"/>
 
-### 0.4.6-0.4.8
+### 0.4.6 - 0.4.8
 
 -   Bug fixes
 -   Added API rate limit handling for _The Guardian_.
@@ -58,7 +59,7 @@
 
 -   Bug fix for generating acceptable Windows file names, removing reserved / illegal characters and words, and removing diacritics.
 
-### 0.4.1-0.4.4
+### 0.4.1 - 0.4.4
 
 -   Bug fixes.
 
@@ -79,7 +80,7 @@
 -   **New!** Added support for _L'Humanité_.
 -   Bug fixes.
 
-### 0.3.1-0.3.4
+### 0.3.1 - 0.3.4
 
 -   Bug fixes.
 
@@ -108,7 +109,7 @@
 
 -   Multi-site version.
 
-### 0.1.1-0.1.3
+### 0.1.1 - 0.1.3
 
 -   Bug fixes.
 
