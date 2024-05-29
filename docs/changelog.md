@@ -2,6 +2,12 @@
 
 **_Press Corpus Scraper_ has been updated!** Here are the new features:
 
+## 0.9
+
+-   **New!** Added support for the _Süddeutsche Zeitung_.
+-   Better popup layout.
+-   Bug fixes.
+
 ### 0.8.4
 
 -   Added update notification mechanism for Firefox users.

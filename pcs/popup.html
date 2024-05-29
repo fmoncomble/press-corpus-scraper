@@ -16,14 +16,22 @@
         <div>
             <label for="source-select">Select source:</label>
             <select name="source-select" id="source-select">
-                <option value="lemonde">Le Monde</option>
-                <option value="lefigaro">Le Figaro</option>
-                <option value="lepoint">Le Point</option>
-                <option value="lhumanite">L'Humanité</option>
-                <option value="guardian">The Guardian</option>
-                <option value="nyt">The New York Times</option>
-                <option value="dzp">Deutsches Zeitungsportal</option>
+                <option selected disabled>—</option>
                 <option value="europresse">Europresse</option>
+                <optgroup label="Presse française">
+                    <option value="lemonde">Le Monde</option>
+                    <option value="lefigaro">Le Figaro</option>
+                    <option value="lepoint">Le Point</option>
+                    <option value="lhumanite">L'Humanité</option>
+                </optgroup>
+                <optgroup label="English-speaking press">
+                    <option value="guardian">The Guardian</option>
+                    <option value="nyt">The New York Times</option>
+                </optgroup>
+                <optgroup label="Deutsche Zeitungen">
+                    <option value="dzp">Deutsches Zeitungsportal</option>
+                    <option value="sueddeutsche">Süddeutsche Zeitung</option>
+                </optgroup>
             </select>
         </div>
         <div id="europartner"></div>
@@ -34,8 +42,12 @@
         </div>
         <form id="europresse-select" style="display: none">
             <fieldset>
-            <legend>Select your institution:</legend>
-            <input id="inst-input" type="search" placeholder="Filter by name..." />
+                <legend>Select your institution:</legend>
+                <input
+                    id="inst-input"
+                    type="search"
+                    placeholder="Filter by name..."
+                />
                 <div id="inst-list"></div>
             </fieldset>
         </form>

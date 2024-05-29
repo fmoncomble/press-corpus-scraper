@@ -8,7 +8,7 @@ Une extension pour extraire et télécharger des articles de presse à des fins 
 
 Si vous utilisez cette extension pour vos travaux de recherche, merci de la référencer de la façon suivante :
 
-Moncomble, F. (2024). _Press Corpus Scraper_ (Version 0.8) [JavaScript]. Arras, France : Université d’Artois. Disponible à l'adresse : https://fmoncomble.github.io/press-corpus-scraper/
+Moncomble, F. (2024). _Press Corpus Scraper_ (Version 0.9) [JavaScript]. Arras, France : Université d’Artois. Disponible à l'adresse : https://fmoncomble.github.io/press-corpus-scraper/
 
 ## Installation
 
@@ -40,8 +40,9 @@ Pensez à épingler l'extension à la barre d'outils :
     -   [_The Guardian_](https://www.theguardian.com/)
     -   [_The New York Times_](https://www.nytimes.com/)
     -   [_Deutsches Zeitungsportal_](https://www.deutsche-digitale-bibliothek.de/newspaper)
+    -   [_Süddeutsche Zeitung_](https://www.sueddeutsche.de/)
     -   ou le portail **Europresse** de votre établissement : [liste des établissements pris en charge](europresse-list.md)
--   **Sites français / Europresse :**
+-   **Europresse & sites de journaux :**
 
     -   Effectuer une recherche par mot-clef
     -   (Facultatif : affiner la recherche)
@@ -54,10 +55,11 @@ Pensez à épingler l'extension à la barre d'outils :
             -   Firefox : l'archive .zip contenant les fichiers est automatiquement téléchargée dans le dossier par défaut
             -   Chrome/Edge : sélectionner le dossier de destination de l'archive .zip
 
--   **Sites étrangers :**
+-   **Guardian & New York Times :**
+
     -   Cliquer sur le bouton `PCScraper` en haut à droite dans la barre de menus du site pour ouvrir la fenêtre de recherche
         Exemple du _New York Times_ :  
-        <img width="268" alt="Screenshot 2024-02-03 at 08 09 34" src="https://github.com/fmoncomble/press-corpus-scraper/assets/59739627/9c2a975d-6933-4489-970e-6d34bc1015c0">  
+        <img width="268" alt="Screenshot 2024-02-03 at 08 09 34" src="https://github.com/fmoncomble/press-corpus-scraper/assets/59739627/9c2a975d-6933-4489-970e-6d34bc1015c0">
 
     -   Construire une requête dans l'interface, puis cliquer sur `Search`
     -   Choisir `Extract all` ou `Extract sample`
@@ -67,7 +69,7 @@ Pensez à épingler l'extension à la barre d'outils :
 
 ### Limites et problèmes connus
 
--   **Sites français :** même avec un compte abonné actif, il se peut que l'extension n'ait pas accès au texte intégral des articles premium (lorsque le cookie n'est pas accepté par le serveur distant). Dans ce cas, seuls les articles en accès libre sont récupérés, les autres étant listés sous forme de liens.
+-   **Sites de journaux :** même avec un compte abonné actif, il se peut que l'extension n'ait pas accès au texte intégral des articles premium (lorsque le cookie n'est pas accepté par le serveur distant). Dans ce cas, seuls les articles en accès libre sont récupérés, les autres étant listés sous forme de liens.
     -   _L'Humanité :_ à défaut d'abonnement, il est conseillé de créer un compte gratuit sur le site.
 -   **Europresse :**
     -   affiche les métadonnées des articles de façon très aléatoire, sans éléments HTML dédiés, ce qui peut donner lieu à des incohérences dans la structure des fichiers téléchargés (chapô en lieu et place du nom d'auteur.e, etc.). Ce n'est pas un problème de l'extension mais d'Europresse !

@@ -301,7 +301,6 @@ document.addEventListener('DOMContentLoaded', async function () {
                     Authorization: apiKey,
                 },
             });
-            console.log('Query response = ', queryResponse);
             if (queryResponse.status === 429) {
                 window.alert('Too many requests. Try again later.');
                 resultsOverview.textContent =
@@ -425,7 +424,6 @@ document.addEventListener('DOMContentLoaded', async function () {
     let rIndex = 1;
 
     async function extractArticles() {
-        console.log('Firing extraction');
         articles = [];
         let ids = new Set();
         searchContainer.style.display = 'none';
@@ -467,7 +465,6 @@ document.addEventListener('DOMContentLoaded', async function () {
                 processContainer.textContent = `Extracting page ${p} out of ${pagesTotal}...`;
                 processContainer.style.display = 'block';
                 nextQueryUrl = queryUrl + '&start=' + start;
-                console.log('URL being processed: ', nextQueryUrl);
                 const response = await fetch(nextQueryUrl, {
                     method: 'GET',
                     headers: {
@@ -484,14 +481,10 @@ document.addEventListener('DOMContentLoaded', async function () {
                 const data = await response.json();
                 const dataContent = data.response;
                 results = dataContent.docs;
-                console.log(
-                    'Number of results on page ' + p + ': ' + results.length
-                );
                 for (r of results) {
                     const date = r.publication_date.split('T')[0];
                     const id = r.id;
                     if (ids.has(id)) {
-                        console.log('Already extracted this article, skipping');
                         continue;
                     }
                     ids.add(id);
@@ -638,6 +631,7 @@ document.addEventListener('DOMContentLoaded', async function () {
             .replaceAll(' ', '_');
 
         const zipFileName = `DZP_${searchTerm}_${format}_archive.zip`;
+
         await downloadZip(zipBlob, zipFileName);
     }
 

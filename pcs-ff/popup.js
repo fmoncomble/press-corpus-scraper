@@ -52,12 +52,13 @@ document.addEventListener('DOMContentLoaded', () => {
         lefigaro: 'https://recherche.lefigaro.fr/',
         lepoint: 'https://www.lepoint.fr/',
         lhumanite: 'https://www.humanite.fr/',
+        sueddeutsche: 'https://www.sueddeutsche.de/',
         guardian: guardianapiurl,
         nyt: nytapiurl,
         dzp: dzpapiurl,
     };
 
-    let source = 'lemonde';
+    let source = '';
     let sourceUrl;
     let partners = {};
     let euroSource;

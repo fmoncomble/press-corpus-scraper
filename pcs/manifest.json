@@ -2,7 +2,7 @@
     "manifest_version": 2,
     "name": "Press corpus scraper",
 
-    "version": "0.8.4",
+    "version": "0.9",
 
     "description": "Extraire et télécharger des articles de presse",
     "homepage_url": "https://fmoncomble.github.io/press-corpus-scraper",
@@ -91,6 +91,14 @@
             "js": ["content_scripts/lhumanite.js", "content_scripts/config.js"],
             "css": [
                 "content_scripts/lhumanite.css",
+                "content_scripts/config.css"
+            ]
+        },
+        {
+            "matches": ["https://www.sueddeutsche.de/suche?*"],
+            "js": ["content_scripts/sueddeutsche.js", "content_scripts/scroller.js", "jszip.min.js"],
+            "css": [
+                "content_scripts/sueddeutsche.css",
                 "content_scripts/config.css"
             ]
         },

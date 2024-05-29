@@ -8,7 +8,7 @@ An extension for extracting and downloading press articles for text mining.
 
 If you use this extension for your research, please reference it as follows:
 
-Moncomble, F. (2024). _Press Corpus Scraper_ (Version 0.8) [JavaScript]. Arras, France: Université d'Artois. Available at: https://fmoncomble.github.io/press-corpus-scraper/
+Moncomble, F. (2024). _Press Corpus Scraper_ (Version 0.9) [JavaScript]. Arras, France: Université d'Artois. Available at: https://fmoncomble.github.io/press-corpus-scraper/
 
 ## Installation
 
@@ -40,8 +40,9 @@ Remember to pin the extension to the toolbar:
     -   [_The Guardian_](https://www.theguardian.com/)
     -   [_The New York Times_](https://www.nytimes.com/)
     -   [_Deutsches Zeitungsportal_](https://www.deutsche-digitale-bibliothek.de/newspaper)
-    -   or your institution's Europresse portal: [list of supported institutions](europresse-list.md)
--   **French websites and Europresse:**
+    -   [_Süddeutsche Zeitung_](https://www.sueddeutsche.de/)
+    -   or your institution's **Europresse** portal: [list of supported institutions](europresse-list.md)
+-   **Europresse & newspaper websites:**
     -   Search by keyword
     -   (Optional: refine your search)
     -   A box appears at the top of the results page. Example for _Le Monde_ :  
@@ -52,7 +53,7 @@ Remember to pin the extension to the toolbar:
         -   When extraction is complete :
             -   Firefox: the .zip archive containing the files is automatically downloaded to the default folder
             -   Chrome/Edge: select the destination folder for the .zip archive
--   **Other sites:**
+-   **Guardian & New York Times:**
 
     -   Click on the `PCScraper` button in the top right-hand corner of the site's menu bar to open the search window
         Example from the _New York Times_ :  
@@ -66,7 +67,7 @@ Remember to pin the extension to the toolbar:
 
 ### Known issues and limitations
 
--   **French sites:** even with an active subscription, the extension may not have access to the full text of paywalled articles (if the cookie is not accepted by the remote server). In that case, only free-access articles are retrieved, the others being listed as links.
+-   **Newspaper websites:** even with an active subscription, the extension may not have access to the full text of paywalled articles (if the cookie is not accepted by the remote server). In that case, only free-access articles are retrieved, the others being listed as links.
     -   _L'Humanité:_ without a subscription, it is advised to create a free account.
 -   **Europresse**
     -   handles article metadata rather randomly, with no dedicated HTML elements, which can lead to some inconsistency in the way they are rendered in downloaded files (subheads where author name should belong, etc.). This is not a limitation of the add-on but of Europresse!
