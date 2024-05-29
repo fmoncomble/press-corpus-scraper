@@ -1,4 +1,4 @@
-window.onload = function () {
+// window.onload = function () {
     console.log('Figaro PCS script injected');
 
     // -------- Début du code à modifier pour chaque site de presse -------- //
@@ -126,6 +126,6 @@ window.onload = function () {
     variableDiv.textContent = JSON.stringify(variables);
     document.body.appendChild(variableDiv);
 
-    const event = new CustomEvent('script1Loaded');
-    window.dispatchEvent(event);
-};
+    // const event = new CustomEvent('script1Loaded');
+    // window.dispatchEvent(event);
+// };

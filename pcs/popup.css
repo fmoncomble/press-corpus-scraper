@@ -21,6 +21,10 @@ body {
 div#title {
     font-weight: bold;
     font-size: x-large;
+    margin-bottom: 5px;
+}
+
+div#version {
     margin-bottom: 20px;
 }
 

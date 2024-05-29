@@ -31,6 +31,11 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     checkNewVersion();
 
+    const manifest = chrome.runtime.getManifest();
+    const currentVersion = manifest.version;
+    const versionDiv = document.getElementById('version');
+    versionDiv.textContent = `v${currentVersion}`;
+
     // Declare popup elements
     const sourceSelect = document.getElementById('source-select');
     const euroResetBtn = document.getElementById('euro-reset');
@@ -50,9 +55,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const sources = {
         lemonde: 'https://www.lemonde.fr/recherche/',
         lefigaro: 'https://recherche.lefigaro.fr/',
-        lepoint: 'https://www.lepoint.fr/',
+        lepoint: 'https://www.lepoint.fr/recherche/',
         lhumanite: 'https://www.humanite.fr/',
-        sueddeutsche: 'https://www.sueddeutsche.de/',
+        sueddeutsche: 'https://www.sueddeutsche.de/suche',
         guardian: guardianapiurl,
         nyt: nytapiurl,
         dzp: dzpapiurl,
