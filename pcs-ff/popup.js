@@ -10,22 +10,27 @@ document.addEventListener('DOMContentLoaded', () => {
             const manifest = chrome.runtime.getManifest();
             const currentVersion = manifest.version;
             const newVersion = redirectUrl.split('tag/v')[1];
-            if (currentVersion < newVersion) {
-                const updateDiv = document.getElementById('update');
-                const updateLink = updateDiv.querySelector('a');
-                if (navigator.userAgent.indexOf('Firefox') != -1) {
-                    updateLink.setAttribute(
-                        'href',
-                        'https://github.com/fmoncomble/press-corpus-scraper/releases/latest/download/pcs.xpi'
-                    );
-                } else {
-                    updateLink.setAttribute(
-                        'href',
-                        'https://github.com/fmoncomble/press-corpus-scraper/releases/latest/download/pcs.zip'
-                    );
-                    updateLink.textContent = 'Download update';
+            const cV = currentVersion.split('.');
+            const nV = newVersion.split('.');
+            for (let i = 0; i < newVersion.length; i++) {
+                if (Number(nV[i]) > Number(cV[i])) {
+                    const updateContainer =
+                        document.getElementById('update-container');
+                    if (navigator.userAgent.indexOf('Firefox') != -1) {
+                        updateLink.setAttribute(
+                            'href',
+                            'https://github.com/fmoncomble/press-corpus-scraper/releases/latest/download/pcs.xpi'
+                        );
+                    } else {
+                        updateLink.setAttribute(
+                            'href',
+                            'https://github.com/fmoncomble/press-corpus-scraper/releases/latest/download/pcs.zip'
+                        );
+                        updateLink.textContent =
+                            chrome.i18n.getMessage('dlUpdateLinkText');
+                    }
+                    updateContainer.style.display = 'block';
                 }
-                updateDiv.style.display = 'block';
             }
         }
     }
@@ -37,12 +42,25 @@ document.addEventListener('DOMContentLoaded', () => {
     versionDiv.textContent = `${currentVersion}`;
 
     // Declare popup elements
+    const updateDiv = document.getElementById('update');
+    const updateLink = document.querySelector('a');
     const sourceSelect = document.getElementById('source-select');
-    const euroResetBtn = document.getElementById('euro-reset');
+    const sourceLabel = document.getElementById('source-label');
     const europresseSelect = document.getElementById('europresse-select');
+    const instLegend = document.getElementById('inst-legend');
     const instInput = document.getElementById('inst-input');
     const europartnerDiv = document.getElementById('europartner');
+    const euroResetBtn = document.getElementById('euro-reset');
     const goBtn = document.getElementById('go-btn');
+
+    // Localize elements
+    updateDiv.textContent = chrome.i18n.getMessage('updateNotif');
+    updateLink.textContent = chrome.i18n.getMessage('updateLinkText');
+    sourceLabel.textContent = chrome.i18n.getMessage('sourceSelect');
+    euroResetBtn.textContent = chrome.i18n.getMessage('instReset');
+    instLegend.textContent = chrome.i18n.getMessage('instSelect');
+    instInput.placeholder = chrome.i18n.getMessage('instPlaceholder');
+    goBtn.textContent = chrome.i18n.getMessage('go');
 
     // Get resources & URLs
     const partnersFileUrl = chrome.runtime.getURL('europartners.json');
@@ -81,7 +99,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 const euroPartners = document.querySelectorAll(
                     'label.inst-choice-div'
                 );
-                console.log('List of Europresse partners: ', Array.from(euroPartners));
+                console.log(
+                    'List of Europresse partners: ',
+                    Array.from(euroPartners)
+                );
                 if (Array.from(euroPartners).length === 0) {
                     buildSelect();
                 }

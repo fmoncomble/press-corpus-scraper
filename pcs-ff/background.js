@@ -1,6 +1,8 @@
 chrome.runtime.onInstalled.addListener((details) => {
     if (details.reason === 'update') {
-        chrome.tabs.create({ url: 'https://fmoncomble.github.io/press-corpus-scraper/changelog.html' });
+        chrome.tabs.create({
+            url: 'https://fmoncomble.github.io/press-corpus-scraper/changelog.html',
+        });
     }
 });
 
@@ -196,11 +198,12 @@ async function performExtractAndSave(url) {
                     try {
                         let errorMessage;
                         const contentResponse = await fetch(url);
-                        if (!contentResponse.ok) {
+                        if (!contentResponse || !contentResponse.ok) {
                             errorMessage =
-                                ' (' +
+                                '< ' +
                                 url.substring(0, 20) +
-                                '... ne répond pas.)';
+                                '... >' +
+                                chrome.i18n.getMessage('noResponse');
                             errorFiles.push(url);
                             errorMessages.push(errorMessage);
                             return;
@@ -216,7 +219,8 @@ async function performExtractAndSave(url) {
                             errorMessage =
                                 '< ' +
                                 url.substring(0, 20) +
-                                '... > n’est pas un article.';
+                                '... >' +
+                                chrome.i18n.getMessage('errorMessage');
                             errorFiles.push(url);
                             errorMessages.push(errorMessage);
                             return;
@@ -264,7 +268,8 @@ async function performExtractAndSave(url) {
                             errorMessage =
                                 '“' +
                                 titleDiv.textContent.trim() +
-                                '...” n’est pas un article.';
+                                '...”' +
+                                chrome.i18n.getMessage('errorMessage');
                             errorFiles.push(url);
                             errorMessages.push(errorMessage);
                             return;
@@ -346,7 +351,8 @@ async function performExtractAndSave(url) {
                             errorMessage =
                                 '“' +
                                 titleDiv.textContent.trim() +
-                                '...” n’est pas un article.';
+                                '...”' +
+                                chrome.i18n.getMessage('errorMessage');
                             errorFiles.push(url);
                             errorMessages.push(errorMessage);
                             return;
@@ -361,7 +367,7 @@ async function performExtractAndSave(url) {
                                 .replaceAll('&', '&amp;')
                                 .trim();
                         } else {
-                            author = 'auteur-inconnu';
+                            author = chrome.i18n.getMessage('unknownAuthor');
                         }
 
                         let date;
@@ -389,7 +395,7 @@ async function performExtractAndSave(url) {
                             if (dateElementValue && isIsoDate()) {
                                 date = dateElement
                                     ? dateElementValue.split('T')[0]
-                                    : 'date-inconnue';
+                                    : chrome.i18n.getMessage('unknownDate');
                             } else if (
                                 (dateElementValue && !isIsoDate()) ||
                                 (dateElement && !dateElementValue)
@@ -436,7 +442,7 @@ async function performExtractAndSave(url) {
                                 !frenchDateString &&
                                 !dateString
                             ) {
-                                date = 'date-inconnue';
+                                date = chrome.i18n.getMessage('unknownDate');
                             }
                         } else if (dateLogic === 'url') {
                             date = buildDateFromUrl(url);
