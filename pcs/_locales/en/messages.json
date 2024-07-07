@@ -1,0 +1,137 @@
+{
+    "extName": {
+        "message": "Press Corpus Scraper"
+    },
+    "description": {
+        "message": "Scrape and download press articles"
+    },
+    "updateNotif": {
+        "message": "New version available!"
+    },
+    "updateLinkText": {
+        "message": "Update"
+    },
+    "dlUpdateLinkText": {
+        "message": "Download update"
+    },
+    "sourceSelect": {
+        "message": "Select source:"
+    },
+    "instReset": {
+        "message": "Reset"
+    },
+    "instSelect": {
+        "message": "Select your institution:"
+    },
+    "instPlaceholder": {
+        "message": "Filter by name..."
+    },
+    "go": {
+        "message": "Start"
+    },
+    "fieldsetText": {
+        "message": "Scrape and download articles in the desired format"
+    },
+    "displayAlert": {
+        "message": "Cannot display extraction interface:\nPlease load the page in a new thumbnail."
+    },
+    "searchAlert": {
+        "message": "Perform search before attempting extraction"
+    },
+    "extractPage": {
+        "message": "Scrape this page"
+    },
+    "maxExtract": {
+        "message": "Max results: "
+    },
+    "extractAllResults": {
+        "message": "Scrape all results"
+    },
+    "extractSample": {
+        "message": "Scrape sample"
+    },
+    "extractLabelText1": {
+        "message": "Scrape "
+    },
+    "extractLabelText2": {
+        "message": " pages of results"
+    },
+    "extractAll": {
+        "message": "Scrape all"
+    },
+    "abort": {
+        "message": "Abort"
+    },
+    "abortText": {
+        "message": "Aborting..."
+    },
+    "extractionMessage": {
+        "message": "Scraping..."
+    },
+    "extractionMessage2": {
+        "message": "Scraping page "
+    },
+    "extractionMessage3": {
+        "message": " out of "
+    },
+    "extractionMessage4": {
+        "message": " as "
+    },
+    "downloadFilesContainerText1": {
+        "message": "Done! "
+    },
+    "downloadFilesContainerText2": {
+        "message": " page(s) processed, "
+    },
+    "downloadFilesContainerText3": {
+        "message": " article(s) downloaded:"
+    },
+    "skippedFilesWrapperText1": {
+        "message": " premium article was ignored."
+    },
+    "skippedFilesWrapperText2": {
+        "message": " premium articles were ignored."
+    },
+    "showList": {
+        "message": "Show list"
+    },
+    "maskList": {
+        "message": "Hide list"
+    },
+    "errorFilesWrapperText": {
+        "message": " result(s) in error."
+    },
+    "errorMessage": {
+        "message": " is not an article."
+    },
+    "noResponse": {
+        "message": " does not respond."
+    },
+    "totalFilesContainerText": {
+        "message": " result(s) processed."
+    },
+    "lostFilesContainerText": {
+        "message": " result(s) not processed."
+    },
+    "resetButton": {
+        "message": "Restart"
+    },
+    "unknownAuthor": {
+        "message": "unknown-author"
+    },
+    "unknownDate": {
+        "message": "unknown-date"
+    },
+    "expansionText": {
+        "message": "Expanding result list..."
+    },
+    "articleExtMsg1": {
+        "message": "Scraping article "
+    },
+    "articleExtMsg2": {
+        "message": " out of "
+    },
+    "articleExtMsg3": {
+        "message": " as "
+    }
+}

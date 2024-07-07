@@ -34,14 +34,11 @@ const fieldset = document.createElement('fieldset');
 fieldset.classList.add('pcs-ui');
 const fieldsetText = document.createElement('div');
 fieldsetText.classList.add('pcs-fs-text');
-fieldsetText.textContent =
-    'Extraire et télécharger les articles au format souhaité';
+fieldsetText.textContent = chrome.i18n.getMessage('fieldsetText');
 fieldset.appendChild(fieldsetText);
 const anchor = document.querySelector(anchorDef);
 if (!anchor) {
-    window.alert(
-        "Impossible d'afficher l'interface d'extraction :\nVeuillez charger la page dans un nouvel onglet."
-    );
+    window.alert(chrome.i18n.getMessage('displayAlert'));
     location.reload();
 }
 anchor.appendChild(fieldset);
@@ -74,7 +71,7 @@ select.addEventListener('change', function () {
 const extractButton = document.createElement('button');
 extractButton.classList.add('pcs-ui');
 extractButton.id = 'extractButton';
-extractButton.textContent = 'Extraire cette page';
+extractButton.textContent = chrome.i18n.getMessage('extractPage');
 
 extractButtonsContainer.appendChild(extractButton);
 extractButtonsContainer.appendChild(select);
@@ -85,7 +82,7 @@ const maxInput = document.createElement('input');
 maxInput.type = 'number';
 maxInput.classList.add('pcs-ui');
 const maxLegend = document.createElement('span');
-maxLegend.textContent = 'Extraire maximum: ';
+maxLegend.textContent = chrome.i18n.getMessage('maxExtract');
 const maxDiv = document.createElement('div');
 maxDiv.style.display = 'none';
 maxDiv.appendChild(maxLegend);
@@ -120,23 +117,23 @@ if (pagesNumber) {
 } else if (resultsNumber) {
     pagesTotal = Math.ceil(resultsNumber / resultsNumberPerPageDef);
 }
-label.textContent = `Extraire tous les résultats`;
+label.textContent = chrome.i18n.getMessage('extractAllResults');
 checkboxDiv.appendChild(container);
 checkboxDiv.appendChild(label);
 extractButton.before(checkboxDiv);
-extractButton.textContent = 'Tout extraire';
+extractButton.textContent = chrome.i18n.getMessage('extractAll');
 extractButton.before(maxDiv);
 
 let extractAll = true;
 
 checkbox.addEventListener('change', function () {
     if (checkbox.checked) {
-        extractButton.textContent = 'Tout extraire';
+        extractButton.textContent = chrome.i18n.getMessage('extractAll');
         label.style.opacity = '1';
         maxDiv.style.display = 'none';
         extractAll = true;
     } else {
-        extractButton.textContent = `Extraire l'échantillon`;
+        extractButton.textContent = chrome.i18n.getMessage('extractSample');
         label.style.opacity = '0.6';
         maxDiv.style.display = 'block';
         extractAll = false;
@@ -146,10 +143,10 @@ checkbox.addEventListener('change', function () {
 // Create abort button
 const abortButton = document.createElement('button');
 abortButton.classList.add('abort-button');
-abortButton.textContent = 'Annuler';
+abortButton.textContent = chrome.i18n.getMessage('abort');
 abortButton.addEventListener('click', function (event) {
     event.preventDefault();
-    abortButton.textContent = 'Annulation en cours...';
+    abortButton.textContent = chrome.i18n.getMessage('abortText');
     abortExtraction = true;
 });
 fieldset.appendChild(abortButton);
@@ -168,7 +165,7 @@ extractionContainer.appendChild(spinner);
 // Create the extraction message element
 const extractionMessage = document.createElement('div');
 extractionMessage.id = 'extractionMessage';
-extractionMessage.textContent = 'Extraction lancée...';
+extractionMessage.textContent = chrome.i18n.getMessage('extractionMessage');
 extractionContainer.appendChild(extractionMessage);
 
 // Function to update the range of results being processed
@@ -209,7 +206,7 @@ extractButton.addEventListener('click', async function (event) {
     // Create reset button
     const resetBtn = document.createElement('button');
     resetBtn.classList.add('pcs-ui');
-    resetBtn.textContent = 'Recommencer';
+    resetBtn.textContent = chrome.i18n.getMessage('resetButton');
     resetBtn.onclick = function () {
         location.reload();
     };
@@ -225,12 +222,12 @@ extractButton.addEventListener('click', async function (event) {
 
     // Hide the extraction container
     extractionContainer.style.display = 'none';
-    extractionMessage.textContent = 'Extraction lancée...';
+    extractionMessage.textContent = chrome.i18n.getMessage('extractionMessage');
     fieldset.style.cursor = '';
 
     // Reset abort button
     abortButton.style.display = 'none';
-    abortButton.textContent = 'Annuler';
+    abortButton.textContent = chrome.i18n.getMessage('abort');
 
     // Restore extraction buttons
     extractButtonsContainer.style.display = 'inline';
@@ -238,7 +235,11 @@ extractButton.addEventListener('click', async function (event) {
     // Display number and selection of downloaded articles
     downloadedFilesContainer.style.display = 'block';
     const downloadedFileLinks = fetchedUrls;
-    downloadedFilesContainer.textContent = `\nFini !\n\n${downloadedFiles.length} article(s) téléchargé(s) :\n\n`;
+    downloadedFilesContainer.textContent = `\n${chrome.i18n.getMessage(
+        'downloadFilesContainerText1'
+    )}\n\n${downloadedFiles.length}${chrome.i18n.getMessage(
+        'downloadFilesContainerText3'
+    )}\n\n`;
     const downloadedFilesList = document.createElement('div');
     downloadedFilesList.style.fontWeight = 'normal';
     for (let i = 0; i < 20; i++) {
@@ -272,9 +273,13 @@ extractButton.addEventListener('click', async function (event) {
         skippedFilesWrapper.classList.add('list-wrapper');
         skippedFilesWrapper.style.color = '#ffa500';
         if (skippedFiles.length === 1) {
-            skippedFilesWrapper.textContent = `\n1 article réservé aux abonné·e·s a été ignoré.\n\n`;
+            skippedFilesWrapper.textContent = `\n1${chrome.i18n.getMessage(
+                'skippedFilesWrapperText1'
+            )}\n\n`;
         } else {
-            skippedFilesWrapper.textContent = `\n${skippedFiles.length} articles réservés aux abonné·e·s ont été ignorés.\n\n`;
+            skippedFilesWrapper.textContent = `\n${
+                skippedFiles.length
+            }${chrome.i18n.getMessage('skippedFilesWrapperText2')}\n\n`;
         }
         downloadedFilesContainer.appendChild(skippedFilesWrapper);
         const skippedFilesContainer = document.createElement('div');
@@ -282,10 +287,12 @@ extractButton.addEventListener('click', async function (event) {
         skippedFilesWrapper.appendChild(skippedFilesContainer);
         const showSkippedListButton = document.createElement('div');
         showSkippedListButton.classList.add('show-article-list-button');
-        showSkippedListButton.textContent = '🔽 Afficher la liste';
+        showSkippedListButton.textContent =
+            '🔽 ' + chrome.i18n.getMessage('showList');
         const hideSkippedListButton = document.createElement('div');
         hideSkippedListButton.classList.add('hide-article-list-button');
-        hideSkippedListButton.textContent = '🔼 Masquer la liste';
+        hideSkippedListButton.textContent =
+            '🔼 ' + chrome.i18n.getMessage('maskList');
         hideSkippedListButton.style.display = 'none';
         skippedFilesContainer.appendChild(showSkippedListButton);
         skippedFilesContainer.appendChild(hideSkippedListButton);
@@ -336,17 +343,21 @@ extractButton.addEventListener('click', async function (event) {
         const errorFilesWrapper = document.createElement('div');
         errorFilesWrapper.classList.add('list-wrapper');
         errorFilesWrapper.style.color = '#e60000';
-        errorFilesWrapper.textContent = `\n${errorFiles.length} résultat(s) en erreur.\n\n`;
+        errorFilesWrapper.textContent = `\n${
+            errorFiles.length
+        }${chrome.i18n.getMessage('errorFilesWrapperText')}\n\n`;
         downloadedFilesContainer.appendChild(errorFilesWrapper);
         const errorFilesContainer = document.createElement('div');
         errorFilesContainer.classList.add('list-container');
         errorFilesWrapper.appendChild(errorFilesContainer);
         const showErrorListButton = document.createElement('div');
         showErrorListButton.classList.add('show-article-list-button');
-        showErrorListButton.textContent = '🔽 Afficher la liste';
+        showErrorListButton.textContent =
+            '🔽 ' + chrome.i18n.getMessage('showList');
         const hideErrorListButton = document.createElement('div');
         hideErrorListButton.classList.add('hide-article-list-button');
-        hideErrorListButton.textContent = '🔼 Masquer la liste';
+        hideErrorListButton.textContent =
+            '🔼 ' + chrome.i18n.getMessage('maskList');
         hideErrorListButton.style.display = 'none';
         errorFilesContainer.appendChild(showErrorListButton);
         errorFilesContainer.appendChild(hideErrorListButton);
@@ -384,7 +395,9 @@ extractButton.addEventListener('click', async function (event) {
 
     // Display total number of results processed
     const totalFilesContainer = document.createElement('div');
-    totalFilesContainer.textContent = `\n${fileTotal} résultats traités.`;
+    totalFilesContainer.textContent = `\n${fileTotal}${chrome.i18n.getMessage(
+        'totalFilesContainerText'
+    )}.`;
     downloadedFilesContainer.appendChild(totalFilesContainer);
 
     // Calculate and display the number of lost results
@@ -393,7 +406,9 @@ extractButton.addEventListener('click', async function (event) {
             const fileDiff = resultsNumber - fileTotal;
             const lostFilesContainer = document.createElement('div');
             lostFilesContainer.style.color = 'blue';
-            lostFilesContainer.textContent = `\n${fileDiff} résultat(s) non traité(s)`;
+            lostFilesContainer.textContent = `\n${fileDiff}${chrome.i18n.getMessage(
+                'lostFilesContainerText'
+            )}`;
             downloadedFilesContainer.appendChild(lostFilesContainer);
         }
     }
@@ -432,7 +447,7 @@ async function performExtractAndSave(url) {
 
     resultsNumberContainer = document.querySelector('p.css-1ycagq6');
     if (!resultsNumberContainer) {
-        window.alert("Effectuez la recherche avant l'extraction");
+        window.alert(chrome.i18n.getMessage('searchAlert'));
         location.reload();
     }
     resultsNumber = Number(
@@ -505,9 +520,12 @@ async function performExtractAndSave(url) {
                     processedArticles.add(u);
                     let errorMessage;
                     const contentResponse = await fetch(u);
-                    if (!contentResponse.ok) {
+                    if (!contentResponse || !contentResponse.ok) {
                         errorMessage =
-                            ' (' + u.substring(0, 20) + '... ne répond pas.)';
+                            '< ' +
+                            u.substring(0, 20) +
+                            '... >' +
+                            chrome.i18n.getMessage('noResponse');
                         errorFiles.push(u);
                         errorMessages.push(errorMessage);
                         continue;
@@ -523,7 +541,8 @@ async function performExtractAndSave(url) {
                         errorMessage =
                             '< ' +
                             u.substring(0, 20) +
-                            '... > n’est pas un article.';
+                            '... >' +
+                            chrome.i18n.getMessage('errorMessage');
                         errorFiles.push(u);
                         errorMessages.push(errorMessage);
                         continue;
@@ -566,7 +585,8 @@ async function performExtractAndSave(url) {
                         errorMessage =
                             '“' +
                             titleDiv.textContent.trim() +
-                            '...” n’est pas un article.';
+                            '...”' +
+                            chrome.i18n.getMessage('errorMessage');
                         errorFiles.push(u);
                         errorMessages.push(errorMessage);
                         continue;
@@ -638,7 +658,8 @@ async function performExtractAndSave(url) {
                         errorMessage =
                             '“' +
                             titleDiv.textContent.trim() +
-                            '...” n’est pas un article.';
+                            '...”' +
+                            chrome.i18n.getMessage('errorMessage');
                         errorFiles.push(u);
                         errorMessages.push(errorMessage);
                         continue;
@@ -654,7 +675,7 @@ async function performExtractAndSave(url) {
                             .replaceAll('&', '&amp;')
                             .trim();
                     } else {
-                        author = 'auteur-inconnu';
+                        author = chrome.i18n.getMessage('unknownAuthor');
                     }
 
                     let date;
@@ -680,7 +701,7 @@ async function performExtractAndSave(url) {
                         if (dateElementValue && isIsoDate()) {
                             date = dateElement
                                 ? dateElementValue.split('T')[0]
-                                : 'date-inconnue';
+                                : chrome.i18n.getMessage('unknownDate');
                         } else if (
                             (dateElementValue && !isIsoDate()) ||
                             (dateElement && !dateElementValue)
@@ -721,7 +742,7 @@ async function performExtractAndSave(url) {
                             !frenchDateString &&
                             !dateString
                         ) {
-                            date = 'date-inconnue';
+                            date = chrome.i18n.getMessage('unknownDate');
                         }
                     } else if (dateLogic === 'url') {
                         date = buildDateFromUrl(u);
@@ -778,8 +799,8 @@ async function performExtractAndSave(url) {
                             .replaceAll('<', '&lt;')
                             .replaceAll('>', '&gt;')
                             .replaceAll('\n', '<lb></lb>');
-                        url = url.split('&')[0];
-                        fileContent = `<text source="${pubName}" author="${author}" title="${title}" date="${date}">\n<ref target="${url}">Link to original document</ref><lb></lb><lb></lb>\n\n${subhed}<lb></lb><lb></lb>\n\n${text}\n</text>`;
+                        u = u.split('&')[0];
+                        fileContent = `<text source="${pubName}" author="${author}" title="${title}" date="${date}">\n<ref target="${u}">Link to original document</ref><lb></lb><lb></lb>\n\n${subhed}<lb></lb><lb></lb>\n\n${text}\n</text>`;
                     }
 
                     if (selectedFormat === 'ira') {
@@ -845,7 +866,13 @@ async function performExtractAndSave(url) {
 
                     zip.file(baseFileName, fileContent);
                     resultIndex++;
-                    extractionMessage.textContent = `Extraction de l'article ${resultIndex} sur ${maxResults} au format ${selectedFormat}...`;
+                    extractionMessage.textContent = `${chrome.i18n.getMessage(
+                        'articleExtMsg1'
+                    )}${resultIndex}${chrome.i18n.getMessage(
+                        'articleExtMsg2'
+                    )}${maxResults}${chrome.i18n.getMessage(
+                        'articleExtMsg3'
+                    )}${selectedFormat}...`;
                 } catch (error) {
                     console.error('Error: ', error);
                 }
@@ -902,7 +929,8 @@ function clickNext() {
                     resolve();
                 }
                 nextButton.click();
-                extractionMessage.textContent = `Expansion de la liste de résultats...`;
+                extractionMessage.textContent =
+                    chrome.i18n.getMessage('expansionText');
                 resolve();
             } catch (error) {
                 reject(error);

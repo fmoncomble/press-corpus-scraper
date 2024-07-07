@@ -1,10 +1,10 @@
 {
     "manifest_version": 2,
-    "name": "Press corpus scraper",
+    "name": "__MSG_extName__",
 
     "version": "0.9.7",
 
-    "description": "Extraire et télécharger des articles de presse",
+    "description": "__MSG_description__",
     "homepage_url": "https://fmoncomble.github.io/press-corpus-scraper",
     "icons": {
         "48": "icons/icon-48.png",

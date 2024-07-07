@@ -1,0 +1,137 @@
+{
+    "extName": {
+        "message": "Press Corpus Scraper"
+    },
+    "description": {
+        "message": "Presseartikel extrahieren und herunterladen"
+    },
+    "updateNotif": {
+        "message": "Eine neue Version ist verfügbar!"
+    },
+    "updateLinkText": {
+        "message": "Aktualisieren"
+    },
+    "dlUpdateLinkText": {
+        "message": "Herunterladen"
+    },
+    "sourceSelect": {
+        "message": "Wählen Sie die Quelle aus:"
+    },
+    "instReset": {
+        "message": "Wechseln"
+    },
+    "instSelect": {
+        "message": "Wählen Sie Ihre Institution:"
+    },
+    "instPlaceholder": {
+        "message": "Nach Namen filtern..."
+    },
+    "go": {
+        "message": "Anfangen"
+    },
+    "fieldsetText": {
+        "message": "Extrahieren und laden Sie Artikel im gewünschten Format herunter"
+    },
+    "displayAlert": {
+        "message": "Die Extraktionsoberfläche kann nicht angezeigt werden:\nBitte laden Sie die Seite in einem neuen Tab."
+    },
+    "searchAlert": {
+        "message": "Führen Sie die Suche vor dem Extrahieren durch"
+    },
+    "extractPage": {
+        "message": "Diese Seite extrahieren"
+    },
+    "maxExtract": {
+        "message": "Maximum extrahieren:"
+    },
+    "extractAllResults": {
+        "message": "Alle Ergebnisse extrahieren"
+    },
+    "extractSample": {
+        "message": "Auswahl extrahieren"
+    },
+    "extractLabelText1": {
+        "message": "Die "
+    },
+    "extractLabelText2": {
+        "message": " Ergebnisseiten extrahieren"
+    },
+    "extractAll": {
+        "message": "Alles extrahieren"
+    },
+    "abort": {
+        "message": "Stornieren"
+    },
+    "abortText": {
+        "message": "Stornierung läuft..."
+    },
+    "extractionMessage": {
+        "message": "Extraktion gestartet..."
+    },
+    "extractionMessage2": {
+        "message": "Extraktion von Seite "
+    },
+    "extractionMessage3": {
+        "message": " von "
+    },
+    "extractionMessage4": {
+        "message": " im "
+    },
+    "downloadFilesContainerText1": {
+        "message": "Fertig! "
+    },
+    "downloadFilesContainerText2": {
+        "message": " Seite(n) bearbeitet, "
+    },
+    "downloadFilesContainerText3": {
+        "message": " Artikel(n) heruntergeladen:"
+    },
+    "skippedFilesWrapperText1": {
+        "message": " für Abonnenten reservierter Artikel wurde ignoriert."
+    },
+    "skippedFilesWrapperText2": {
+        "message": " für Abonnenten reservierte Artikel wurden ignoriert."
+    },
+    "showList": {
+        "message": "Liste anzeigen"
+    },
+    "maskList": {
+        "message": "Liste ausblenden"
+    },
+    "errorFilesWrapperText": {
+        "message": " fehlerhafte Ergebnisse."
+    },
+    "errorMessage": {
+        "message": " ist kein Artikel."
+    },
+    "noResponse": {
+        "message": " gibt kein Antwort."
+    },
+    "totalFilesContainerText": {
+        "message": " Ergebnis(se) verarbeitet."
+    },
+    "lostFilesContainerText": {
+        "message": " unverarbeitete Ergebnisse."
+    },
+    "resetButton": {
+        "message": "Neu starten"
+    },
+    "unknownAuthor": {
+        "message": "unbekannter-Autor"
+    },
+    "unknownDate": {
+        "message": "Datum-unbekannt"
+    },
+    "expansionText": {
+        "message": "Erweiterung der Ergebnisliste..."
+    },
+    "articleExtMsg1": {
+        "message": "Extraktion von Artikel "
+    },
+    "articleExtMsg2": {
+        "message": " von "
+    },
+    "articleExtMsg3": {
+        "message": " im "
+    }
+}

@@ -10,12 +10,12 @@
             <img src="icons/pcs-title.svg" width="230" />
         </div>
         <div id="version"></div>
-        <div id="update" style="display: none">
-            New version available!<br /><a id="update-link">Update</a
-            ><br /><br />
+        <div id="update-container" style="display: none">
+            <div id="update">New version available!</div>
+            <a id="update-link">Update</a><br /><br />
         </div>
         <div>
-            <label for="source-select">Select source:</label>
+            <label for="source-select" id="source-label">Select source:</label>
             <select name="source-select" id="source-select">
                 <option selected disabled>—</option>
                 <option value="europresse">Europresse</option>
@@ -32,6 +32,7 @@
                 <optgroup label="Deutsche Zeitungen">
                     <option value="dzp">Deutsches Zeitungsportal</option>
                     <option value="sueddeutsche">Süddeutsche Zeitung</option>
+                    <option value="faz">Frankfurter Allgemeine Zeitung</option>
                 </optgroup>
             </select>
         </div>
@@ -43,7 +44,7 @@
         </div>
         <form id="europresse-select" style="display: none">
             <fieldset>
-                <legend>Select your institution:</legend>
+                <legend id="inst-legend">Select your institution:</legend>
                 <input
                     id="inst-input"
                     type="search"

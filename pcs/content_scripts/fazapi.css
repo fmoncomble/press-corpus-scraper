@@ -1,0 +1,206 @@
+fieldset {
+    width: 800px;
+    border: solid 1px #121212;
+    border-radius: 5px;
+    padding: 20px;
+    color: #121212;
+    font-family: 'nyt-franklin', sans-serif;
+    font-size: small;
+}
+
+legend {
+    background: linear-gradient(#4d4d4d, #121212);
+    border-color: #041F4A;
+    color: white;
+    font-size: large;
+    font-weight: 700;
+    font-family: 'nyt-cheltenham', georgia, 'times new roman', times, serif;
+    padding: 5px 10px;
+    border-radius: 5px;
+}
+
+#apikey-input {
+    width: 480px;
+}
+
+.save-apikey {
+    transition: background-color 0.3s ease-out;
+    width: 130px;
+}
+
+div.show-search {
+    width: 637px;
+    cursor: pointer;
+    background-color: #f2f2f2;
+    border-radius: 4px;
+    padding: 5px;
+    margin-bottom: 10px;
+}
+
+div.show-search:hover {
+    text-decoration: underline;
+}
+
+label.search-ui {
+    display: inline-block;
+    width: 150px;
+}
+
+input {
+    border: none;
+    background-color: #f2f2f2;
+    color: #121212;
+    padding-left: 10px;
+    width: 480px;
+}
+
+input.checkbox {
+    height: auto;
+    width: auto;
+}
+
+select.search-option {
+    border: none;
+    background-color: #f2f2f2;
+    color: #121212;
+    width: 492px;
+}
+
+select.search-option:hover {
+    background-color: #f2f2f2;
+}
+
+select,
+button {
+    border: none;
+    background-color: #121212;
+    color: white;
+    padding: 4px 10px;
+    transition: background-color 0.1s ease-in-out;
+    cursor: pointer;
+}
+
+select:hover,
+button:hover {
+    background-color: #4d4d4d;
+}
+
+select,
+input,
+button {
+    margin-bottom: 10px;
+    height: 32px;
+    border-radius: 4px;
+    margin-right: 10px;
+}
+
+select:focus-visible,
+button:focus-visible {
+    outline: none;
+}
+
+a#query-link {
+    text-decoration: underline;
+    cursor: pointer;
+    transition: color 0.5s ease-out;
+}
+
+input:focus-visible {
+    outline: solid 1px #121212;
+}
+
+#extract-select {
+    width: 50px;
+}
+
+.results-container {
+    font-weight: 500;
+}
+
+.abort-button,
+.abort-button:hover {
+    background-color: #e60000;
+}
+
+.url-entry {
+    width: 130px;
+    margin-right: 20px;
+    margin-top: 10px;
+}
+
+/* Style du spinner d'attente */
+.spinner {
+    border: 2px solid #bfbfbf;
+    border-left: 2px solid #121212;
+    border-radius: 50%;
+    width: 12px;
+    height: 12px;
+    animation: spin 1s linear infinite;
+    display: inline-block;
+    vertical-align: middle;
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+.extract-button,
+.abort-button {
+    width: 130px;
+}
+
+#query-link {
+    color:#121212;
+}
+
+#query-link:hover {
+    color:#4d4d4d;
+}
+
+#query-link:visited {
+    color:#121212
+}
+
+#query-url-div {
+    margin-bottom: 10px;
+}
+
+#extract-select {
+    margin-left: 10px;
+}
+
+a,
+a:visited {
+    color: inherit;
+}
+
+a:hover {
+    color:#4d4d4d;
+}
+
+.show-list,
+.hide-list {
+    cursor: pointer;
+}
+
+.show-list:hover,
+.hide-list:hover {
+    text-decoration: underline;
+    color:#4d4d4d;
+}
+
+span#api-counter {
+    font-weight: bold;
+    color:#e60000;
+}
+
+dialog {
+    border: none;
+    border-radius: 4px;
+    box-shadow: 0 0 10px 5px gray;
+}

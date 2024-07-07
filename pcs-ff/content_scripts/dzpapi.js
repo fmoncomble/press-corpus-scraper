@@ -232,7 +232,7 @@ document.addEventListener('DOMContentLoaded', async function () {
                 }
                 queryUrl = queryUrl + `(${keywords})`;
             } else if (searchType === 'guided') {
-                let query;
+                let query = '';
                 if (!allWords && !anyWords && !exactPhrase) {
                     window.alert('Please enter search terms');
                     allWordsInput.focus();

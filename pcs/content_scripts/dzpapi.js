@@ -131,6 +131,7 @@ document.addEventListener('DOMContentLoaded', async function () {
         extractContainer.style.display = 'none';
         extractBtn.removeAttribute('style');
         outputContainer.textContent = '';
+        dlContainer.style.display = 'none';
         fileList.textContent = '';
         extractOption.value = 'all';
         extractSelectContainer.style.display = 'none';
@@ -232,7 +233,7 @@ document.addEventListener('DOMContentLoaded', async function () {
                 }
                 queryUrl = queryUrl + `(${keywords})`;
             } else if (searchType === 'guided') {
-                let query;
+                let query = '';
                 if (!allWords && !anyWords && !exactPhrase) {
                     window.alert('Please enter search terms');
                     allWordsInput.focus();
@@ -262,7 +263,7 @@ document.addEventListener('DOMContentLoaded', async function () {
                 queryUrl = queryUrl + `(${query})`;
             }
             if (paperTitle) {
-                queryUrl = queryUrl + ' AND paper_title:(' + newsdesk + ')';
+                queryUrl = queryUrl + ' AND paper_title:(' + paperTitle + ')';
             }
             if (fromDate || toDate) {
                 if (!fromDate) {

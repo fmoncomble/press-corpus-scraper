@@ -188,6 +188,7 @@ document.addEventListener('DOMContentLoaded', async function () {
         extractBtn.removeAttribute('style');
         processContainer.textContent = '';
         outputContainer.textContent = '';
+        dlContainer.style.display = 'none';
         fileList.textContent = '';
         extractOption.value = 'all';
         extractSelectContainer.style.display = 'none';

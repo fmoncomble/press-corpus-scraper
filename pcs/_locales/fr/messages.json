@@ -1,0 +1,137 @@
+{
+    "extName": {
+        "message": "Press Corpus Scraper"
+    },
+    "description": {
+        "message": "Extraire et télécharger des articles de presse"
+    },
+    "updateNotif": {
+        "message": "Une nouvelle version est disponible !"
+    },
+    "updateLinkText": {
+        "message": "Mettre à jour"
+    },
+    "dlUpdateLinkText": {
+        "message": "Télécharger"
+    },
+    "sourceSelect": {
+        "message": "Sélectionnez la source :"
+    },
+    "instReset": {
+        "message": "Changer"
+    },
+    "instSelect": {
+        "message": "Sélectionnez votre institution :"
+    },
+    "instPlaceholder": {
+        "message": "Filtrer par nom..."
+    },
+    "go": {
+        "message": "Commencer"
+    },
+    "fieldsetText": {
+        "message": "Extraire et télécharger les articles au format souhaité"
+    },
+    "displayAlert": {
+        "message": "Impossible d'afficher l'interface d'extraction :\nVeuillez charger la page dans un nouvel onglet."
+    },
+    "searchAlert": {
+        "message": "Effectuez la recherche avant l'extraction"
+    },
+    "extractPage": {
+        "message": "Extraire cette page"
+    },
+    "maxExtract": {
+        "message": "Extraire maximum : "
+    },
+    "extractAllResults": {
+        "message": "Extraire tous les résultats"
+    },
+    "extractSample": {
+        "message": "Extraire l'échantillon"
+    },
+    "extractLabelText1": {
+        "message": "Extraire les "
+    },
+    "extractLabelText2": {
+        "message": " pages de résultats"
+    },
+    "extractAll": {
+        "message": "Tout extraire"
+    },
+    "abort": {
+        "message": "Annuler"
+    },
+    "abortText": {
+        "message": "Annulation en cours..."
+    },
+    "extractionMessage": {
+        "message": "Extraction lancée..."
+    },
+    "extractionMessage2": {
+        "message": "Extraction de la page "
+    },
+    "extractionMessage3": {
+        "message": " sur "
+    },
+    "extractionMessage4": {
+        "message": " au format "
+    },
+    "downloadFilesContainerText1": {
+        "message": "Fini ! "
+    },
+    "downloadFilesContainerText2": {
+        "message": " page(s) traitée(s), "
+    },
+    "downloadFilesContainerText3": {
+        "message": " article(s) téléchargé(s) :"
+    },
+    "skippedFilesWrapperText1": {
+        "message": " article réservé aux abonné·e·s a été ignoré."
+    },
+    "skippedFilesWrapperText2": {
+        "message": " articles réservés aux abonné·e·s ont été ignorés."
+    },
+    "showList": {
+        "message": "Afficher la liste"
+    },
+    "maskList": {
+        "message": "Masquer la liste"
+    },
+    "errorFilesWrapperText": {
+        "message": " résultat(s) en erreur."
+    },
+    "errorMessage": {
+        "message": " n'est pas un article."
+    },
+    "noResponse": {
+        "message": " ne répond pas."
+    },
+    "totalFilesContainerText": {
+        "message": " résultat(s) traité(s)."
+    },
+    "lostFilesContainerText": {
+        "message": " résultat(s) non traité(s)."
+    },
+    "resetButton": {
+        "message": "Recommencer"
+    },
+    "unknownAuthor": {
+        "message": "auteur-inconnu"
+    },
+    "unknownDate": {
+        "message": "date-inconnue"
+    },
+    "expansionText": {
+        "message": "Expansion de la liste de résultats..."
+    },
+    "articleExtMsg1": {
+        "message": "Extraction de l'article "
+    },
+    "articleExtMsg2": {
+        "message": " sur "
+    },
+    "articleExtMsg3": {
+        "message": " au format "
+    }
+}
