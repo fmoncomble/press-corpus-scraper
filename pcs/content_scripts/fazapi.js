@@ -1,10 +1,7 @@
-console.log('NYT API script loaded');
+console.log('FAZ API script loaded');
 
 document.addEventListener('DOMContentLoaded', async function () {
     // Declare page elements
-    const wrapper = document.querySelector('.wrapper');
-    const apiKeyInput = document.querySelector('#apikey-input');
-    const apiKeySaveBtn = wrapper.querySelector('button.save-apikey');
     const searchTypeSelect = document.getElementById('search-type');
     const showSearch = document.getElementById('show-search');
     const hideSearch = document.getElementById('hide-search');
@@ -16,11 +13,9 @@ document.addEventListener('DOMContentLoaded', async function () {
     const exactPhraseInput = document.getElementById('exact-phrase');
     const noWordsInput = document.getElementById('no-words');
     const keywordsInput = document.getElementById('keywords');
-    const newsdeskSelect = document.getElementById('newsdesk-option');
-    const sectionSelect = document.getElementById('section-option');
-    const tomSelect = document.getElementById('tom-option');
     const fromDateInput = document.getElementById('from-date');
     const toDateInput = document.getElementById('to-date');
+    const includePaidCheckbox = document.getElementById('include-paid');
     const resultsContainer = document.querySelector('div#results-container');
     const queryUrlDiv = document.getElementById('query-url-div');
     const resultsOverview = document.querySelector('div#results-overview');
@@ -42,113 +37,6 @@ document.addEventListener('DOMContentLoaded', async function () {
     const premiumLinks = document.querySelector('ul#premium-links');
     const errorLinks = document.querySelector('ul#error-links');
     const noContentLinks = document.querySelector('ul#no-content-links');
-
-    // Manage API key
-    let apiKey;
-    function getApiKey(callback) {
-        chrome.storage.local.get(['nytimesapikey'], function (result) {
-            const apiKey = result.nytimesapikey || '';
-            callback(apiKey);
-        });
-    }
-    getApiKey(function (apiKeyResult) {
-        apiKey = apiKeyResult;
-        if (apiKey) {
-            apiKeyInput;
-            apiKeyInput.placeholder = 'API Key stored: enter new key to reset';
-            apiKeySaveBtn.textContent = 'Reset API Key';
-        }
-    });
-
-    apiKeyInput.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter') {
-            saveApiKey();
-        }
-    });
-    apiKeySaveBtn.addEventListener('click', function () {
-        saveApiKey();
-    });
-
-    async function saveApiKey() {
-        apiKey = apiKeyInput.value;
-        if (apiKey) {
-            chrome.storage.local.set({ nytimesapikey: apiKey }, function () {
-                apiKeySaveBtn.style.backgroundColor = '#006600';
-                apiKeySaveBtn.textContent = 'Saved';
-                apiKeyInput.value = '';
-                apiKeyInput.placeholder =
-                    'API Key stored: enter new key to reset';
-                setTimeout(() => {
-                    apiKeySaveBtn.removeAttribute('style');
-                    apiKeySaveBtn.textContent = 'Reset API Key';
-                }, 2000);
-            });
-        } else {
-            chrome.storage.local.remove('nytimesapikey', function () {
-                apiKeySaveBtn.style.backgroundColor = '#006600';
-                apiKeySaveBtn.textContent = 'API Key reset';
-                apiKeyInput.value = '';
-                apiKeyInput.placeholder = 'Enter your API key';
-                setTimeout(() => {
-                    apiKeySaveBtn.removeAttribute('style');
-                    apiKeySaveBtn.textContent = 'Save';
-                }, 2000);
-            });
-        }
-    }
-
-    // Manage API rate limit
-    let apiCallTotal;
-    function getApiCallTotal(callback) {
-        chrome.storage.local.get(
-            ['nytimesapicallnb', 'nextResetTime'],
-            function (result) {
-                apiCallTotal = result.nytimesapicallnb;
-                const now = new Date().getTime();
-                const nextResetTime = result.nextResetTime || 0;
-
-                if (now > nextResetTime) {
-                    apiCallTotal = 500;
-                    chrome.storage.local.set({
-                        nytimesapicallnb: apiCallTotal,
-                        nextResetTime: getNextMidnightTime(),
-                    });
-                    console.log('Number of API calls available reset to 500');
-                }
-                callback(apiCallTotal);
-            }
-        );
-    }
-
-    function getNextMidnightTime() {
-        const now = new Date();
-        const nextMidnight = new Date(
-            now.getFullYear(),
-            now.getMonth(),
-            now.getDate() + 1
-        );
-        return nextMidnight.getTime();
-    }
-
-    getApiCallTotal(function (callResult) {
-        apiCallTotal = callResult;
-        if (apiCallTotal) {
-            console.log('API calls left today: ', apiCallTotal);
-        }
-        updateApiCounter();
-    });
-
-    chrome.storage.local.get('nextResetTime', function (result) {
-        if (!result.nextResetTime) {
-            chrome.storage.local.set({ nextResetTime: getNextMidnightTime() });
-        }
-    });
-
-    const apiCounter = document.querySelector('span#api-counter');
-    function updateApiCounter() {
-        console.log('API counter updated');
-        apiCounter.textContent = apiCallTotal;
-    }
 
     // Set search type
     let searchType = 'guided';
@@ -179,7 +67,9 @@ document.addEventListener('DOMContentLoaded', async function () {
     const resetFormBtn = document.querySelector('.reset-form');
     resetFormBtn.addEventListener('click', function () {
         urlInput.value = '';
-        const searchInputs = searchContainer.querySelectorAll('input, select.search-option');
+        const searchInputs = searchContainer.querySelectorAll(
+            'input, select.search-option'
+        );
         for (s of searchInputs) {
             s.value = '';
         }
@@ -204,29 +94,69 @@ document.addEventListener('DOMContentLoaded', async function () {
 
     // Assign function to search button
     const searchBtn = document.querySelector('.trigger-search');
+    includePaidCheckbox.onchange = () => {
+        includePaid = includePaidCheckbox.checked;
+    }
     searchBtn.addEventListener('click', function () {
-        if (!apiKey) {
-            window.alert('You need to enter your API key to continue');
+        console.log('Include premium? ', includePaid);
+        if (includePaid) {
+            const dialog = document.getElementById('dialog');
+            const yesBtn = document.getElementById('yes-btn');
+            const noBtn = document.getElementById('no-btn');
+            yesBtn.onclick = () => {
+                dialog.close();
+                buildApiQuery();
+            };
+            noBtn.onclick = () => {
+                chrome.tabs.create({ url: 'https://www.faz.net/aktuell/' });
+                dialog.close();
+                // return;
+            };
+            dialog.showModal();
         } else {
             buildApiQuery();
         }
     });
 
     keywordsInput.addEventListener('keydown', function (e) {
-        if (!apiKey) {
-            window.alert('You need to enter your API key to continue');
-        } else {
-            if (e.key === 'Enter') {
+        if (e.key === 'Enter') {
+            if (includePaid) {
+                const dialog = document.getElementById('dialog');
+                const yesBtn = document.getElementById('yes-btn');
+                const noBtn = document.getElementById('no-btn');
+                yesBtn.onclick = () => {
+                    dialog.close();
+                    buildApiQuery();
+                };
+                noBtn.onclick = () => {
+                    chrome.tabs.create({ url: 'https://www.faz.net/aktuell/' });
+                    dialog.close();
+                    // return;
+                };
+                dialog.showModal();
+            } else {
                 buildApiQuery();
             }
         }
     });
 
     urlInput.addEventListener('keydown', function (e) {
-        if (!apiKey) {
-            window.alert('You need to enter your API key to continue');
-        } else {
-            if (e.key === 'Enter') {
+        if (e.key === 'Enter') {
+            if (includePaid) {
+                const dialog = document.getElementById('dialog');
+                const yesBtn = document.getElementById('yes-btn');
+                const noBtn = document.getElementById('no-btn');
+                yesBtn.onclick = () => {
+                    dialog.close();
+                    buildApiQuery();
+                };
+                noBtn.onclick = () => {
+                    chrome.tabs.create({ url: 'https://www.faz.net/aktuell/' });
+                    dialog.close();
+                    // return;
+                };
+                dialog.showModal();
+            } else {
                 buildApiQuery();
             }
         }
@@ -253,6 +183,7 @@ document.addEventListener('DOMContentLoaded', async function () {
 
     // Function to build the query URL
     let queryUrl;
+    let page;
     let pagesTotal;
     let resultsTotal;
     let nextQueryUrl;
@@ -261,11 +192,9 @@ document.addEventListener('DOMContentLoaded', async function () {
     let exactPhrase;
     let noWords;
     let keywords;
-    let newsdesk;
-    let section;
-    let tom;
     let fromDate;
     let toDate;
+    let includePaid;
 
     async function buildApiQuery() {
         resultsContainer.style.display = 'none';
@@ -279,28 +208,34 @@ document.addEventListener('DOMContentLoaded', async function () {
         if (urlValue) {
             queryUrl = urlValue;
         } else {
-            const baseUrl =
-                'https://api.nytimes.com/svc/search/v2/articlesearch.json?';
-            allWords = allWordsInput.value.replaceAll(' ', ' AND ');
-            anyWords = anyWordsInput.value.replaceAll(' ', ' OR ');
-            exactPhrase = exactPhraseInput.value;
-            noWords = noWordsInput.value.replaceAll(' ', ' OR ');
+            const baseUrl = 'https://www.faz.net/api/faz-content-search?';
+            allWords = allWordsInput.value.replaceAll(' ', '+');
+            anyWords = anyWordsInput.value;
+            exactPhrase = exactPhraseInput.value.replaceAll(' ', ' AND ');
+            noWords = noWordsInput.value;
             keywords = keywordsInput.value;
-            newsdesk = newsdeskSelect.value;
-            section = sectionSelect.value;
-            tom = tomSelect.value;
             fromDate = fromDateInput.value;
             toDate = toDateInput.value;
+            includePaid = includePaidCheckbox.checked;
+            page = 1;
 
-            queryUrl = baseUrl + '&api-key=' + apiKey + '&fq=';
+            queryUrl = baseUrl + 'paid_content=';
+            if (includePaid) {
+                queryUrl = queryUrl + 'include';
+            } else {
+                queryUrl = queryUrl + 'exclude';
+            }
+            queryUrl = queryUrl + '&q=';
             if (searchType === 'expert') {
                 if (!keywords) {
                     window.alert('Please enter keywords');
                     keywordsInput.focus();
                     return;
                 }
+                keywords = keywords.replaceAll(/"(.+)\s(.+)"/gu, `($1 AND $2)`);
                 queryUrl = queryUrl + `(${keywords})`;
             } else if (searchType === 'guided') {
+                queryUrl += '(';
                 if (!allWords && !anyWords && !exactPhrase) {
                     window.alert('Please enter search terms');
                     allWordsInput.focus();
@@ -319,36 +254,30 @@ document.addEventListener('DOMContentLoaded', async function () {
                     if (allWords || anyWords) {
                         queryUrl = queryUrl + ' AND ';
                     }
-                    queryUrl = queryUrl + `("${exactPhrase}")`;
+                    queryUrl = queryUrl + `(${exactPhrase})`;
                 }
                 if (noWords) {
                     if (allWords || anyWords || exactPhrase) {
-                        queryUrl = queryUrl + ' NOT ';
+                        queryUrl = queryUrl + ' -' + `(${noWords})`;
+                    } else {
+                        window.alert('You must specify positive seaarch terms');
                     }
-                    queryUrl = queryUrl + `(${noWords})`;
                 }
+                queryUrl += ')';
             }
-            if (newsdesk) {
-                queryUrl = queryUrl + ' AND news_desk:(' + newsdesk + ')';
+            if (orderOption.value === 'newest') {
+                queryUrl = queryUrl + '&sort_by=date&sort_order=desc';
+            } else if (orderOption.value === 'oldest') {
+                queryUrl = queryUrl + '&sort_by=date&sort_order=asc';
+            } else if (orderOption.value === 'rel') {
+                queryUrl = queryUrl + '&sort_by=rel&sort_order=desc';
             }
-            if (section) {
-                queryUrl = queryUrl + ' AND section_name:(' + section + ')';
-            }
-            if (tom) {
-                queryUrl = queryUrl + ' AND type_of_material:(' + tom + ')';
-            }
-            if (fromDate) {
-                queryUrl = queryUrl + '&begin_date=' + fromDate;
-            }
-            if (toDate) {
-                queryUrl = queryUrl + '&end_date=' + toDate;
-            }
-            queryUrl = queryUrl + '&sort=' + orderOption.value + '&page=';
+            queryUrl += '&rows=100';
             queryUrl = encodeURI(queryUrl);
         }
         const queryLink = document.createElement('a');
         queryLink.id = 'query-link';
-        queryLink.textContent = queryUrl + '0';
+        queryLink.textContent = queryUrl;
         queryUrlDiv.textContent = 'Query URL (click to copy): ';
         queryLink.addEventListener('click', () => {
             writeToClipboard(queryUrl);
@@ -377,40 +306,13 @@ document.addEventListener('DOMContentLoaded', async function () {
                     queryResponse.status)
                 );
             } else if (queryResponse.ok) {
-                apiCallTotal = apiCallTotal - 1;
-                chrome.storage.local.set(
-                    { nytimesapicallnb: apiCallTotal },
-                    function () {
-                        console.log('API calls left today: ', apiCallTotal);
-                    }
-                );
-                updateApiCounter();
                 const data = await queryResponse.json();
-                const dataContent = data.response;
-                resultsTotal = dataContent.meta.hits;
+                resultsTotal = data.num_found;
                 resultsOverview.textContent = `${resultsTotal} result(s) found.`;
                 resultsContainer.style.display = 'block';
 
                 if (resultsTotal > 0) {
-                    if (resultsTotal > 1000) {
-                        const span = document.createElement('span');
-                        span.textContent = 'refining your search';
-                        span.addEventListener('click', () => {
-                            searchContainer.style.display = 'block';
-                            showSearch.style.display = 'none';
-                            hideSearch.style.display = 'block';
-                        });
-                        span.style.fontWeight = 'bold';
-                        span.style.textDecoration = 'underline';
-                        span.style.cursor = 'pointer';
-                        resultsOverview.append(
-                            ' Only the first 1,000 results will be processed. Consider '
-                        );
-                        resultsOverview.append(span);
-                        resultsOverview.append(' before continuing.');
-                    } else {
-                        resultsOverview.append(' Begin extraction?');
-                    }
+                    resultsOverview.append(' Begin extraction?');
                     searchContainer.style.display = 'none';
                     hideSearch.style.display = 'none';
                     showSearch.style.display = 'block';
@@ -512,8 +414,6 @@ document.addEventListener('DOMContentLoaded', async function () {
     });
 
     // Function to extract results
-    let rIndex = 1;
-
     async function extractArticles() {
         articles = [];
         searchContainer.style.display = 'none';
@@ -533,40 +433,50 @@ document.addEventListener('DOMContentLoaded', async function () {
         const errorArticles = [];
         const noContentArticles = [];
         const retryArticles = [];
-        rIndex = 1;
+        let rIndex = 1;
+        let pIndex = 1;
         let maxResults = extractSelect.value;
         if (!maxResults) {
             maxResults = resultsTotal;
         }
         maxResults = Number(maxResults);
-        pagesTotal = Math.ceil(maxResults / 10);
-        let fetchTime = (pagesTotal - 1) * 12;
-        if (maxResults > 10) {
-            processMsg.textContent = `Fetching ${maxResults} results: this should take approximately `;
-        }
+        pagesTotal = Math.ceil(maxResults / 100);
         processContainer.style.display = 'block';
         processMsg.style.display = 'block';
-        const countdownDiv = document.createElement('div');
-        processMsg.appendChild(countdownDiv);
-        countdownDiv.style.display = 'inline';
-        const countdown = setInterval(function () {
-            let minutes = Math.floor(fetchTime / 60);
-            let seconds = fetchTime % 60;
-            if (seconds < 10) {
-                seconds = '0' + seconds;
-            }
-            countdownDiv.textContent = minutes + ':' + seconds + '...';
-            fetchTime = fetchTime - 1;
-            if (fetchTime < 0) {
-                clearInterval(countdown);
-            }
-        }, 1000);
 
         try {
-            let i = 0;
+            let i = 1;
+            queryUrl += '&page=';
+            while (rIndex <= maxResults && pIndex <= resultsTotal) {
+                await fetchResults(i);
+                for (r of results) {
+                    if (rIndex <= maxResults) {
+                        try {
+                            extractionCounter.textContent = `Processing result #${rIndex} out of ${maxResults}...`;
+                            await processResult(r);
+                            pIndex++;
+                        } catch (error) {
+                            console.log(error);
+                        }
+                    } else if (rIndex > maxResults || pIndex > resultsTotal) {
+                        break;
+                    }
+                    if (abort) {
+                        abortBtn.textContent = 'Abort';
+                        abortBtn.style.display = 'none';
+                        extractBtn.style.display = 'inline';
+                        extractSpinner.style.display = 'none';
+                        console.log('Result extraction aborted');
+                        break;
+                    }
+                }
+                i++;
+            }
+
             async function fetchResults(i) {
                 return new Promise(async (resolve, reject) => {
                     nextQueryUrl = queryUrl + i;
+                    console.log('Processing query URL ', nextQueryUrl);
                     const response = await fetch(nextQueryUrl);
                     if (response.status === 400) {
                         window.alert('Error fetching results');
@@ -578,10 +488,10 @@ document.addEventListener('DOMContentLoaded', async function () {
                         return;
                     } else if (response.status === 429) {
                         window.alert('You have reached your API rate limit');
-                        resolve();
+                        reject();
                         return;
                     } else if (!response.ok) {
-                        resolve();
+                        reject();
                         return;
                     } else if (abort) {
                         abortBtn.textContent = 'Abort';
@@ -594,38 +504,16 @@ document.addEventListener('DOMContentLoaded', async function () {
                         resolve();
                         return;
                     }
-                    apiCallTotal = apiCallTotal - 1;
-                    chrome.storage.local.set(
-                        { nytimesapicallnb: apiCallTotal },
-                        function () {
-                            console.log('API calls left today: ', apiCallTotal);
-                        }
-                    );
-                    updateApiCounter();
                     const data = await response.json();
-                    const dataContent = data.response;
-                    results = results.concat(dataContent.docs);
+                    results = data.docs;
+                    console.log('Results: ', results);
                     if (results.length === 0) {
-                        resolve();
+                        reject();
                         return;
                     }
-                    i++;
-                    if (i < pagesTotal) {
-                        setTimeout(async () => {
-                            try {
-                                await fetchResults(i);
-                                resolve();
-                            } catch (error) {
-                                reject(error);
-                            }
-                        }, 12000);
-                    } else {
-                        resolve();
-                    }
+                    resolve();
                 });
             }
-
-            await fetchResults(i);
 
             if (abort) {
                 abortBtn.textContent = 'Abort';
@@ -640,57 +528,28 @@ document.addEventListener('DOMContentLoaded', async function () {
             processMsg.textContent =
                 'Finished fetching results, now extracting...';
 
-            for (r of results) {
-                if (rIndex <= maxResults) {
-                    try {
-                        extractionCounter.textContent = `Processing result #${rIndex} out of ${maxResults}...`;
-                        await new Promise((resolve) =>
-                            setTimeout(resolve, 1000)
-                        );
-                        await processResult(r);
-                        rIndex++;
-                    } catch (error) {
-                        console.log(error);
-                    }
-                } else if (rIndex > maxResults) {
-                    break;
-                }
-                if (abort) {
-                    abortBtn.textContent = 'Abort';
-                    abortBtn.style.display = 'none';
-                    extractBtn.style.display = 'inline';
-                    extractSpinner.style.display = 'none';
-                    console.log('Result extraction aborted');
-                    break;
-                }
-            }
-
             // Function to extract text and metadata from each result
             async function processResult(r) {
                 const parser = new DOMParser();
-                const date = r.pub_date.split('T')[0];
-                const link = r.web_url;
-                const title = r.headline.main;
-                const subhed = r.abstract;
-                const byline = r.byline;
-                let authors = byline.person;
-                let authorName;
-                authors.forEach((a) => {
-                    const firstName = a.firstname;
-                    const middleName = a.middlename;
-                    const lastName = a.lastname;
-                    let author;
-                    if (middleName) {
-                        author = firstName + ' ' + middleName + ' ' + lastName;
-                    } else {
-                        author = firstName + ' ' + lastName;
+                const id = r.doc_id;
+                console.log('Processing article ID ', id);
+                const date = r.date.split('T')[0];
+                if (fromDate || toDate) {
+                    const dateString = new Date(date);
+                    const fromDateString = new Date(fromDate);
+                    const toDateString = new Date(toDate);
+                    if (
+                        dateString < fromDateString ||
+                        dateString > toDateString
+                    ) {
+                        console.log('Article not in date range');
+                        return;
                     }
-                    if (authorName) {
-                        authorName = authorName + ' & ' + author;
-                    } else {
-                        authorName = author;
-                    }
-                });
+                }
+                const link = r.canonical_url;
+                const title = r.title;
+                const subhed = r.teaser;
+                let authorName = r.author;
                 if (!authorName) {
                     authorName = 'unknown';
                 }
@@ -703,7 +562,7 @@ document.addEventListener('DOMContentLoaded', async function () {
                 const pauseMsg = document.querySelector('span#confirm-message');
                 const pauseLink = pauseDiv.querySelector('a#confirm-link');
                 const resumeBtn = pauseDiv.querySelector('button#resume-btn');
-                await getText();
+                text = await getText();
 
                 // Function to build text content
                 async function getText() {
@@ -734,57 +593,81 @@ document.addEventListener('DOMContentLoaded', async function () {
                         );
                         errorArticles.push(link);
                         retryArticles.push(r);
-                        return;
+                        return null;
                     }
                     const html = await response.text();
                     const doc = parser.parseFromString(html, 'text/html');
-                    const body = doc.querySelector(
-                        'section[name="articleBody"]'
-                    );
+                    const body = doc.querySelector('article.article');
                     if (!body) {
                         console.error('No article content found for ', link);
                         noContentArticles.push(link);
-                        return;
+                        return null;
                     }
-                    const paragraphs = body.querySelectorAll('p');
+                    const premiumBanner = doc.querySelector('div.paywall');
+                    if (premiumBanner) {
+                        if (!includePaid) {
+                            console.log(id + 'is a premium article, skipping...');
+                            premiumArticles.push(link);
+                            return null;
+                        } else {
+                            pauseDiv.style.display = 'block';
+                            premiumMsg.style.display = 'inline';
+                            await new Promise((resolve) => {
+                                resumeBtn.addEventListener(
+                                    'click',
+                                    async function resumeFetch() {
+                                        response = await fetch(link);
+                                        resumeBtn.removeEventListener(
+                                            'click',
+                                            resumeFetch
+                                        );
+                                        resolve();
+                                    }
+                                );
+                            });
+                            pauseDiv.style.display = 'none';
+                            premiumMsg.style.display = 'none';
+                        }
+                    }
+                    const regBanner = doc.querySelector('div.regwall');
+                    if (regBanner) {
+                        const regMsg = document.getElementById('reg-message');
+                        pauseDiv.style.display = 'block';
+                        regMsg.style.display = 'inline';
+                        await new Promise((resolve) => {
+                            resumeBtn.addEventListener(
+                                'click',
+                                async function resumeFetch() {
+                                    response = await fetch(link);
+                                    resumeBtn.removeEventListener(
+                                        'click',
+                                        resumeFetch
+                                    );
+                                    resolve();
+                                }
+                            );
+                        });
+                        pauseDiv.style.display = 'none';
+                        regMsg.style.display = 'none';
+                    }
+                    const paragraphs = body.querySelectorAll(
+                        'p.body-elements__paragraph, h3.body-elements__subheading'
+                    );
 
                     text = '';
                     for (p of paragraphs) {
                         const pText = p.textContent;
                         text = text + `\n${pText}\n`;
                     }
+                    if (!text) {
+                        console.error(id + ' has no text, skipping...');
+                        noContentArticles.push(link);
+                        return null;
+                    }
+                    return text;
                 }
 
                 if (!text) {
-                    return;
-                } else if (
-                    text &&
-                    text.includes('Already a subscriber? Log in.')
-                ) {
-                    console.log('Login required');
-                    pauseDiv.style.display = 'block';
-                    premiumMsg.style.display = 'inline';
-                    resumeBtn.style.display = 'inline';
-                    await new Promise((resolve) => {
-                        resumeBtn.addEventListener(
-                            'click',
-                            async function resumeFetch() {
-                                // await getText();
-                                results.push(r);
-                                rIndex--;
-                                console.log(
-                                    'Skipping this one, will process later'
-                                );
-                                resumeBtn.removeEventListener(
-                                    'click',
-                                    resumeFetch
-                                );
-                                resolve();
-                            }
-                        );
-                    });
-                    pauseDiv.style.display = 'none';
-                    premiumMsg.style.display = 'none';
                     return;
                 }
 
@@ -799,7 +682,7 @@ document.addEventListener('DOMContentLoaded', async function () {
                 };
 
                 articles.push(article);
-
+                rIndex++;
             }
         } catch (error) {
             console.error(error);
@@ -977,11 +860,11 @@ document.addEventListener('DOMContentLoaded', async function () {
                         .replaceAll('<', '&lt;')
                         .replaceAll('>', '&gt;')
                         .replaceAll('\n', '<lb></lb>');
-                    fileContent = `<text source="The New York Times" title="${xmltitle}" author="${xmlauthor}" date="${date}">\n<ref target="${link}">Link to article</ref><lb></lb><lb></lb>${xmlsubhed}<lb></lb><lb></lb>${xmltext}<lb></lb></text>`;
+                    fileContent = `<text source="FAZ" title="${xmltitle}" author="${xmlauthor}" date="${date}">\n<ref target="${link}">Link to article</ref><lb></lb><lb></lb>${xmlsubhed}<lb></lb><lb></lb>${xmltext}<lb></lb></text>`;
                 }
 
                 if (format === 'ira') {
-                    fileContent = `\n**** *source_nyt *title_${title
+                    fileContent = `\n**** *source_faz *title_${title
                         .replaceAll(/\p{P}/gu, ' ')
                         .trim()
                         .replaceAll(/\s/g, '_')
@@ -1046,7 +929,7 @@ document.addEventListener('DOMContentLoaded', async function () {
             .replaceAll('"', '')
             .replaceAll(' ', '_');
 
-        const zipFileName = `NYT_${searchTerm}_${format}_archive.zip`;
+        const zipFileName = `FAZ_${searchTerm}_${format}_archive.zip`;
         await downloadZip(zipBlob, zipFileName);
     }
 

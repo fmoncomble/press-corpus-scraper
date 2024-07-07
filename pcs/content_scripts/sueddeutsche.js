@@ -21,7 +21,7 @@ window.onload = function () {
         .querySelector(searchTermContainerDef)
         .value.trim();
     // S'il est présent : définir le nombre total de résultats
-    const resultsNumberContainer = document.querySelector('p.css-1ycagq6');
+    const resultsNumberContainer = 'p.css-1ycagq6';
     const resultsNumber = null;
     // S'il est pertinent : nombre de résultats par page
     const resultsNumberPerPageDef = 50;

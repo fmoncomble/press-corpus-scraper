@@ -37,7 +37,7 @@ document.addEventListener('DOMContentLoaded', () => {
     checkNewVersion();
 
     const manifest = chrome.runtime.getManifest();
-    const currentVersion = manifest.version;
+    const currentVersion = manifest.version_name;
     const versionDiv = document.getElementById('version');
     versionDiv.textContent = `${currentVersion}`;
 
@@ -69,6 +69,7 @@ document.addEventListener('DOMContentLoaded', () => {
     );
     const nytapiurl = chrome.runtime.getURL('content_scripts/nytimesapi.html');
     const dzpapiurl = chrome.runtime.getURL('content_scripts/dzpapi.html');
+    const fazapiurl = chrome.runtime.getURL('content_scripts/fazapi.html')
 
     const sources = {
         lemonde: 'https://www.lemonde.fr/recherche/',
@@ -79,6 +80,7 @@ document.addEventListener('DOMContentLoaded', () => {
         guardian: guardianapiurl,
         nyt: nytapiurl,
         dzp: dzpapiurl,
+        faz: fazapiurl,
     };
 
     let source = '';

@@ -4,6 +4,7 @@ window.addEventListener('script1Loaded', function () {
 
     let variableDiv = document.querySelector('.pcs-variables');
     let variables = JSON.parse(variableDiv.textContent);
+    console.log('Variables: ', variables);
     let paperName = variables.paperName;
     let anchorDef = variables.anchorDef;
     let searchTerm = variables.searchTerm;
@@ -447,7 +448,7 @@ window.addEventListener('script1Loaded', function () {
             nextUrl = url;
         }
 
-        resultsNumberContainer = document.querySelector('p.css-1ycagq6');
+        resultsNumberContainer = document.querySelector(resultsNumberContainer);
         if (!resultsNumberContainer) {
             window.alert(chrome.i18n.getMessage('searchAlert'));
             location.reload();
@@ -517,8 +518,10 @@ window.addEventListener('script1Loaded', function () {
                     }
                     try {
                         if (processedArticles.has(u)) {
+                            console.log('Article already processed, skipping. Already processed articles = ', Array.from(processedArticles).length);
                             continue;
                         }
+                        console.log('Processing next article: ', u);
                         processedArticles.add(u);
                         let errorMessage;
                         const contentResponse = await fetch(u);
@@ -567,6 +570,7 @@ window.addEventListener('script1Loaded', function () {
                         if (premiumBanner) {
                             skippedFiles.push(u);
                             skippedTitles.push(titleDiv.textContent);
+                            console.log('Premium article, skipping. Premium articles = ', skippedFiles.length);
                             continue;
                         }
 
@@ -954,6 +958,7 @@ window.addEventListener('script1Loaded', function () {
                     nextButton.click();
                     extractionMessage.textContent =
                         chrome.i18n.getMessage('expansionText');
+                        console.log('Getting next page of results');
                     resolve();
                 } catch (error) {
                     reject(error);
