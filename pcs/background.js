@@ -611,7 +611,7 @@ async function performExtractAndSave(url) {
     const zipFileName = `${paperName.replaceAll(
         /\s/g,
         '_'
-    )}_${searchTerm}_${selectedFormat}_archive.zip`;
+    )}_${searchTerm.substring(0, 10)}_${selectedFormat}_archive.zip`;
 
     await downloadZip(zipBlob, zipFileName);
 
