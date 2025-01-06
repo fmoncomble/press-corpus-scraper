@@ -3,7 +3,7 @@ console.log('NY Times PCS script injected');
 let anchor = document.querySelector('.css-17j7fe1');
 const scriptBtn = document.createElement('li');
 scriptBtn.id = 'pcs-btn';
-scriptBtn.classList.add('css-konhz');
+scriptBtn.classList.add('css-1qtaxzf');
 scriptBtn.title = 'Start extraction session';
 const scriptLink = document.createElement('a');
 scriptLink.id = 'pcs-link';

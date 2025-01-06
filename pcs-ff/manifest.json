@@ -2,9 +2,11 @@
     "manifest_version": 2,
     "name": "__MSG_extName__",
 
-    "version": "0.9.7",
+    "version": "0.10",
+    "version_name": "0.10",
 
     "description": "__MSG_description__",
+    "default_locale": "fr",
     "homepage_url": "https://fmoncomble.github.io/press-corpus-scraper",
     "icons": {
         "48": "icons/icon-48.png",

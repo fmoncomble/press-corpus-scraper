@@ -15,29 +15,29 @@
                 <div class="apikey-container">
                     <input
                         type="password"
-                        placeholder="Enter your API key"
+                        placeholder="API-Schlüssel eingeben"
                         id="apikey-input"
                         name="apikey-input"
                         autocomplete="on"
                         required
                     />
-                    <button class="save-apikey">Save</button>
+                    <button class="save-apikey">Speichern</button>
                     <a
                         href="https://www.deutsche-digitale-bibliothek.de/user/apikey"
                         target="_blank"
-                        >Get your API key</a
+                        >API-Schlüssel abrufen</a
                     >
                 </div>
                 <br />
                 <div>
                     <label for="url-input" class="search-ui"
-                        >Enter a query URL:
+                        >Abfrage-URL eingeben:
                     </label>
                     <input
                         class="url-input"
                         id="url-input"
                         type="url"
-                        placeholder="Query URL"
+                        placeholder="Abfrage-URL"
                     />
                 </div>
                 <div
@@ -45,34 +45,34 @@
                     class="show-search"
                     style="display: none; text-align: center"
                 >
-                    <b>Show query builder</b>
+                    <b>Abfrageformular anzeigen</b>
                 </div>
                 <div
                     id="hide-search"
                     class="show-search"
                     style="display: none; text-align: center"
                 >
-                    <b>Hide query builder</b>
+                    <b>Abfrageformular ausblenden</b>
                 </div>
                 <div id="search-container">
                     <div style="margin-bottom: 10px">
                         <br />
-                        <b>Or build your search query:</b>
+                        <b>Suchanfrage erstellen:</b>
                     </div>
                     <div style="text-align: center">
                         <select id="search-type">
-                            <option value="guided">Guided mode</option>
-                            <option value="expert">Expert mode</option>
+                            <option value="guided">Geführter Modus</option>
+                            <option value="expert">Expertenmodus</option>
                         </select>
                     </div>
                     <div id="guided-search">
                         <div>
                             <label for="all-words" class="search-ui"
-                                >All of these words:</label
+                                >Alle diese Wörter:</label
                             >
                             <input
                                 type="text"
-                                placeholder="All of these words"
+                                placeholder="Alle diese Wörter"
                                 class="search-input"
                                 name="all-words"
                                 id="all-words"
@@ -80,11 +80,11 @@
                         </div>
                         <div>
                             <label for="any-words" class="search-ui"
-                                >Any of these words:</label
+                                >Jedes dieser Wörter:</label
                             >
                             <input
                                 type="text"
-                                placeholder="Any of these words"
+                                placeholder="Jedes dieser Wörter"
                                 class="search-input"
                                 name="any-words"
                                 id="any-words"
@@ -92,11 +92,11 @@
                         </div>
                         <div>
                             <label for="exact-phrase" class="search-ui"
-                                >Exact phrase:</label
+                                >Exakter Ausdruck:</label
                             >
                             <input
                                 type="text"
-                                placeholder="Exact phrase"
+                                placeholder="Exakter Ausdruck"
                                 class="search-input"
                                 name="exact-phrase"
                                 id="exact-phrase"
@@ -104,11 +104,11 @@
                         </div>
                         <div>
                             <label for="no-words" class="search-ui"
-                                >Words to exclude:</label
+                                >Auszuschliessende Wörter:</label
                             >
                             <input
                                 type="text"
-                                placeholder="Words to exclude"
+                                placeholder="Auszuschliessende Wörter"
                                 class="search-input"
                                 name="no-words"
                                 id="no-words"
@@ -117,41 +117,42 @@
                     </div>
                     <div id="expert-search" style="display: none">
                         <p style="text-align: center">
-                            Enter the keywords you want to search for below.<br />You
-                            may use booleans (AND, OR, NOT), double quotes and
-                            parentheses for grouping.
+                            Hier die Stichwörter eingeben, nach denen Sie suchen
+                            möchten.<br />Sie können boolesche Operatoren,
+                            doppelte Anführungszeichen und Klammern verwenden,
+                            um Gruppierungen durchzuführen.
                         </p>
                         <label for="keywords" class="search-ui"
-                            >Keywords:</label
+                            >Stichwörter:</label
                         >
                         <input
                             name="keywords"
                             id="keywords"
                             type="text"
-                            placeholder="Keywords"
+                            placeholder="Stichwörter"
                         />
                     </div>
                     <div>
                         <label for="paper-title" class="search-ui"
-                            >Paper title:</label
+                            >Zeitungstitel:</label
                         >
                         <input
                             name="paper-title"
                             id="paper-title"
                             type="text"
-                            placeholder="Paper title words"
+                            placeholder="Wörter des Zeitungstitels"
                         />
                     </div>
                     <div>
-                        <label for="from-date" class="search-ui">From:</label>
+                        <label for="from-date" class="search-ui">Von:</label>
                         <input name="from-date" id="from-date" type="date" />
                     </div>
                     <div>
-                        <label for="to-date" class="search-ui">To:</label>
+                        <label for="to-date" class="search-ui">Bis:</label>
                         <input name="to-date" id="to-date" type="date" />
                     </div>
                     <button class="trigger-search" style="display: inline">
-                        Search
+                        Suchen
                     </button>
                     <div
                         class="spinner"
@@ -159,7 +160,7 @@
                         style="display: none"
                     ></div>
                 </div>
-                <button class="reset-form">Reset form</button>
+                <button class="reset-form">Formular zurücksetzen</button>
             </div>
             <br />
             <br />
@@ -170,16 +171,18 @@
                 <div id="extract-container" style="display: none">
                     <div>
                         <select id="extract-option">
-                            <option value="all">Extract all</option>
-                            <option value="selection">Extract sample</option>
+                            <option value="all">Alles extrahieren</option>
+                            <option value="selection">
+                                Eine Probe extrahieren
+                            </option>
                         </select>
                         <span
                             id="extract-select-container"
                             style="display: none"
                         >
-                            <label for="extract-select">Extract first </label>
+                            <label for="extract-select">Die </label>
                             <input id="extract-select" type="number" />
-                            <span> results</span>
+                            <span> ersten Ergebnisse extrahieren</span>
                         </span>
                     </div>
                     <!-- <select id="format">
@@ -187,13 +190,13 @@
                         <option value="xml">XML/XTZ</option>
                         <option value="ira">Iramuteq</option>
                     </select> -->
-                    <button class="extract-button">Extract articles</button>
+                    <button class="extract-button">Artikel extrahieren</button>
                     <button
                         class="abort-button"
                         id="abort-extract-btn"
                         style="display: none"
                     >
-                        Abort
+                        Abbrechen
                     </button>
                     <div
                         class="spinner"
@@ -203,7 +206,7 @@
                 </div>
                 <div id="process-container">
                     <div id="process-message" style="display: none">
-                        Finished fetching results, extracting text...
+                        Abrufen der Ergebnisse abgeschlossen, jetzt wird Text extrahiert...
                     </div>
                     <br />
                     <div id="extraction-counter"></div>
@@ -309,7 +312,7 @@
                         <option value="ira">Iramuteq</option>
                     </select>
                     <button id="dl-button" style="display: inline-block">
-                        Download
+                        Herunterladen
                     </button>
                 </div>
                 <div id="file-list"></div>

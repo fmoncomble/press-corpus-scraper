@@ -1,39 +1,10 @@
-#pcs-btn:before {
-    content: '';
-    border-left: 1px solid #506991;
-    height: 24px;
-    margin-left: 10px;
-}
-
 #pcs-btn {
+    margin-left: 10px;
     cursor: pointer;
 }
 
 #pcs-link {
-    display: -webkit-box;
-    display: -webkit-flex;
-    display: -ms-flexbox;
-    display: flex;
-    -webkit-align-items: center;
-    -webkit-box-align: center;
-    -ms-flex-align: center;
-    align-items: center;
-    font-family: GuardianTextSans,"Guardian Text Sans Web","Helvetica Neue",Helvetica,Arial,"Lucida Grande",sans-serif;
-    font-size: 1.0625rem;
-    line-height: 1.3;
-    font-weight: 700;
-    --source-text-decoration-thickness: 2px;
-    font-size: 1rem;
-    height: -webkit-fit-content;
-    height: -moz-fit-content;
-    height: fit-content;
-    line-height: 1;
     color: #FFE500;
-    -webkit-transition: color 80ms ease-out;
-    transition: color 80ms ease-out;
-    -webkit-text-decoration: none;
-    text-decoration: none;
-    padding: 7px 10px 7px 6px;
 }
 
 #pcs-link:hover {

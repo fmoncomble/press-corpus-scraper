@@ -46,8 +46,8 @@ document.addEventListener('DOMContentLoaded', async function () {
         apiKey = apiKeyResult;
         if (apiKey) {
             apiKeyInput;
-            apiKeyInput.placeholder = 'API Key stored: enter new key to reset';
-            apiKeySaveBtn.textContent = 'Reset API Key';
+            apiKeyInput.placeholder = 'API-Schlüssel gespeichert: Geben Sie zum Zurücksetzen einen neuen Schlüssel ein';
+            apiKeySaveBtn.textContent = 'Zurücksetzen';
         }
     });
 
@@ -65,24 +65,24 @@ document.addEventListener('DOMContentLoaded', async function () {
         if (apiKey) {
             chrome.storage.local.set({ dzpapikey: apiKey }, function () {
                 apiKeySaveBtn.style.backgroundColor = '#006600';
-                apiKeySaveBtn.textContent = 'Saved';
+                apiKeySaveBtn.textContent = 'Gespeichert';
                 apiKeyInput.value = '';
                 apiKeyInput.placeholder =
-                    'API Key stored: enter new key to reset';
+                    'API-Schlüssel gespeichert: Geben Sie zum Zurücksetzen einen neuen Schlüssel ein';
                 setTimeout(() => {
                     apiKeySaveBtn.removeAttribute('style');
-                    apiKeySaveBtn.textContent = 'Reset API Key';
+                    apiKeySaveBtn.textContent = 'Zurücksetzen';
                 }, 2000);
             });
         } else {
             chrome.storage.local.remove('dzpapikey', function () {
                 apiKeySaveBtn.style.backgroundColor = '#006600';
-                apiKeySaveBtn.textContent = 'API Key reset';
+                apiKeySaveBtn.textContent = 'API-Schlüssel wurde zurückgesetzt';
                 apiKeyInput.value = '';
-                apiKeyInput.placeholder = 'Enter your API key';
+                apiKeyInput.placeholder = 'API-Schlüssel eingeben';
                 setTimeout(() => {
                     apiKeySaveBtn.removeAttribute('style');
-                    apiKeySaveBtn.textContent = 'Save';
+                    apiKeySaveBtn.textContent = 'Speichern';
                 }, 2000);
             });
         }
@@ -131,6 +131,7 @@ document.addEventListener('DOMContentLoaded', async function () {
         extractContainer.style.display = 'none';
         extractBtn.removeAttribute('style');
         outputContainer.textContent = '';
+        dlContainer.style.display = 'none';
         fileList.textContent = '';
         extractOption.value = 'all';
         extractSelectContainer.style.display = 'none';
@@ -143,7 +144,7 @@ document.addEventListener('DOMContentLoaded', async function () {
     const searchBtn = document.querySelector('.trigger-search');
     searchBtn.addEventListener('click', function () {
         if (!apiKey) {
-            window.alert('You need to enter your API key to continue');
+            window.alert('Sie müssen Ihren API-Schlüssel eingeben, um fortzufahren');
         } else {
             buildApiQuery();
         }
@@ -151,7 +152,7 @@ document.addEventListener('DOMContentLoaded', async function () {
 
     keywordsInput.addEventListener('keydown', function (e) {
         if (!apiKey) {
-            window.alert('You need to enter your API key to continue');
+            window.alert('Sie müssen Ihren API-Schlüssel eingeben, um fortzufahren');
         } else {
             if (e.key === 'Enter') {
                 buildApiQuery();
@@ -161,7 +162,7 @@ document.addEventListener('DOMContentLoaded', async function () {
 
     urlInput.addEventListener('keydown', function (e) {
         if (!apiKey) {
-            window.alert('You need to enter your API key to continue');
+            window.alert('Sie müssen Ihren API-Schlüssel eingeben, um fortzufahren');
         } else {
             if (e.key === 'Enter') {
                 buildApiQuery();
@@ -226,7 +227,7 @@ document.addEventListener('DOMContentLoaded', async function () {
             queryUrl = baseUrl + 'q=plainpagefulltext:';
             if (searchType === 'expert') {
                 if (!keywords) {
-                    window.alert('Please enter keywords');
+                    window.alert('Bitte geben Sie Schlüsselwörter ein');
                     keywordsInput.focus();
                     return;
                 }
@@ -234,7 +235,7 @@ document.addEventListener('DOMContentLoaded', async function () {
             } else if (searchType === 'guided') {
                 let query = '';
                 if (!allWords && !anyWords && !exactPhrase) {
-                    window.alert('Please enter search terms');
+                    window.alert('Bitte geben Sie Schlüsselwörter ein');
                     allWordsInput.focus();
                     return;
                 }
@@ -262,7 +263,7 @@ document.addEventListener('DOMContentLoaded', async function () {
                 queryUrl = queryUrl + `(${query})`;
             }
             if (paperTitle) {
-                queryUrl = queryUrl + ' AND paper_title:(' + newsdesk + ')';
+                queryUrl = queryUrl + ' AND paper_title:(' + paperTitle + ')';
             }
             if (fromDate || toDate) {
                 if (!fromDate) {
@@ -281,7 +282,7 @@ document.addEventListener('DOMContentLoaded', async function () {
         const queryLink = document.createElement('a');
         queryLink.id = 'query-link';
         queryLink.textContent = queryUrl;
-        queryUrlDiv.textContent = 'Query URL (click to copy): ';
+        queryUrlDiv.textContent = 'Abfrage-URL (zum Kopieren klicken): ';
         queryLink.addEventListener('click', () => {
             writeToClipboard(queryUrl);
             queryLink.style.color = 'green';
@@ -302,13 +303,13 @@ document.addEventListener('DOMContentLoaded', async function () {
                 },
             });
             if (queryResponse.status === 429) {
-                window.alert('Too many requests. Try again later.');
+                window.alert('Zu viele Anfragen. Versuchen Sie es später erneut.');
                 resultsOverview.textContent =
-                    'Too many requests. Try again later.';
+                    'Zu viele Anfragen. Versuchen Sie es später erneut.';
                 resultsContainer.style.display = 'block';
                 throw new Error('API rate limit reached');
             } else if (!queryResponse.ok) {
-                window.alert('There was an error processing your query');
+                window.alert('Bei der Verarbeitung Ihrer Anfrage ist ein Fehler aufgetreten');
                 throw new Error(
                     ('HTTP error: query responded with status ',
                     queryResponse.status)
@@ -318,11 +319,11 @@ document.addEventListener('DOMContentLoaded', async function () {
                 const dataContent = data.response;
                 resultsTotal = dataContent.numFound;
                 pagesTotal = Math.ceil(resultsTotal / 10);
-                resultsOverview.textContent = `${resultsTotal} result(s) found.`;
+                resultsOverview.textContent = `${resultsTotal} Ergebnisse wurden gefunden.`;
                 resultsContainer.style.display = 'block';
 
                 if (resultsTotal > 0) {
-                    resultsOverview.append(' Begin extraction?');
+                    resultsOverview.append(' Mit der Extraktion beginnen?');
                     searchContainer.style.display = 'none';
                     hideSearch.style.display = 'none';
                     showSearch.style.display = 'block';
@@ -331,7 +332,7 @@ document.addEventListener('DOMContentLoaded', async function () {
                     extractContainer.style.display = 'block';
                 } else {
                     resultsOverview.textContent =
-                        'Query returned no result. Restart search.';
+                        'Die Abfrage hat kein Ergebnis ergeben. Suche neu starten.';
                     resultsOverview.style.display = 'block';
                     resultsContainer.style.display = 'block';
                     extractContainer.style.display = 'none';
@@ -389,7 +390,7 @@ document.addEventListener('DOMContentLoaded', async function () {
     const abortBtn = document.querySelector('.abort-button');
     abortBtn.addEventListener('click', function () {
         abort = true;
-        abortBtn.textContent = 'Aborting...';
+        abortBtn.textContent = 'Extraktion wird abgebrochen...';
     });
 
     const processContainer = document.querySelector('#process-container');
@@ -450,7 +451,7 @@ document.addEventListener('DOMContentLoaded', async function () {
             }
 
             if (abort) {
-                abortBtn.textContent = 'Abort';
+                abortBtn.textContent = 'Abbrechen';
                 abortBtn.style.display = 'none';
                 extractBtn.style.display = 'inline';
                 abort = false;
@@ -462,7 +463,7 @@ document.addEventListener('DOMContentLoaded', async function () {
             try {
                 maxResults = Number(maxResults);
                 pagesTotal = Math.ceil(maxResults / 10);
-                processContainer.textContent = `Extracting page ${p} out of ${pagesTotal}...`;
+                processContainer.textContent = `Seite ${p} von ${pagesTotal} wird extrahiert...`;
                 processContainer.style.display = 'block';
                 nextQueryUrl = queryUrl + '&start=' + start;
                 const response = await fetch(nextQueryUrl, {
@@ -473,7 +474,7 @@ document.addEventListener('DOMContentLoaded', async function () {
                     },
                 });
                 if (!response.ok) {
-                    window.alert('Error fetching results');
+                    window.alert('Beim Abrufen der Ergebnisse ist ein Fehler aufgetreten');
                     throw new Error(
                         'HTTP error, could not fetch search results'
                     );
@@ -517,7 +518,7 @@ document.addEventListener('DOMContentLoaded', async function () {
             }
         }
 
-        outputContainer.textContent = `${articles.length} out of ${maxResults} articles extracted.`;
+        outputContainer.textContent = `${articles.length} Artikel von ${maxResults} extrahiert.`;
         outputContainer.style.display = 'block';
         abortBtn.style.display = 'none';
 
@@ -609,7 +610,7 @@ document.addEventListener('DOMContentLoaded', async function () {
         });
 
         const downloadedFiles = Array.from(addedArticles);
-        fileList.textContent = `Files created: ${downloadedFiles
+        fileList.textContent = `Erstellte Dateien: ${downloadedFiles
             .slice(0, 20)
             .join(', ')}...`;
         abortBtn.style.display = 'none';

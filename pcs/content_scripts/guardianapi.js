@@ -96,9 +96,10 @@ document.addEventListener('DOMContentLoaded', async function () {
         chrome.storage.local.get(
             ['guardianapicallnb', 'nextResetTime'],
             function (result) {
-                apiCallTotal = result.guardianapicallnb;
+                apiCallTotal = result.guardianapicallnb || 500;
                 const now = new Date().getTime();
                 const nextResetTime = result.nextResetTime || 0;
+                console.log('Time to next reset: ', nextResetTime - now);
 
                 if (now > nextResetTime) {
                     apiCallTotal = 500;
@@ -139,7 +140,7 @@ document.addEventListener('DOMContentLoaded', async function () {
 
     const apiCounter = document.querySelector('span#api-counter');
     function updateApiCounter() {
-        console.log('API counter updated');
+        console.log('API counter updated: ', apiCallTotal);
         apiCounter.textContent = apiCallTotal;
     }
 

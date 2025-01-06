@@ -103,7 +103,7 @@ document.addEventListener('DOMContentLoaded', async function () {
         chrome.storage.local.get(
             ['nytimesapicallnb', 'nextResetTime'],
             function (result) {
-                apiCallTotal = result.nytimesapicallnb;
+                apiCallTotal = result.nytimesapicallnb || 500;
                 const now = new Date().getTime();
                 const nextResetTime = result.nextResetTime || 0;
 

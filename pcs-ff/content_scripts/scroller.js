@@ -1,34 +1,34 @@
 // ------------- Ne rien modifier sous cette ligne ---------------- //
 console.log('PCS scroller script injected');
 
-let variableDiv = document.querySelector('.pcs-variables');
-let variables = JSON.parse(variableDiv.textContent);
-let paperName = variables.paperName;
-let anchorDef = variables.anchorDef;
-let searchTerm = variables.searchTerm;
-let resultsNumberContainer = variables.resultsNumberContainer;
-let resultsNumber = variables.resultsNumber;
-let resultsNumberPerPageDef = variables.resultsNumberPerPageDef;
-let pagesNumber = variables.pagesNumber;
-let articleListDef = variables.articleListDef;
-let articlesDef = variables.articlesDef;
-let nextPageDef = variables.nextPageDef;
-let pageParam = variables.pageParam;
-let nextButtonDef = variables.nextButtonDef;
-let aboBtnDef = variables.aboBtnDef;
-let premiumBannerDef = variables.premiumBannerDef;
-let articleHeaderDef = variables.articleHeaderDef;
-let titleDivDef = variables.titleDivDef;
-let subhedDivDef = variables.subhedDivDef;
-let bodyDivDef = variables.bodyDivDef;
-let authorElementDef = variables.authorElementDef;
-let dateLogic = variables.dateLogic;
-let dateElementDef = variables.dateElementDef;
-let dateAttributeDef = variables.dateAttributeDef;
-let dateStringDef = variables.dateStringDef;
-let textElementsDef = variables.textElementsDef;
-let exclElementsText = variables.exclElementsText;
-let exclElementsDef = variables.exclElementsDef;
+variableDiv = document.querySelector('.pcs-variables');
+variables = JSON.parse(variableDiv.textContent);
+paperName = variables.paperName;
+anchorDef = variables.anchorDef;
+searchTerm = variables.searchTerm;
+resultsNumberContainer = variables.resultsNumberContainer;
+resultsNumber = variables.resultsNumber;
+resultsNumberPerPageDef = variables.resultsNumberPerPageDef;
+pagesNumber = variables.pagesNumber;
+articleListDef = variables.articleListDef;
+articlesDef = variables.articlesDef;
+nextPageDef = variables.nextPageDef;
+pageParam = variables.pageParam;
+nextButtonDef = variables.nextButtonDef;
+aboBtnDef = variables.aboBtnDef;
+premiumBannerDef = variables.premiumBannerDef;
+articleHeaderDef = variables.articleHeaderDef;
+titleDivDef = variables.titleDivDef;
+subhedDivDef = variables.subhedDivDef;
+bodyDivDef = variables.bodyDivDef;
+authorElementDef = variables.authorElementDef;
+dateLogic = variables.dateLogic;
+dateElementDef = variables.dateElementDef;
+dateAttributeDef = variables.dateAttributeDef;
+dateStringDef = variables.dateStringDef;
+textElementsDef = variables.textElementsDef;
+exclElementsText = variables.exclElementsText;
+exclElementsDef = variables.exclElementsDef;
 
 const fieldset = document.createElement('fieldset');
 fieldset.classList.add('pcs-ui');
@@ -417,7 +417,7 @@ extractButton.addEventListener('click', async function (event) {
 // Extraction function
 async function performExtractAndSave(url) {
     const searchInput = document.querySelector('input[name="search"]');
-    searchTerm = searchInput.value;
+    let searchTerm = searchInput.value;
     if (typeof firstPage !== 'undefined') {
         pageNo = firstPage;
     } else {
@@ -445,7 +445,7 @@ async function performExtractAndSave(url) {
         nextUrl = url;
     }
 
-    resultsNumberContainer = document.querySelector('p.css-1ycagq6');
+    resultsNumberContainer = document.querySelector('p.css-16rsb1p');
     if (!resultsNumberContainer) {
         window.alert(chrome.i18n.getMessage('searchAlert'));
         location.reload();

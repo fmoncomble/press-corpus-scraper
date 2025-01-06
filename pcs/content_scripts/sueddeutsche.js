@@ -21,7 +21,7 @@ window.onload = function () {
         .querySelector(searchTermContainerDef)
         .value.trim();
     // S'il est présent : définir le nombre total de résultats
-    const resultsNumberContainer = 'p.css-1ycagq6';
+    const resultsNumberContainer = 'p.css-16rsb1p';
     const resultsNumber = null;
     // S'il est pertinent : nombre de résultats par page
     const resultsNumberPerPageDef = 50;
@@ -41,7 +41,7 @@ window.onload = function () {
     const nextPageDef = false;
     const pageParam = null;
     // Logique de pagination : si les pages ne sont pas numérotées dans l'URL, identifier le bouton permettant de passer à la page suivante
-    const nextButtonDef = 'button.css-16efks5';
+    const nextButtonDef = 'button.css-1nqz5e9';
 
     // --- Structure des pages d'articles --- //
 
