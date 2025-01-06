@@ -50,6 +50,9 @@
     "extractSample": {
         "message": "Scrape sample"
     },
+    "europresseLabelText1": {
+        "message": "Scrape first 20 pages out of "
+    },
     "extractLabelText1": {
         "message": "Scrape "
     },

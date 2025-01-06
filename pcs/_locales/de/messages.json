@@ -50,6 +50,9 @@
     "extractSample": {
         "message": "Auswahl extrahieren"
     },
+    "europresseLabelText1": {
+        "message": "Extrahieren Sie die ersten 20 Ergebnisseiten von "
+    },
     "extractLabelText1": {
         "message": "Die "
     },

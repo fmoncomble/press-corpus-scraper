@@ -50,6 +50,9 @@
     "extractSample": {
         "message": "Extraire l'échantillon"
     },
+    "europresseLabelText1": {
+        "message": "Extraire les 20 premières pages de résultats sur "
+    },
     "extractLabelText1": {
         "message": "Extraire les "
     },

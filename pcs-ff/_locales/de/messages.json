@@ -33,7 +33,7 @@
         "message": "Extrahieren und laden Sie Artikel im gewünschten Format herunter"
     },
     "displayAlert": {
-        "message": "Die Extraktionsoberfläche kann nicht angezeigt werden:\nBitte laden Sie die Seite in einen neuen Tab."
+        "message": "Die Extraktionsoberfläche kann nicht angezeigt werden:\nBitte laden Sie die Seite in einem neuen Tab."
     },
     "searchAlert": {
         "message": "Führen Sie die Suche vor dem Extrahieren durch"
@@ -49,6 +49,9 @@
     },
     "extractSample": {
         "message": "Auswahl extrahieren"
+    },
+    "europresseLabelText1": {
+        "message": "Extrahieren Sie die ersten 20 Ergebnisseiten von "
     },
     "extractLabelText1": {
         "message": "Die "
@@ -69,7 +72,7 @@
         "message": "Extraktion gestartet..."
     },
     "extractionMessage2": {
-        "message": "Extraktion der Seite "
+        "message": "Extraktion von Seite "
     },
     "extractionMessage3": {
         "message": " von "
@@ -81,10 +84,10 @@
         "message": "Fertig! "
     },
     "downloadFilesContainerText2": {
-        "message": " beartbeitete Seite(n), "
+        "message": " Seite(n) bearbeitet, "
     },
     "downloadFilesContainerText3": {
-        "message": " Artikel heruntergeladen:"
+        "message": " Artikel(n) heruntergeladen:"
     },
     "skippedFilesWrapperText1": {
         "message": " für Abonnenten reservierter Artikel wurde ignoriert."
@@ -105,7 +108,7 @@
         "message": " ist kein Artikel."
     },
     "noResponse": {
-        "message": " gibt keine Antwort."
+        "message": " gibt kein Antwort."
     },
     "totalFilesContainerText": {
         "message": " Ergebnis(se) verarbeitet."
