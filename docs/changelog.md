@@ -2,7 +2,7 @@
 
 **_Press Corpus Scraper_ has been updated!** Here are the new features:
 
-### 0.10
+## 0.10
 
 -   📣 **New!** Added localization in English, French and German
 
