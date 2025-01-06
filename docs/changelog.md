@@ -2,7 +2,11 @@
 
 **_Press Corpus Scraper_ has been updated!** Here are the new features:
 
-### 0.9.5 - 0.9.6
+### 0.10
+
+-   📣 **New!** Added localization in English, French and German
+
+### 0.9.5 - 0.9.7
 
 -   Improved method for expanding list of search results on _SZ_.
 -   Bug fix.

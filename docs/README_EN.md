@@ -8,7 +8,7 @@ An extension for extracting and downloading press articles for text mining.
 
 If you use this extension for your research, please reference it as follows:
 
-Moncomble, F. (2024). _Press Corpus Scraper_ (Version 0.9) [JavaScript]. Arras, France: Université d'Artois. Available at: https://fmoncomble.github.io/press-corpus-scraper/
+Moncomble, F. (2024). _Press Corpus Scraper_ (Version 0.10) [JavaScript]. Arras, France: Université d'Artois. Available at: https://fmoncomble.github.io/press-corpus-scraper/
 
 ## Installation
 
@@ -16,7 +16,7 @@ Moncomble, F. (2024). _Press Corpus Scraper_ (Version 0.9) [JavaScript]. Arras, 
 
 [![Firefox add-on](https://github.com/fmoncomble/Figaro_extractor/assets/59739627/e4df008e-1aac-46be-a216-e6304a65ba97)](https://github.com/fmoncomble/press-corpus-scraper/releases/latest/download/pcs.xpi)
 
-### Chrome/Edge
+### Chromium-based browsers (Chrome, Edge, Opera, Ecosia...)
 
 -   [Download .zip archive](https://github.com/fmoncomble/press-corpus-scraper/releases/latest/download/pcs.zip)
 -   Unzip the archive
