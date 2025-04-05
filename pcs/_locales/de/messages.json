@@ -107,6 +107,12 @@
     "errorMessage": {
         "message": " ist kein Artikel."
     },
+    "fetchError": {
+        "message": "Fehler"
+    },
+    "fetchError2": {
+        "message": "Extrahierte Artikel werden heruntergeladen."
+    },
     "noResponse": {
         "message": " gibt kein Antwort."
     },

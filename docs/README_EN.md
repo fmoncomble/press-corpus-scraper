@@ -17,13 +17,13 @@ Moncomble, F. (2024). _Press Corpus Scraper_ (Version 0.10) [JavaScript]. Arras,
 [![Firefox add-on](https://github.com/fmoncomble/Figaro_extractor/assets/59739627/e4df008e-1aac-46be-a216-e6304a65ba97)](https://github.com/fmoncomble/press-corpus-scraper/releases/latest/download/pcs.xpi)
 
 ### Chromium-based browsers (Chrome, Edge, Opera, Ecosia...)
-
--   [Download .zip archive](https://github.com/fmoncomble/press-corpus-scraper/releases/latest/download/pcs.zip)
--   Unzip the archive
--   Open the extensions manager: `chrome://extensions` or `edge://extensions`
-    -   Activate "developer mode"
-    -   Click "Load unpacked".
-    -   Select the unzipped folder
+-   ⚠️ These browsers are no longer supported. An upgrade of the plug-in is under study to restore compatibility.
+~~-   [Download .zip archive](https://github.com/fmoncomble/press-corpus-scraper/releases/latest/download/pcs.zip)~~
+~~-   Unzip the archive~~
+~~-   Open the extensions manager: `chrome://extensions` or `edge://extensions`~~
+    ~~-   Activate "developer mode"~~
+    ~~-   Click "Load unpacked".~~
+    ~~-   Select the unzipped folder~~
 
 Remember to pin the extension to the toolbar:  
 <img src="images/pin-firefox.png" style="display: inline" max-width="50%"/><img src="images/pin-chrome.png" style="display: inline" max-width="50%"/>

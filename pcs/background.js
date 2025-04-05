@@ -121,6 +121,16 @@ async function performExtractAndSave(url) {
 
             for (let i = 1; i <= 3; i++) {
                 const response = await fetch(nextUrl);
+                if (response.status === 406) {
+                    window.alert(
+                        `${chrome.i18n.getMessage('fetchError')} ${
+                            response.status
+                        }: ${response.statusText}\n\n${chrome.i18n.getMessage(
+                            'fetchError2'
+                        )}`
+                    );
+                    break loop;
+                }
                 const html = await response.text();
                 doc = parser.parseFromString(html, 'text/html');
 
@@ -195,397 +205,423 @@ async function performExtractAndSave(url) {
 
             await Promise.all(
                 urls.map(async (url) => {
-                    try {
-                        let errorMessage;
-                        const contentResponse = await fetch(url);
-                        if (!contentResponse || !contentResponse.ok) {
-                            errorMessage =
-                                '< ' +
-                                url.substring(0, 20) +
-                                '... >' +
-                                chrome.i18n.getMessage('noResponse');
-                            errorFiles.push(url);
-                            errorMessages.push(errorMessage);
-                            return;
-                        }
-                        const content = await contentResponse.text();
-                        const contentDoc = parser.parseFromString(
-                            content,
-                            'text/html'
-                        );
+                        try {
+                            let errorMessage;
+                            const contentResponse = await fetch(url);
+                            if (!contentResponse || !contentResponse.ok) {
+                                if (contentResponse.status === 406) {
+                                    abortExtraction = true;
+                                }
+                                errorMessage =
+                                    '< ' +
+                                    url.substring(0, 20) +
+                                    '... >' +
+                                    chrome.i18n.getMessage('noResponse');
+                                errorFiles.push(url);
+                                errorMessages.push(errorMessage);
+                                return;
+                            }
+                            const content = await contentResponse.text();
+                            const contentDoc = parser.parseFromString(
+                                content,
+                                'text/html'
+                            );
 
-                        const titleDiv = contentDoc.querySelector(titleDivDef);
-                        if (!titleDiv) {
-                            errorMessage =
-                                '< ' +
-                                url.substring(0, 20) +
-                                '... >' +
-                                chrome.i18n.getMessage('errorMessage');
-                            errorFiles.push(url);
-                            errorMessages.push(errorMessage);
-                            return;
-                        }
+                            const titleDiv =
+                                contentDoc.querySelector(titleDivDef);
+                            if (!titleDiv) {
+                                errorMessage =
+                                    '< ' +
+                                    url.substring(0, 20) +
+                                    '... >' +
+                                    chrome.i18n.getMessage('errorMessage');
+                                errorFiles.push(url);
+                                errorMessages.push(errorMessage);
+                                return;
+                            }
 
-                        const articleHeader =
-                            contentDoc.querySelector(articleHeaderDef);
-                        let premiumBanner;
-                        if (articleHeader) {
-                            premiumBanner =
-                                articleHeader.querySelector(premiumBannerDef);
-                            if (!premiumBanner) {
+                            const articleHeader =
+                                contentDoc.querySelector(articleHeaderDef);
+                            let premiumBanner;
+                            if (articleHeader) {
+                                premiumBanner =
+                                    articleHeader.querySelector(
+                                        premiumBannerDef
+                                    );
+                                if (!premiumBanner) {
+                                    premiumBanner =
+                                        contentDoc.querySelector(
+                                            premiumBannerDef
+                                        );
+                                }
+                            } else if (!articleHeader) {
                                 premiumBanner =
                                     contentDoc.querySelector(premiumBannerDef);
                             }
-                        } else if (!articleHeader) {
-                            premiumBanner =
-                                contentDoc.querySelector(premiumBannerDef);
-                        }
-                        // const aboBtn = contentDoc.querySelector(aboBtnDef);
-                        // if (aboBtn) {
-                        //     console.log('AboBtn found: ', aboBtn);
-                        // }
-                        if (premiumBanner) {
-                            skippedFiles.push(url);
-                            skippedTitles.push(titleDiv.textContent);
-                            return;
-                        }
+                            // const aboBtn = contentDoc.querySelector(aboBtnDef);
+                            // if (aboBtn) {
+                            //     console.log('AboBtn found: ', aboBtn);
+                            // }
+                            if (premiumBanner) {
+                                skippedFiles.push(url);
+                                skippedTitles.push(titleDiv.textContent);
+                                return;
+                            }
 
-                        const subhedDiv =
-                            contentDoc.querySelector(subhedDivDef);
+                            const subhedDiv =
+                                contentDoc.querySelector(subhedDivDef);
 
-                        const bodyDiv = contentDoc.querySelector(bodyDivDef);
+                            const bodyDiv =
+                                contentDoc.querySelector(bodyDivDef);
 
-                        let authorElement =
-                            contentDoc.querySelector(authorElementDef);
-                        if (!authorElement) {
-                            authorElement =
-                                contentDoc.querySelector(
-                                    titleDivDef
-                                ).nextElementSibling;
-                        }
+                            let authorElement =
+                                contentDoc.querySelector(authorElementDef);
+                            if (!authorElement) {
+                                authorElement =
+                                    contentDoc.querySelector(
+                                        titleDivDef
+                                    ).nextElementSibling;
+                            }
 
-                        if (!bodyDiv) {
-                            errorMessage =
-                                '“' +
-                                titleDiv.textContent.trim() +
-                                '...”' +
-                                chrome.i18n.getMessage('errorMessage');
-                            errorFiles.push(url);
-                            errorMessages.push(errorMessage);
-                            return;
-                        }
+                            if (!bodyDiv) {
+                                errorMessage =
+                                    '“' +
+                                    titleDiv.textContent.trim() +
+                                    '...”' +
+                                    chrome.i18n.getMessage('errorMessage');
+                                errorFiles.push(url);
+                                errorMessages.push(errorMessage);
+                                return;
+                            }
 
-                        let subhed = '';
-                        if (subhedDiv) {
-                            subhed = subhedDiv.textContent;
-                        }
+                            let subhed = '';
+                            if (subhedDiv) {
+                                subhed = subhedDiv.textContent;
+                            }
 
-                        let textElements = Array.from(
-                            bodyDiv.querySelectorAll(textElementsDef)
-                        );
-
-                        function filterTextElements(
-                            textElements,
-                            exclElementsDef,
-                            exclElementsText
-                        ) {
-                            let excludedNodes = [];
-                            let filteredElements = textElements.filter(
-                                function (node) {
-                                    let textContentExcluded = false;
-                                    let identifierExcluded = false;
-                                    // Check if the node's textContent includes any of the exclElementsText
-                                    if (exclElementsText) {
-                                        textContentExcluded =
-                                            exclElementsText.some(function (e) {
-                                                return node.textContent.includes(
-                                                    e
-                                                );
-                                            });
-                                    }
-
-                                    // Check if the node's identifier is in the exclElementsDef array
-                                    if (exclElementsDef) {
-                                        identifierExcluded =
-                                            exclElementsDef.includes(
-                                                node.className
-                                            );
-                                    }
-
-                                    if (
-                                        textContentExcluded ||
-                                        identifierExcluded
-                                    ) {
-                                        excludedNodes.push(
-                                            node + ', ' + node.textContent
-                                        );
-                                    }
-
-                                    // Exclude the node if either condition is true
-                                    return !(
-                                        textContentExcluded ||
-                                        identifierExcluded
-                                    );
-                                }
+                            let textElements = Array.from(
+                                bodyDiv.querySelectorAll(textElementsDef)
                             );
 
-                            return filteredElements;
-                        }
-
-                        let text;
-                        if (exclElementsDef || exclElementsText) {
-                            textElements = filterTextElements(
+                            function filterTextElements(
                                 textElements,
                                 exclElementsDef,
                                 exclElementsText
-                            );
-                        }
+                            ) {
+                                let excludedNodes = [];
+                                let filteredElements = textElements.filter(
+                                    function (node) {
+                                        let textContentExcluded = false;
+                                        let identifierExcluded = false;
+                                        // Check if the node's textContent includes any of the exclElementsText
+                                        if (exclElementsText) {
+                                            textContentExcluded =
+                                                exclElementsText.some(function (
+                                                    e
+                                                ) {
+                                                    return node.textContent.includes(
+                                                        e
+                                                    );
+                                                });
+                                        }
 
-                        text = textElements
-                            .map((textElement) =>
-                                textElement.textContent.trim()
-                            )
-                            .join('\n\n');
+                                        // Check if the node's identifier is in the exclElementsDef array
+                                        if (exclElementsDef) {
+                                            identifierExcluded =
+                                                exclElementsDef.includes(
+                                                    node.className
+                                                );
+                                        }
 
-                        if (!text) {
-                            errorMessage =
-                                '“' +
-                                titleDiv.textContent.trim() +
-                                '...”' +
-                                chrome.i18n.getMessage('errorMessage');
-                            errorFiles.push(url);
-                            errorMessages.push(errorMessage);
-                            return;
-                        }
+                                        if (
+                                            textContentExcluded ||
+                                            identifierExcluded
+                                        ) {
+                                            excludedNodes.push(
+                                                node + ', ' + node.textContent
+                                            );
+                                        }
 
-                        let author;
-                        if (authorElement) {
-                            author = authorElement.textContent
-                                .replace('Par', '')
-                                .replace('par', '')
-                                .replaceAll('"', '&quot;')
-                                .replaceAll('&', '&amp;')
-                                .trim();
-                        } else {
-                            author = chrome.i18n.getMessage('unknownAuthor');
-                        }
+                                        // Exclude the node if either condition is true
+                                        return !(
+                                            textContentExcluded ||
+                                            identifierExcluded
+                                        );
+                                    }
+                                );
 
-                        let date;
-                        if (dateLogic === 'node') {
-                            let dateElement =
-                                contentDoc.querySelector(dateElementDef);
-                            let dateElementValue;
-                            if (dateElement && dateAttributeDef) {
-                                dateElementValue =
-                                    dateElement.getAttribute(dateAttributeDef);
-                                function isIsoDate() {
-                                    if (
-                                        /\d{4}-\d{2}-\d{2}/.test(
-                                            dateElementValue
-                                        )
-                                    ) {
-                                        return true;
-                                    } else {
-                                        return false;
+                                return filteredElements;
+                            }
+
+                            let text;
+                            if (exclElementsDef || exclElementsText) {
+                                textElements = filterTextElements(
+                                    textElements,
+                                    exclElementsDef,
+                                    exclElementsText
+                                );
+                            }
+
+                            text = textElements
+                                .map((textElement) =>
+                                    textElement.textContent.trim()
+                                )
+                                .join('\n\n');
+
+                            if (!text) {
+                                errorMessage =
+                                    '“' +
+                                    titleDiv.textContent.trim() +
+                                    '...”' +
+                                    chrome.i18n.getMessage('errorMessage');
+                                errorFiles.push(url);
+                                errorMessages.push(errorMessage);
+                                return;
+                            }
+
+                            let author;
+                            if (authorElement) {
+                                author = authorElement.textContent
+                                    .replace('Par', '')
+                                    .replace('par', '')
+                                    .replaceAll('"', '&quot;')
+                                    .replaceAll('&', '&amp;')
+                                    .trim();
+                            } else {
+                                author =
+                                    chrome.i18n.getMessage('unknownAuthor');
+                            }
+
+                            let date;
+                            if (dateLogic === 'node') {
+                                let dateElement =
+                                    contentDoc.querySelector(dateElementDef);
+                                let dateElementValue;
+                                if (dateElement && dateAttributeDef) {
+                                    dateElementValue =
+                                        dateElement.getAttribute(
+                                            dateAttributeDef
+                                        );
+                                    function isIsoDate() {
+                                        if (
+                                            /\d{4}-\d{2}-\d{2}/.test(
+                                                dateElementValue
+                                            )
+                                        ) {
+                                            return true;
+                                        } else {
+                                            return false;
+                                        }
                                     }
                                 }
-                            }
-                            let dateString;
-                            let frenchDateString;
-                            if (dateElementValue && isIsoDate()) {
-                                date = dateElement
-                                    ? dateElementValue.split('T')[0]
-                                    : chrome.i18n.getMessage('unknownDate');
-                            } else if (
-                                (dateElementValue && !isIsoDate()) ||
-                                (dateElement && !dateElementValue)
-                            ) {
-                                dateString = dateElement.textContent
-                                    .replace('Publié le', '')
-                                    .trim();
-                                if (isFrenchDate(dateString)) {
-                                    date = convertFrenchDateToISO(dateString);
-                                } else {
-                                    try {
+                                let dateString;
+                                let frenchDateString;
+                                if (dateElementValue && isIsoDate()) {
+                                    date = dateElement
+                                        ? dateElementValue.split('T')[0]
+                                        : chrome.i18n.getMessage('unknownDate');
+                                } else if (
+                                    (dateElementValue && !isIsoDate()) ||
+                                    (dateElement && !dateElementValue)
+                                ) {
+                                    dateString = dateElement.textContent
+                                        .replace('Publié le', '')
+                                        .trim();
+                                    if (isFrenchDate(dateString)) {
+                                        date =
+                                            convertFrenchDateToISO(dateString);
+                                    } else {
+                                        try {
+                                            date =
+                                                buildDateFromNumberFormat(
+                                                    dateString
+                                                );
+                                        } catch (error) {
+                                            'Error building date for ' + url,
+                                                error;
+                                        }
+                                    }
+                                } else if (!dateElement) {
+                                    const divs =
+                                        contentDoc.querySelectorAll('*');
+                                    const divArray = Array.from(divs);
+                                    const dateDiv = divArray.find((d) =>
+                                        d.textContent.includes(dateStringDef)
+                                    );
+                                    if (isFrenchDate(dateDiv)) {
+                                        frenchDateString = dateDiv.textContent
+                                            .replace('Publié le', '')
+                                            .trim();
+                                        date =
+                                            convertFrenchDateToISO(
+                                                frenchDateString
+                                            );
+                                    } else {
+                                        dateString = dateDiv.textContent
+                                            .replace('Publié le')
+                                            .trim();
                                         date =
                                             buildDateFromNumberFormat(
                                                 dateString
                                             );
-                                    } catch (error) {
-                                        'Error building date for ' + url, error;
                                     }
-                                }
-                            } else if (!dateElement) {
-                                const divs = contentDoc.querySelectorAll('*');
-                                const divArray = Array.from(divs);
-                                const dateDiv = divArray.find((d) =>
-                                    d.textContent.includes(dateStringDef)
-                                );
-                                if (isFrenchDate(dateDiv)) {
-                                    frenchDateString = dateDiv.textContent
-                                        .replace('Publié le', '')
-                                        .trim();
+                                } else if (
+                                    !dateElement &&
+                                    !isIsoDate() &&
+                                    !frenchDateString &&
+                                    !dateString
+                                ) {
                                     date =
-                                        convertFrenchDateToISO(
-                                            frenchDateString
+                                        chrome.i18n.getMessage('unknownDate');
+                                }
+                            } else if (dateLogic === 'url') {
+                                date = buildDateFromUrl(url);
+                            }
+
+                            function buildDateFromUrl(url) {
+                                const datePattern =
+                                    /(%C2%B7)?(\d{4})\/?(\d{2})\/?(\d{2})/u;
+                                const day = url.match(datePattern)[4];
+                                const month = url.match(datePattern)[3];
+                                const year = url.match(datePattern)[2];
+                                let builtDate = year + '-' + month + '-' + day;
+                                return builtDate;
+                            }
+
+                            let extension = '.txt';
+                            let pubName;
+                            if (pubNameDef) {
+                                let pubNameSpan =
+                                    contentDoc.querySelector(pubNameDef);
+                                const brIndex =
+                                    pubNameSpan.innerHTML.indexOf('<br>');
+                                if (brIndex !== -1) {
+                                    pubNameSpan =
+                                        pubNameSpan.innerHTML.substring(
+                                            0,
+                                            brIndex
                                         );
-                                } else {
-                                    dateString = dateDiv.textContent
-                                        .replace('Publié le')
+                                    pubName = pubNameSpan
+                                        .replaceAll(/[,-].+/g, '')
+                                        .replaceAll(/\s+/g, ' ')
+                                        .replace(/\(.+/, '')
                                         .trim();
-                                    date =
-                                        buildDateFromNumberFormat(dateString);
+                                } else {
+                                    pubName = pubNameSpan.textContent
+                                        .replaceAll(/[,-].+/g, '')
+                                        .replaceAll(/\s+/g, ' ')
+                                        .replace(/\(.+/, '')
+                                        .trim();
                                 }
-                            } else if (
-                                !dateElement &&
-                                !isIsoDate() &&
-                                !frenchDateString &&
-                                !dateString
-                            ) {
-                                date = chrome.i18n.getMessage('unknownDate');
                             }
-                        } else if (dateLogic === 'url') {
-                            date = buildDateFromUrl(url);
-                        }
+                            if (!pubNameDef) {
+                                pubName = paperName;
+                            }
 
-                        function buildDateFromUrl(url) {
-                            const datePattern =
-                                /(%C2%B7)?(\d{4})\/?(\d{2})\/?(\d{2})/u;
-                            const day = url.match(datePattern)[4];
-                            const month = url.match(datePattern)[3];
-                            const year = url.match(datePattern)[2];
-                            let builtDate = year + '-' + month + '-' + day;
-                            return builtDate;
-                        }
+                            let fileContent = `${pubName}\n\n${author}\n\n${date}\n\n${titleDiv.textContent}\n\n${subhed}\n\n${text}`;
 
-                        let extension = '.txt';
-                        let pubName;
-                        if (pubNameDef) {
-                            let pubNameSpan =
-                                contentDoc.querySelector(pubNameDef);
-                            const brIndex =
-                                pubNameSpan.innerHTML.indexOf('<br>');
-                            if (brIndex !== -1) {
-                                pubNameSpan = pubNameSpan.innerHTML.substring(
-                                    0,
-                                    brIndex
-                                );
-                                pubName = pubNameSpan
-                                    .replaceAll(/[,-].+/g, '')
-                                    .replaceAll(/\s+/g, ' ')
-                                    .replace(/\(.+/, '')
+                            if (selectedFormat === 'xml') {
+                                extension = '.xml';
+                                const title = titleDiv.textContent
+                                    .replaceAll('&', '&amp;')
+                                    .replaceAll('"', '&quot;')
                                     .trim();
-                            } else {
-                                pubName = pubNameSpan.textContent
-                                    .replaceAll(/[,-].+/g, '')
-                                    .replaceAll(/\s+/g, ' ')
-                                    .replace(/\(.+/, '')
-                                    .trim();
+                                subhed = subhed.replaceAll('&', '&amp;');
+                                text = text
+                                    .replaceAll('&', '&amp;')
+                                    .replaceAll('<', '&lt;')
+                                    .replaceAll('>', '&gt;')
+                                    .replaceAll('\n', '<lb></lb>');
+                                const euroLinkBtn =
+                                    contentDoc.querySelector(euroLinkDef);
+                                let euroLink;
+                                if (euroLinkBtn) {
+                                    euroLink =
+                                        euroLinkBtn.getAttribute(
+                                            euroLinkAttribute
+                                        );
+                                    url = euroLink;
+                                } else {
+                                    url = url.split('&')[0];
+                                }
+                                fileContent = `<text source="${pubName}" author="${author}" title="${title}" date="${date}">\n<ref target="${url}">Link to original document</ref><lb></lb><lb></lb>\n\n${subhed}<lb></lb><lb></lb>\n\n${text}\n</text>`;
                             }
-                        }
-                        if (!pubNameDef) {
-                            pubName = paperName;
-                        }
 
-                        let fileContent = `${pubName}\n\n${author}\n\n${date}\n\n${titleDiv.textContent}\n\n${subhed}\n\n${text}`;
-
-                        if (selectedFormat === 'xml') {
-                            extension = '.xml';
-                            const title = titleDiv.textContent
-                                .replaceAll('&', '&amp;')
-                                .replaceAll('"', '&quot;')
-                                .trim();
-                            subhed = subhed.replaceAll('&', '&amp;');
-                            text = text
-                                .replaceAll('&', '&amp;')
-                                .replaceAll('<', '&lt;')
-                                .replaceAll('>', '&gt;')
-                                .replaceAll('\n', '<lb></lb>');
-                            const euroLinkBtn =
-                                contentDoc.querySelector(euroLinkDef);
-                            let euroLink;
-                            if (euroLinkBtn) {
-                                euroLink =
-                                    euroLinkBtn.getAttribute(euroLinkAttribute);
-                                url = euroLink;
-                            } else {
-                                url = url.split('&')[0];
+                            if (selectedFormat === 'ira') {
+                                extension = '.txt';
+                                const title = titleDiv.textContent
+                                    .replaceAll(/[\.\?\!:;,\"'‘’“”«»]/g, ' ')
+                                    .trim()
+                                    .replaceAll(/\s/g, '_')
+                                    .replaceAll('__', '_');
+                                author = author
+                                    .replaceAll(/[\.\?\!:;,\"'‘’“”«»]/g, ' ')
+                                    .trim()
+                                    .replaceAll(/\s/g, '_')
+                                    .replaceAll('__', '_');
+                                pubName = pubName
+                                    .replaceAll(/[\.\?\!:;,\"'‘’“”]/g, ' ')
+                                    .trim()
+                                    .replaceAll(/\s/g, '_')
+                                    .replaceAll('__', '_');
+                                fileContent = `\n**** *source_${pubName} *title_${title} *author_${author} *date_${date}\n\n${subhed}\n\n${text}`;
                             }
-                            fileContent = `<text source="${pubName}" author="${author}" title="${title}" date="${date}">\n<ref target="${url}">Link to original document</ref><lb></lb><lb></lb>\n\n${subhed}<lb></lb><lb></lb>\n\n${text}\n</text>`;
-                        }
 
-                        if (selectedFormat === 'ira') {
-                            extension = '.txt';
-                            const title = titleDiv.textContent
-                                .replaceAll(/[\.\?\!:;,\"'‘’“”«»]/g, ' ')
-                                .trim()
-                                .replaceAll(/\s/g, '_')
-                                .replaceAll('__', '_');
-                            author = author
-                                .replaceAll(/[\.\?\!:;,\"'‘’“”«»]/g, ' ')
-                                .trim()
-                                .replaceAll(/\s/g, '_')
-                                .replaceAll('__', '_');
-                            pubName = pubName
-                                .replaceAll(/[\.\?\!:;,\"'‘’“”]/g, ' ')
-                                .trim()
-                                .replaceAll(/\s/g, '_')
-                                .replaceAll('__', '_');
-                            fileContent = `\n**** *source_${pubName} *title_${title} *author_${author} *date_${date}\n\n${subhed}\n\n${text}`;
-                        }
-
-                        let baseFileName = `${date}_${pubName.replaceAll(
-                            /\s/g,
-                            '_'
-                        )}_${author
-                            .replaceAll(/\p{P}/gu, '')
-                            .replaceAll(/\s+/g, '_')
-                            .trim()
-                            .substring(0, 20)}${extension}`;
-                        let index = 1;
-
-                        // Append a number to the file name to make it unique
-                        while (addedFileNames.has(baseFileName)) {
-                            baseFileName = `${date}_${pubName.replaceAll(
+                            let baseFileName = `${date}_${pubName.replaceAll(
                                 /\s/g,
                                 '_'
                             )}_${author
                                 .replaceAll(/\p{P}/gu, '')
                                 .replaceAll(/\s+/g, '_')
                                 .trim()
-                                .substring(0, 20)}_${index}${extension}`;
-                            index++;
+                                .substring(0, 20)}${extension}`;
+                            let index = 1;
+
+                            // Append a number to the file name to make it unique
+                            while (addedFileNames.has(baseFileName)) {
+                                baseFileName = `${date}_${pubName.replaceAll(
+                                    /\s/g,
+                                    '_'
+                                )}_${author
+                                    .replaceAll(/\p{P}/gu, '')
+                                    .replaceAll(/\s+/g, '_')
+                                    .trim()
+                                    .substring(0, 20)}_${index}${extension}`;
+                                index++;
+                            }
+
+                            function sanitizeFileName(fileName) {
+                                const illegalRe = /[\/\\:*?"<>|]/g;
+                                const controlRe = /[\x00-\x1f\x80-\x9f]/g;
+                                const reservedRe =
+                                    /^\.+$|^(con|prn|aux|nul|com[0-9]|lpt[0-9])(\..*)?$/i;
+                                const windowsRe =
+                                    /^(con|prn|aux|nul|com[0-9]|lpt[0-9]|[\s\.]+)$/gi;
+
+                                return fileName
+                                    .replace(illegalRe, '_') // Replace illegal characters
+                                    .replace(controlRe, '_') // Replace control characters
+                                    .replace(reservedRe, '_reserved') // Replace reserved words
+                                    .replace(windowsRe, '_'); // Replace Windows reserved words
+                            }
+
+                            baseFileName = sanitizeFileName(baseFileName);
+                            baseFileName = baseFileName
+                                .normalize('NFD')
+                                .replace(/[\u0300-\u036f]/g, '');
+
+                            fetchedUrls.add(url);
+                            addedFileNames.add(baseFileName);
+
+                            zip.file(baseFileName, fileContent);
+                        } catch (error) {
+                            console.error('Error: ', error);
                         }
-
-                        function sanitizeFileName(fileName) {
-                            const illegalRe = /[\/\\:*?"<>|]/g;
-                            const controlRe = /[\x00-\x1f\x80-\x9f]/g;
-                            const reservedRe =
-                                /^\.+$|^(con|prn|aux|nul|com[0-9]|lpt[0-9])(\..*)?$/i;
-                            const windowsRe =
-                                /^(con|prn|aux|nul|com[0-9]|lpt[0-9]|[\s\.]+)$/gi;
-
-                            return fileName
-                                .replace(illegalRe, '_') // Replace illegal characters
-                                .replace(controlRe, '_') // Replace control characters
-                                .replace(reservedRe, '_reserved') // Replace reserved words
-                                .replace(windowsRe, '_'); // Replace Windows reserved words
-                        }
-
-                        baseFileName = sanitizeFileName(baseFileName);
-                        baseFileName = baseFileName
-                            .normalize('NFD')
-                            .replace(/[\u0300-\u036f]/g, '');
-
-                        fetchedUrls.add(url);
-                        addedFileNames.add(baseFileName);
-
-                        zip.file(baseFileName, fileContent);
-                    } catch (error) {
-                        console.error('Error: ', error);
-                    }
-                })
-            );
+                    })
+                );
+                // }
+            // )
+            // );
 
             if (abortExtraction) {
                 break;

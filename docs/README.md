@@ -18,12 +18,13 @@ Moncomble, F. (2024). _Press Corpus Scraper_ (Version 0.10) [JavaScript]. Arras,
 
 ### Navigateurs basés sur Chromium (Chrome, Edge, Opera, Ecosia...)
 
--   [Télécharger l'archive .zip](https://github.com/fmoncomble/press-corpus-scraper/releases/latest/download/pcs.zip)
--   Décompresser l'archive
--   Ouvrir le gestionnaire d'extensions : `chrome://extensions` ou `edge://extensions`
-    -   Activer le « mode développeur »
-    -   Cliquer sur « charger l'extension non empaquetée »
-    -   Sélectionner le dossier décompressé
+-   ⚠️ Ces navigateurs ne sont plus pris en charge. Une refonte de l'extension est à l'étude pour la rendre à nouveau compatible.
+~~-   [Télécharger l'archive .zip](https://github.com/fmoncomble/press-corpus-scraper/releases/latest/download/pcs.zip)~~
+~~-   Décompresser l'archive~~
+~~-   Ouvrir le gestionnaire d'extensions : `chrome://extensions` ou `edge://extensions`~~
+    ~~-   Activer le « mode développeur »~~
+    ~~-   Cliquer sur « charger l'extension non empaquetée »~~
+    ~~-   Sélectionner le dossier décompressé~~
 
 Pensez à épingler l'extension à la barre d'outils :  
 <img src="images/pin-firefox.png" style="display: inline" max-width="50%"/> <img src="images/pin-chrome.png" style="display: inline" max-width="50%"/>

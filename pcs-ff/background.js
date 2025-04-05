@@ -121,6 +121,10 @@ async function performExtractAndSave(url) {
 
             for (let i = 1; i <= 3; i++) {
                 const response = await fetch(nextUrl);
+                if (response.status === 406) {
+                    window.alert(`Error ${response.status}: ${response.statusText}`);
+                    break loop;
+                }
                 const html = await response.text();
                 doc = parser.parseFromString(html, 'text/html');
 

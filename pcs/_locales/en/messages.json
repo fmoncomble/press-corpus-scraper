@@ -107,6 +107,12 @@
     "errorMessage": {
         "message": " is not an article."
     },
+    "fetchError": {
+        "message": "Error"
+    },
+    "fetchError2": {
+        "message": "Downloading scraped articles."
+    },
     "noResponse": {
         "message": " does not respond."
     },

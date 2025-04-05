@@ -107,6 +107,12 @@
     "errorMessage": {
         "message": " n'est pas un article."
     },
+    "fetchError": {
+        "message": "Erreur"
+    },
+    "fetchError2": {
+        "message": "Les articles extraits vont être téléchargés."
+    },
     "noResponse": {
         "message": " ne répond pas."
     },
