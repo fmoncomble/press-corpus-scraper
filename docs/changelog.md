@@ -2,6 +2,10 @@
 
 **_Press Corpus Scraper_ has been updated!** Here are the new features:
 
+### 0.10.2
+
+-   Implemented NYT API changes
+
 ## 0.10
 
 -   📣 **New!** Added localization in English, French and German
