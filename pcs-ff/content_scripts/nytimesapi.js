@@ -387,7 +387,7 @@ document.addEventListener('DOMContentLoaded', async function () {
                 updateApiCounter();
                 const data = await queryResponse.json();
                 const dataContent = data.response;
-                resultsTotal = dataContent.meta.hits;
+                resultsTotal = dataContent.metadata.hits;
                 resultsOverview.textContent = `${resultsTotal} result(s) found.`;
                 resultsContainer.style.display = 'block';
 
