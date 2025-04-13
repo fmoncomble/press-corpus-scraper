@@ -62,7 +62,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
                     console.error('Error:', error);
                     sendResponse({
                         success: false,
-                        error: 'An error occurred',
+                        error: `An error occurred: ${error}`,
                     });
                 });
 
@@ -71,7 +71,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
             console.error('Error:', error);
             sendResponse({
                 success: false,
-                error: 'An error occurred',
+                error: `An error occurred: ${error}`,
             });
         }
     } else if (message.action === 'abortExtraction') {
@@ -504,7 +504,7 @@ async function performExtractAndSave(url) {
                                 .replaceAll('&', '&amp;')
                                 .replaceAll('<', '&lt;')
                                 .replaceAll('>', '&gt;')
-                                .replaceAll('\n', '<lb></lb>');
+                                .replaceAll('\n', '<lb/>');
                             const euroLinkBtn =
                                 contentDoc.querySelector(euroLinkDef);
                             let euroLink;
@@ -515,7 +515,7 @@ async function performExtractAndSave(url) {
                             } else {
                                 url = url.split('&')[0];
                             }
-                            fileContent = `<text source="${pubName}" author="${author}" title="${title}" date="${date}">\n<ref target="${url}">Link to original document</ref><lb></lb><lb></lb>\n\n${subhed}<lb></lb><lb></lb>\n\n${text}\n</text>`;
+                            fileContent = `<text source="${pubName}" author="${author}" title="${title}" date="${date}">\n<ref target="${url}">Link to original document</ref><lb/><lb/>\n\n${subhed}<lb/><lb/>\n\n${text}\n</text>`;
                         }
 
                         if (selectedFormat === 'ira') {

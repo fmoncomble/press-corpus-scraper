@@ -1,9 +1,9 @@
 {
-    "manifest_version": 2,
+    "manifest_version": 3,
     "name": "__MSG_extName__",
 
-    "version": "0.10.2",
-    "version_name": "0.10.2",
+    "version": "0.11",
+    "version_name": "0.11",
 
     "description": "__MSG_description__",
     "default_locale": "fr",
@@ -18,7 +18,10 @@
         "downloads",
         "storage",
         "alarms",
-        "clipboardWrite",
+        "clipboardWrite"
+    ],
+
+    "host_permissions": [
         "*://*.lefigaro.fr/*",
         "*://*.lemonde.fr/*",
         "*://*.lepoint.fr/*",
@@ -30,11 +33,11 @@
     ],
 
     "background": {
-        "page": "background.html",
-        "persistent": false
+        "service_worker": "background.js",
+        "scripts": ["background.js", "jszip.min.js"]
     },
 
-    "browser_action": {
+    "action": {
         "default_popup": "popup.html",
         "default_icon": {
             "32": "icons/icon-32.png",
@@ -44,9 +47,14 @@
     },
 
     "web_accessible_resources": [
-        "content_scripts/guardianapi.html",
-        "content_scripts/nytimesapi.html",
-        "content_scripts/dzpapi.html"
+        {
+            "resources": [
+                "content_scripts/guardianapi.html",
+                "content_scripts/nytimesapi.html",
+                "content_scripts/dzpapi.html"
+            ],
+            "matches": ["<all_urls>"]
+        }
     ],
 
     "content_scripts": [
@@ -98,7 +106,11 @@
         },
         {
             "matches": ["https://www.sueddeutsche.de/suche*"],
-            "js": ["content_scripts/sueddeutsche.js", "content_scripts/scroller.js", "jszip.min.js"],
+            "js": [
+                "content_scripts/sueddeutsche.js",
+                "content_scripts/scroller.js",
+                "jszip.min.js"
+            ],
             "css": [
                 "content_scripts/sueddeutsche.css",
                 "content_scripts/config.css"
@@ -198,9 +210,9 @@
     ],
 
     "browser_specific_settings": {
-      "gecko": {
-        "id": "{9e9c5f35-dcd0-4eae-b11e-089f14e97361}",
-        "update_url": "https://github.com/fmoncomble/press-corpus-scraper/releases/latest/download/update_manifest.json"
-      }
+        "gecko": {
+            "id": "{9e9c5f35-dcd0-4eae-b11e-089f14e97361}",
+            "update_url": "https://github.com/fmoncomble/press-corpus-scraper/releases/latest/download/update_manifest.json"
+        }
     }
 }

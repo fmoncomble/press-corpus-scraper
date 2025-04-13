@@ -684,8 +684,8 @@ document.addEventListener('DOMContentLoaded', async function () {
                         .replaceAll('&', '&amp;')
                         .replaceAll('<', '&lt;')
                         .replaceAll('>', '&gt;')
-                        .replaceAll('\n', '<lb></lb>');
-                    fileContent = `<text source="The Guardian" title="${xmltitle}" author="${xmlauthor}" date="${date}">\n<ref target="${link}">Link to article</ref><lb></lb><lb></lb>${xmlsubhed}<lb></lb><lb></lb>${xmltext}<lb></lb></text>`;
+                        .replaceAll('\n', '<lb/>');
+                    fileContent = `<text source="The Guardian" title="${xmltitle}" author="${xmlauthor}" date="${date}">\n<ref target="${link}">Link to article</ref><lb/><lb/>${xmlsubhed}<lb/><lb/>${xmltext}<lb/></text>`;
                 }
 
                 if (format === 'ira') {

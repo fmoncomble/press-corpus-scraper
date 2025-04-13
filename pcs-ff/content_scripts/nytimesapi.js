@@ -289,8 +289,8 @@ document.addEventListener('DOMContentLoaded', async function () {
             newsdesk = newsdeskSelect.value;
             section = sectionSelect.value;
             tom = tomSelect.value;
-            fromDate = fromDateInput.value;
-            toDate = toDateInput.value;
+            fromDate = fromDateInput.value.replaceAll('-', '');
+            toDate = toDateInput.value.replaceAll('-', '');
 
             queryUrl = baseUrl + '&api-key=' + apiKey + '&fq=';
             if (searchType === 'expert') {
@@ -667,30 +667,14 @@ document.addEventListener('DOMContentLoaded', async function () {
 
             // Function to extract text and metadata from each result
             async function processResult(r) {
+                console.log('Processing result: ', r);
                 const parser = new DOMParser();
                 const date = r.pub_date.split('T')[0];
                 const link = r.web_url;
                 const title = r.headline.main;
                 const subhed = r.abstract;
                 const byline = r.byline;
-                let authors = byline.person;
-                let authorName;
-                authors.forEach((a) => {
-                    const firstName = a.firstname;
-                    const middleName = a.middlename;
-                    const lastName = a.lastname;
-                    let author;
-                    if (middleName) {
-                        author = firstName + ' ' + middleName + ' ' + lastName;
-                    } else {
-                        author = firstName + ' ' + lastName;
-                    }
-                    if (authorName) {
-                        authorName = authorName + ' & ' + author;
-                    } else {
-                        authorName = author;
-                    }
-                });
+                let authorName = byline.original.replace('By ', '');
                 if (!authorName) {
                     authorName = 'unknown';
                 }
@@ -976,8 +960,8 @@ document.addEventListener('DOMContentLoaded', async function () {
                         .replaceAll('&', '&amp;')
                         .replaceAll('<', '&lt;')
                         .replaceAll('>', '&gt;')
-                        .replaceAll('\n', '<lb></lb>');
-                    fileContent = `<text source="The New York Times" title="${xmltitle}" author="${xmlauthor}" date="${date}">\n<ref target="${link}">Link to article</ref><lb></lb><lb></lb>${xmlsubhed}<lb></lb><lb></lb>${xmltext}<lb></lb></text>`;
+                        .replaceAll('\n', '<lb/>');
+                    fileContent = `<text source="The New York Times" title="${xmltitle}" author="${xmlauthor}" date="${date}">\n<ref target="${link}">Link to article</ref><lb/><lb/>${xmlsubhed}<lb/><lb/>${xmltext}<lb/></text>`;
                 }
 
                 if (format === 'ira') {

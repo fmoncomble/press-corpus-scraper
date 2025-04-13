@@ -564,8 +564,8 @@ document.addEventListener('DOMContentLoaded', async function () {
                         .replaceAll('&', '&amp;')
                         .replaceAll('<', '&lt;')
                         .replaceAll('>', '&gt;')
-                        .replaceAll('\n', '<lb></lb>');
-                    fileContent = `<text source="${xmlpapertitle}" date="${date}" page_number="${pageNumber}">\n<ref target="${link}">Link to article</ref><lb></lb><lb></lb>${xmltext}<lb></lb></text>`;
+                        .replaceAll('\n', '<lb/>');
+                    fileContent = `<text source="${xmlpapertitle}" date="${date}" page_number="${pageNumber}">\n<ref target="${link}">Link to article</ref><lb/><lb/>${xmltext}<lb/></text>`;
                 }
 
                 if (format === 'ira') {
