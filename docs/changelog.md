@@ -2,6 +2,11 @@
 
 **_Press Corpus Scraper_ has been updated!** Here are the new features:
 
+## 0.11
+
+-   Migrated to Manifest v3 in preparation for restoring Chrome compatibility
+-   Fixed parsing of results from the NYT API
+
 ### 0.10.2
 
 -   Implemented NYT API changes
