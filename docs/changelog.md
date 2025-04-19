@@ -2,6 +2,10 @@
 
 **_Press Corpus Scraper_ has been updated!** Here are the new features:
 
+## 0.12
+
+-   Added support for _Ouest-France_
+
 ## 0.11
 
 -   Migrated to Manifest v3 in preparation for restoring Chrome compatibility

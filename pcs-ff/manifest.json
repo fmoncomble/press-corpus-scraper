@@ -2,8 +2,8 @@
     "manifest_version": 3,
     "name": "__MSG_extName__",
 
-    "version": "0.11",
-    "version_name": "0.11",
+    "version": "0.12",
+    "version_name": "0.12",
 
     "description": "__MSG_description__",
     "default_locale": "fr",
@@ -18,7 +18,8 @@
         "downloads",
         "storage",
         "alarms",
-        "clipboardWrite"
+        "clipboardWrite",
+        "webRequest"
     ],
 
     "host_permissions": [
@@ -29,6 +30,8 @@
         "*://*.nytimes.com/*",
         "*://*.humanite.fr/*",
         "*://*.deutsche-digitale-bibliothek.de/user/apikey",
+        "*://*.ouest-france.fr/recherche/*",
+        "*://c8kp7jv01t-dsn.algolia.net/*",
         "<all_urls>"
     ],
 
@@ -113,6 +116,14 @@
             ],
             "css": [
                 "content_scripts/sueddeutsche.css",
+                "content_scripts/config.css"
+            ]
+        },
+        {
+            "matches": ["*://www.ouest-france.fr/recherche/*"],
+            "js": ["content_scripts/ouest-france.js", "jszip.min.js"],
+            "css": [
+                "content_scripts/ouest-france.css",
                 "content_scripts/config.css"
             ]
         },

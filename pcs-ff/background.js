@@ -6,6 +6,19 @@ chrome.runtime.onInstalled.addListener((details) => {
     }
 });
 
+let requestUrls = [];
+let requestHeaders = [];
+let requestBodies = [];
+
+function getHeaders(details) {
+    if (details.method !== 'POST') {
+        return;
+    } else {
+        requestUrls.push(details.url);
+        requestHeaders.push(details.requestHeaders);
+    }
+}
+
 let url;
 let doc;
 let pageNo;
@@ -14,6 +27,23 @@ let searchTerm;
 let abortExtraction;
 
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+    if (message.action === 'getHeaders') {
+        chrome.webRequest.onBeforeSendHeaders.addListener(
+            (details) => {
+                getHeaders(details);
+            },
+            { urls: ['*://c8kp7jv01t-dsn.algolia.net/*'] },
+            ['requestHeaders']
+        );
+    }
+    if (message.action === 'sendHeaders') {
+        sendResponse({
+            message: 'request_headers',
+            url: requestUrls[0],
+            headers: requestHeaders[0],
+        });
+        return true;
+    }
     if (message.action === 'performExtraction') {
         try {
             url = message.url;
@@ -122,17 +152,22 @@ async function performExtractAndSave(url) {
             for (let i = 1; i <= 3; i++) {
                 const response = await fetch(nextUrl);
                 if (response.status === 406) {
-                    window.alert(`Error ${response.status}: ${response.statusText}`);
+                    window.alert(
+                        `Error ${response.status}: ${response.statusText}`
+                    );
                     break loop;
                 }
                 const html = await response.text();
                 doc = parser.parseFromString(html, 'text/html');
+                console.log('Document: ', doc);
 
                 let articleList = doc.querySelector(articleListDef);
+                console.log('Article list: ', articleList);
                 if (!articleList) {
                     throw new Error('Article list not found');
                 } else if (articleList) {
                     articles = articleList.querySelectorAll(articlesDef);
+                    console.log('Articles: ', articles);
                 }
 
                 if (articles.length >= 1) {

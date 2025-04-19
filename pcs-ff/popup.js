@@ -76,6 +76,7 @@ document.addEventListener('DOMContentLoaded', () => {
         lepoint: 'https://www.lepoint.fr/recherche/',
         lhumanite: 'https://www.humanite.fr/',
         sueddeutsche: 'https://www.sueddeutsche.de/suche?search=',
+        ouestfrance: 'https://www.ouest-france.fr/recherche/',
         guardian: guardianapiurl,
         nyt: nytapiurl,
         dzp: dzpapiurl,

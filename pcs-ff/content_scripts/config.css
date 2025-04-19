@@ -3,32 +3,33 @@ fieldset.pcs-ui {
     width: auto !important;
     height: auto !important;
     border: solid 1px !important;
-    border-radius: 0.5em;
+    border-radius: 0.5em !important;
     margin: 5px 0 !important;
     padding: 10px !important;
-    font-size: 15px;
-    vertical-align: middle;
-    text-transform: none;
+    font-size: 15px !important;
+    vertical-align: middle !important;
+    text-transform: none !important;
 }
 
 .pcs-fs-text {
-    margin-bottom: 5px;
+    margin-bottom: 5px !important;
 }
 
 legend {
-    border-radius: 0.5em;
+    border-radius: 0.5em !important;
     padding: 5px !important;
-    color: white;
+    color: white !important;
     font-size: 16px;
-    vertical-align: middle;
-    display: inline;
+    vertical-align: middle !important;
+    display: inline !important;
+    width: auto !important;
 }
 
 .legend-text {
-    text-align: center;
-    margin-left: 5px;
-    font-weight: bold;
-    margin-right: 5px;
+    text-align: center !important;
+    margin-left: 5px !important;
+    font-weight: bold !important;
+    margin-right: 5px !important;
 }
 
 /* Style des boutons et du menu de sélection du format */
@@ -36,110 +37,110 @@ button.pcs-ui,
 select.pcs-ui,
 .abort-button {
     color: #ffffff !important;
-    border: none;
-    height: 36px;
+    border: none !important;
+    height: 36px !important;
     font-weight: 500 !important;
-    text-align: center;
-    padding: 6px 12px;
-    border-radius: 0.3rem;
-    pointer-events: auto;
+    text-align: center !important;
+    padding: 6px 12px !important;
+    border-radius: 0.3rem !important;
+    pointer-events: auto !important;
     margin-right: 10px !important;
-    float: right;
-    transition: background-color ease-out 0.3s;
+    float: right !important;
+    transition: background-color ease-out 0.3s !important;
 }
 
 button {
-    cursor: pointer;
+    cursor: pointer !important;
 }
 
 select:focus-visible {
-    outline: none;
+    outline: none !important;
 }
 
 .abort-button {
-    background-color: #e60000;
-    color: white;
+    background-color: #e60000 !important;
+    color: white !important;
     display: none;
-    transition: background-color ease-out 0.3s;
+    transition: background-color ease-out 0.3s !important;
 }
 
 .abort-button:hover {
-    background-color: #cc0000;
+    background-color: #cc0000 !important;
 }
 
 /* Style du bouton d'option d'extraction */
 .switch {
-    position: relative;
-    display: inline-block;
-    vertical-align: middle;
-    margin-right: 5px;
-    width: 28px;
-    height: 15px;
+    position: relative !important;
+    display: inline-block !important;
+    vertical-align: middle !important;
+    margin-right: 5px !important;
+    width: 28px !important;
+    height: 15px !important;
 }
 
 .switch input {
-    opacity: 0;
-    width: 0;
-    height: 0;
+    opacity: 0 !important;
+    width: 0 !important;
+    height: 0 !important;
 }
 
 .slider {
-    position: absolute;
-    cursor: pointer;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
+    position: absolute !important;
+    cursor: pointer !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
     background-color: #ccc;
-    -webkit-transition: .4s;
-    transition: .4s;
-    border-radius: 28px;
+    -webkit-transition: .4s !important;
+    transition: .4s !important;
+    border-radius: 28px !important;
   }
 
 .slider::before {
-    position: absolute;
-    content: '';
-    height: 11px;
-    width: 11px;
-    left: 2px;
-    bottom: 2px;
+    position: absolute !important;
+    content: '' !important;
+    height: 11px !important;
+    width: 11px !important;
+    left: 2px !important;
+    bottom: 2px !important;
     background-color: white;
-    -webkit-transition: .4s;
-    transition: .4s;
-    border-radius: 50%;
+    -webkit-transition: .4s !important;
+    transition: .4s !important;
+    border-radius: 50% !important;
 }
 
 input:checked + .slider::before {
-    -webkit-transform: translateX(13px);
-    -ms-transform: translateX(13px);
-    transform: translateX(13px);
+    -webkit-transform: translateX(13px) !important;
+    -ms-transform: translateX(13px) !important;
+    transform: translateX(13px) !important;
 }
 
 #extractOption {
-    display: inline;
-    vertical-align: middle;
-    margin-right: 5px;
+    display: inline !important;
+    vertical-align: middle !important;
+    margin-right: 5px !important;
 }
 
 /* Style du message s'affichant pendant l'extraction */
 #extractionMessage {
-    font-family: sans-serif;
-    font-size: small;
-    font-weight: bold;
-    text-transform: none;
-    display: inline;
-    margin-left: 1em;
-    vertical-align: middle;
+    font-family: sans-serif !important;
+    font-size: small !important;
+    font-weight: bold !important;
+    text-transform: none !important;
+    display: inline !important;
+    margin-left: 1em !important;
+    vertical-align: middle !important;
 }
 
 /* Style du spinner d'attente */
 .spinner {
-    border-radius: 50%;
-    width: 12px;
-    height: 12px;
-    animation: spin 1s linear infinite;
-    display: inline-block;
-    vertical-align: middle;
+    border-radius: 50% !important;
+    width: 12px !important;
+    height: 12px !important;
+    animation: spin 1s linear infinite !important;
+    display: inline-block !important;
+    vertical-align: middle !important;
 }
 
 @keyframes spin {
@@ -154,68 +155,68 @@ input:checked + .slider::before {
 /* Style de la liste de fichiers téléchargés */
 .fileList,
 .dl-article {
-    font-family: sans-serif;
-    font-size: small;
-    font-weight: bold;
-    text-transform: none;
-    text-decoration: none;
-    white-space: pre-wrap;
+    font-family: sans-serif !important;
+    font-size: small !important;
+    font-weight: bold !important;
+    text-transform: none !important;
+    text-decoration: none !important;
+    white-space: pre-wrap !important;
     color: green !important;
 }
 
 .dl-article {
-    font-weight: normal;
+    font-weight: normal !important;
 }
 
 /* Style des boutons d'affichage et masquage des listes d'articles abonnés ou en erreur */
 .show-article-list-button {
-    display: block;
-    cursor: pointer;
+    display: block !important;
+    cursor: pointer !important;
 }
 
 .hide-article-list-button {
-    display: none;
-    cursor: pointer;
+    display: none !important;
+    cursor: pointer !important;
 }
 
 .show-article-list-button,
 .hide-article-list-button {
-    color: #2a303b;
-    transition: color ease-out 0.3s;
+    color: #2a303b !important;
+    transition: color ease-out 0.3s !important;
 }
 
 .show-article-list-button:hover,
 .hide-article-list-button:hover {
-    color: #2a303b;
+    color: #2a303b !important;
 }
 
 /* Style des listes d'articles abonnés ou en erreur */
 .list-container {
-    border-radius: 5px;
-    background-color: rgba(0, 0, 0, 0.2);
-    margin-left: 1em;
-    margin-right: 1em;
-    padding: 0.5em;
-    transition: background-color ease-out 0.3s;
+    border-radius: 5px !important;
+    background-color: rgba(0, 0, 0, 0.2) !important;
+    margin-left: 1em !important;
+    margin-right: 1em !important;
+    padding: 0.5em !important;
+    transition: background-color ease-out 0.3s !important;
 }
 
 .list-container:hover {
-    background-color: rgba(0, 0, 0, 0.35);
+    background-color: rgba(0, 0, 0, 0.35) !important;
 }
 
 .article-list-container {
     color: #000 !important;
-    font-weight: normal;
+    font-weight: normal !important;
 }
 
 .error-file-link,
 .skipped-link {
-    color: #000;
-    text-decoration: none;
+    color: #000 !important;
+    text-decoration: none !important;
 }
 
 .dl-article:hover,
 .error-file-link:hover,
 .skipped-link:hover {
-    text-decoration: underline;
+    text-decoration: underline !important;
 }
