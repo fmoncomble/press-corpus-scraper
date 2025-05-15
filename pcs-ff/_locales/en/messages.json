@@ -29,6 +29,9 @@
     "go": {
         "message": "Start"
     },
+    "warningText": {
+        "message": "Important: data and text mining are regulated by applicable copyright law and websites' terms of service. Make sure you have the right to collect this data before proceeding."
+    },
     "fieldsetText": {
         "message": "Scrape and download articles in the desired format"
     },

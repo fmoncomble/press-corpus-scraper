@@ -97,6 +97,10 @@ const exclElementsDef = null;
 // ------------- Ne rien modifier sous cette ligne ---------------- //
 const fieldset = document.createElement('fieldset');
 fieldset.classList.add('pcs-ui');
+const warning = document.createElement('div');
+warning.classList.add('pcs-fs-text');
+warning.textContent = chrome.i18n.getMessage('warningText');
+fieldset.appendChild(warning);
 const fieldsetText = document.createElement('div');
 fieldsetText.classList.add('pcs-fs-text');
 fieldsetText.textContent = chrome.i18n.getMessage('fieldsetText');
@@ -165,9 +169,13 @@ if (pagesNumber) {
     pagesTotal = Math.ceil(resultsNumber / resultsNumberPerPageDef);
 }
 if (pagesTotal > 20) {
-    label.textContent = `${chrome.i18n.getMessage('europresseLabelText1')}${pagesTotal}`;
+    label.textContent = `${chrome.i18n.getMessage(
+        'europresseLabelText1'
+    )}${pagesTotal}`;
 } else {
-    label.textContent = `${chrome.i18n.getMessage('extractLabelText1')}${pagesTotal}${chrome.i18n.getMessage('extractLabelText2')}`;
+    label.textContent = `${chrome.i18n.getMessage(
+        'extractLabelText1'
+    )}${pagesTotal}${chrome.i18n.getMessage('extractLabelText2')}`;
 }
 checkboxDiv.appendChild(container);
 checkboxDiv.appendChild(label);
@@ -243,7 +251,13 @@ function updateRange() {
                 console.log('Message from background: ', msg);
                 console.log('Updating range');
                 pageNo = msg.sentPageNo;
-                extractionMessage.textContent = `${chrome.i18n.getMessage('extractionMessage2')}${msg.sentPageNo}${chrome.i18n.getMessage('extractionMessage3')}${pagesTotal}${chrome.i18n.getMessage('extractionMessage4')}${selectedFormat}...`;
+                extractionMessage.textContent = `${chrome.i18n.getMessage(
+                    'extractionMessage2'
+                )}${msg.sentPageNo}${chrome.i18n.getMessage(
+                    'extractionMessage3'
+                )}${pagesTotal}${chrome.i18n.getMessage(
+                    'extractionMessage4'
+                )}${selectedFormat}...`;
             } else {
                 console.error('No message from background');
             }
@@ -310,7 +324,8 @@ extractButton.addEventListener('click', function (event) {
 
             // Hide the extraction container
             extractionContainer.style.display = 'none';
-            extractionMessage.textContent = chrome.i18n.getMessage('extractionMessage');
+            extractionMessage.textContent =
+                chrome.i18n.getMessage('extractionMessage');
             fieldset.style.cursor = '';
 
             // Reset abort button
@@ -327,7 +342,13 @@ extractButton.addEventListener('click', function (event) {
                 console.log('Downloaded files: ', downloadedFiles);
                 const downloadedFileLinks = response.fetchedUrls;
                 console.log('Downloaded file links: ', downloadedFileLinks);
-                downloadedFilesContainer.textContent = `\n${chrome.i18n.getMessage('downloadFilesContainerText1')}\n\n${pageNo}${chrome.i18n.getMessage('downloadFilesContainerText2')}${downloadedFiles.length}${chrome.i18n.getMessage('downloadFilesContainerText3')}\n\n`;
+                downloadedFilesContainer.textContent = `\n${chrome.i18n.getMessage(
+                    'downloadFilesContainerText1'
+                )}\n\n${pageNo}${chrome.i18n.getMessage(
+                    'downloadFilesContainerText2'
+                )}${downloadedFiles.length}${chrome.i18n.getMessage(
+                    'downloadFilesContainerText3'
+                )}\n\n`;
                 const downloadedFilesList = document.createElement('div');
                 downloadedFilesList.style.fontWeight = 'normal';
                 for (let i = 0; i < 20; i++) {
@@ -369,9 +390,15 @@ extractButton.addEventListener('click', function (event) {
                     skippedFilesWrapper.classList.add('list-wrapper');
                     skippedFilesWrapper.style.color = '#ffa500';
                     if (response.skippedFiles.length === 1) {
-                        skippedFilesWrapper.textContent = `\n1${chrome.i18n.getMessage('skippedFilesWrapperText1')}\n\n`;
+                        skippedFilesWrapper.textContent = `\n1${chrome.i18n.getMessage(
+                            'skippedFilesWrapperText1'
+                        )}\n\n`;
                     } else {
-                        skippedFilesWrapper.textContent = `\n${response.skippedFiles.length}${chrome.i18n.getMessage('skippedFilesWrapperText2')}\n\n`;
+                        skippedFilesWrapper.textContent = `\n${
+                            response.skippedFiles.length
+                        }${chrome.i18n.getMessage(
+                            'skippedFilesWrapperText2'
+                        )}\n\n`;
                     }
                     downloadedFilesContainer.appendChild(skippedFilesWrapper);
                     const skippedFilesContainer = document.createElement('div');
@@ -381,12 +408,14 @@ extractButton.addEventListener('click', function (event) {
                     showSkippedListButton.classList.add(
                         'show-article-list-button'
                     );
-                    showSkippedListButton.textContent = '🔽 ' + chrome.i18n.getMessage('showList');
+                    showSkippedListButton.textContent =
+                        '🔽 ' + chrome.i18n.getMessage('showList');
                     const hideSkippedListButton = document.createElement('div');
                     hideSkippedListButton.classList.add(
                         'hide-article-list-button'
                     );
-                    hideSkippedListButton.textContent = '🔼 ' + chrome.i18n.getMessage('maskList');
+                    hideSkippedListButton.textContent =
+                        '🔼 ' + chrome.i18n.getMessage('maskList');
                     hideSkippedListButton.style.display = 'none';
                     skippedFilesContainer.appendChild(showSkippedListButton);
                     skippedFilesContainer.appendChild(hideSkippedListButton);
@@ -460,7 +489,9 @@ extractButton.addEventListener('click', function (event) {
                     const errorFilesWrapper = document.createElement('div');
                     errorFilesWrapper.classList.add('list-wrapper');
                     errorFilesWrapper.style.color = '#e60000';
-                    errorFilesWrapper.textContent = `\n${response.errorFiles.length}${chrome.i18n.getMessage('errorFilesWrapperText')}\n\n`;
+                    errorFilesWrapper.textContent = `\n${
+                        response.errorFiles.length
+                    }${chrome.i18n.getMessage('errorFilesWrapperText')}\n\n`;
                     downloadedFilesContainer.appendChild(errorFilesWrapper);
                     const errorFilesContainer = document.createElement('div');
                     errorFilesContainer.classList.add('list-container');
@@ -470,12 +501,13 @@ extractButton.addEventListener('click', function (event) {
                         'show-article-list-button'
                     );
                     showErrorListButton.textContent =
-                            '🔽 ' + chrome.i18n.getMessage('showList');;
+                        '🔽 ' + chrome.i18n.getMessage('showList');
                     const hideErrorListButton = document.createElement('div');
                     hideErrorListButton.classList.add(
                         'hide-article-list-button'
                     );
-                    hideErrorListButton.textContent = '🔼 ' + chrome.i18n.getMessage('maskList');;
+                    hideErrorListButton.textContent =
+                        '🔼 ' + chrome.i18n.getMessage('maskList');
                     hideErrorListButton.style.display = 'none';
                     errorFilesContainer.appendChild(showErrorListButton);
                     errorFilesContainer.appendChild(hideErrorListButton);
@@ -519,7 +551,9 @@ extractButton.addEventListener('click', function (event) {
 
                 // Display total number of results processed
                 const totalFilesContainer = document.createElement('div');
-                totalFilesContainer.textContent = `\n${fileTotal}${chrome.i18n.getMessage('totalFilesContainerText')}`;
+                totalFilesContainer.textContent = `\n${fileTotal}${chrome.i18n.getMessage(
+                    'totalFilesContainerText'
+                )}`;
                 downloadedFilesContainer.appendChild(totalFilesContainer);
 
                 // Calculate and display the number of lost results
@@ -529,7 +563,9 @@ extractButton.addEventListener('click', function (event) {
                         const lostFilesContainer =
                             document.createElement('div');
                         lostFilesContainer.style.color = 'blue';
-                        lostFilesContainer.textContent = `\n${fileDiff}${chrome.i18n.getMessage('lostFilesContainerText')}`;
+                        lostFilesContainer.textContent = `\n${fileDiff}${chrome.i18n.getMessage(
+                            'lostFilesContainerText'
+                        )}`;
                         downloadedFilesContainer.appendChild(
                             lostFilesContainer
                         );

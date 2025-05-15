@@ -45,6 +45,10 @@ if (document.readyState !== 'loading') {
 console.log('Variables = ', variables);
     const fieldset = document.createElement('fieldset');
     fieldset.classList.add('pcs-ui');
+    const warning = document.createElement('div');
+    warning.classList.add('pcs-fs-text');
+    warning.textContent = chrome.i18n.getMessage('warningText');
+    fieldset.appendChild(warning);
     const fieldsetText = document.createElement('div');
     fieldsetText.classList.add('pcs-fs-text');
     fieldsetText.textContent =

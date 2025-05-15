@@ -29,6 +29,9 @@
     "go": {
         "message": "Anfangen"
     },
+    "warningText": {
+        "message": "Wichtig: Data- und Text-Mining unterliegen dem geltenden Urheberrecht und den Nutzungsbedingungen von Websites. Stellen Sie sicher, dass Sie das Recht haben, diese Daten zu erfassen, bevor Sie fortfahren."
+    },
     "fieldsetText": {
         "message": "Extrahieren und laden Sie Artikel im gewünschten Format herunter"
     },

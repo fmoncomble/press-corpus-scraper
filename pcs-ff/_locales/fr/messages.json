@@ -29,6 +29,9 @@
     "go": {
         "message": "Commencer"
     },
+    "warningText": {
+        "message": "Important : La collecte de données est encadrée par la loi et les conditions d'utilisation des sites web. Veuillez vous assurer que vous avez le droit de collecter ces données avant de continuer."
+    },
     "fieldsetText": {
         "message": "Extraire et télécharger les articles au format souhaité"
     },

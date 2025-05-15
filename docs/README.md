@@ -1,6 +1,8 @@
 ([**English version**](https://fmoncomble.github.io/press-corpus-scraper/README_EN.html))
 
-Une extension pour extraire et télécharger des articles de presse à des fins de fouille textuelle.
+Une extension pour extraire et télécharger des articles de presse à des fins de fouille textuelle.  
+  
+**Important :** La collecte de données, limitée aux besoins de la recherche, est encadrée par la loi sur le droit d'auteur et la propriété intellectuelle ainsi que par les conditions d'utilisation des différents fournisseurs de services.
 
 🚨 **Nouveau !** 🚨 Prise en charge d'Europresse : connectez-vous via [le portail de votre établissement](europresse-list.md).
 

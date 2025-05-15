@@ -2,6 +2,9 @@
 
 **_Press Corpus Scraper_ has been updated!** Here are the new features:
 
+### 0.12.1
+-   Added copyright notices
+
 ## 0.12
 
 -   Added support for _Ouest-France_
