@@ -2,8 +2,8 @@
     "manifest_version": 3,
     "name": "__MSG_extName__",
 
-    "version": "0.13",
-    "version_name": "0.13",
+    "version": "0.13.1",
+    "version_name": "0.13.1",
 
     "description": "__MSG_description__",
     "default_locale": "fr",
