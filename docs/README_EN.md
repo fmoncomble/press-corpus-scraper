@@ -2,7 +2,7 @@
 
 An extension for extracting and downloading press articles for text mining.
   
-**Important :** Data and text mining is limited to research purposes under most legislations. Make sure to comply with application copyright law as well as service providers' terms and conditions.  
+**Important :** Data and text mining is limited to research purposes under most legislations. Make sure to comply with applicable copyright law as well as service providers' terms and conditions.  
     
 🚨 **New!** 🚨 Support for Europresse: log in via [your institutional portal](europresse-list.md).
 
