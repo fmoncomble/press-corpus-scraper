@@ -14,7 +14,11 @@
             <div id="update">New version available!</div>
             <a id="update-link">Update</a><br /><br />
         </div>
-        <div>
+        <div id="grant-permissions" style="display: none">
+            <div>Grant access to twitter.com?</div>
+            <button id="grant-permissions">OK</button>
+        </div>
+        <div id="container" style="display: none">
             <label for="source-select" id="source-label">Select source:</label>
             <select name="source-select" id="source-select">
                 <option selected disabled>—</option>
@@ -33,6 +37,10 @@
                 <optgroup label="Deutsche Zeitungen">
                     <option value="dzp">Deutsches Zeitungsportal</option>
                     <option value="sueddeutsche">Süddeutsche Zeitung</option>
+                    <option value="faz">Frankfurter Allgemeine Zeitung</option>
+                </optgroup>
+                <optgroup label="Giornali italiani">
+                    <option value="corriere">Corriere della Sera</option>
                 </optgroup>
             </select>
         </div>

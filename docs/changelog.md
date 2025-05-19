@@ -2,6 +2,10 @@
 
 **_Press Corpus Scraper_ has been updated!** Here are the new features:
 
+## 0.13
+-   Added support for _Corriere della Sera_ and _Frankfurter Allegemeine Zeitung_
+-   Added permissions check for Firefox
+
 ### 0.12.1
 -   Added copyright notices
 

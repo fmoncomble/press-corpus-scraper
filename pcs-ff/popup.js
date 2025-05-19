@@ -1,6 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
     // Check for update
-    console.log('Firefox? ', navigator.userAgent.indexOf('Firefox'));
     async function checkNewVersion() {
         const response = await fetch(
             'https://www.github.com/fmoncomble/press-corpus-scraper/releases/latest'
@@ -35,6 +34,47 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
     checkNewVersion();
+
+    // This function checks if the extension has the necessary permissions
+    async function checkPermissions() {
+        const permissionsToCheck = {
+            origins: ['<all_urls>'],
+        };
+
+        const hasPermissions = await chrome.permissions.contains(
+            permissionsToCheck
+        );
+        if (!hasPermissions) {
+            document.getElementById('grant-permissions').style.display =
+                'block';
+        } else if (hasPermissions) {
+            document.getElementById('container').style.display = 'block';
+        }
+    }
+
+    // This function requests permissions
+    async function requestPermissions() {
+        const permissionsToRequest = {
+            origins: ['<all_urls>'],
+        };
+
+        function onResponse(response) {
+            if (response) {
+                console.log('Permission was granted');
+            } else {
+                console.log('Permission was refused');
+            }
+            return chrome.permissions.getAll();
+        }
+
+        const response = await chrome.permissions.request(permissionsToRequest);
+        const currentPermissions = await onResponse(response);
+    }
+    checkPermissions();
+
+    document
+        .getElementById('grant-permissions')
+        .addEventListener('click', requestPermissions);
 
     const manifest = chrome.runtime.getManifest();
     const currentVersion = manifest.version;
@@ -80,6 +120,8 @@ document.addEventListener('DOMContentLoaded', () => {
         guardian: guardianapiurl,
         nyt: nytapiurl,
         dzp: dzpapiurl,
+        corriere: 'https://corpustools.prendrelangue.fr/cdscorpusbuilder/',
+        faz: 'https://corpustools.prendrelangue.fr/fazcorpusbuilder/',
     };
 
     let source = '';
@@ -99,10 +141,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 europresseSelect.style.display = 'block';
                 const euroPartners = document.querySelectorAll(
                     'label.inst-choice-div'
-                );
-                console.log(
-                    'List of Europresse partners: ',
-                    Array.from(euroPartners)
                 );
                 if (Array.from(euroPartners).length === 0) {
                     buildSelect();
@@ -142,7 +180,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 .includes(searchTerm.toLowerCase());
         });
         const hiddenChoices = instList.querySelectorAll('label[hidden]');
-        console.log('Hidden choices: ', hiddenChoices);
     };
 
     // Set Europresse partner choice and save it to storage

@@ -1,6 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
     // Check for update
-    console.log('Firefox? ', navigator.userAgent.indexOf('Firefox'));
     async function checkNewVersion() {
         const response = await fetch(
             'https://www.github.com/fmoncomble/press-corpus-scraper/releases/latest'
@@ -35,6 +34,49 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
     checkNewVersion();
+    checkPermissions();
+
+    // This function checks if the extension has the necessary permissions
+    async function checkPermissions() {
+        const permissionsToCheck = {
+            origins: ['<all_urls>'],
+        };
+
+        const hasPermissions = await chrome.permissions.contains(
+            permissionsToCheck
+        );
+        if (!hasPermissions) {
+            document.getElementById('grant-permissions').style.display =
+                'block';
+        } else if (hasPermissions) {
+            document.getElementById('scrape-container').style.display =
+                'block';
+        }
+    }
+
+    // This function requests permissions
+    async function requestPermissions() {
+        const permissionsToRequest = {
+            origins: ['*://twitter.com/*', '*://x.com/*'],
+        };
+
+        function onResponse(response) {
+            if (response) {
+                console.log('Permission was granted');
+            } else {
+                console.log('Permission was refused');
+            }
+            return chrome.permissions.getAll();
+        }
+
+        const response = await chrome.permissions.request(permissionsToRequest);
+        const currentPermissions = await onResponse(response);
+        console.log(`Current permissions:`, currentPermissions);
+    }
+
+    document
+        .getElementById('grant-permissions')
+        .addEventListener('click', requestPermissions);
 
     const manifest = chrome.runtime.getManifest();
     const currentVersion = manifest.version_name;
