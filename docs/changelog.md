@@ -2,6 +2,10 @@
 
 **_Press Corpus Scraper_ has been updated!** Here are the new features:
 
+### 0.13.1 - 0.13.4
+-   Fixed filename generation bug which prevented files with the same name from being added to the zip archive when the name included accented characters
+-   Minor fixes
+
 ## 0.13
 -   Added support for _Corriere della Sera_ and _Frankfurter Allegemeine Zeitung_
 -   Added permissions check for Firefox

@@ -580,21 +580,8 @@ async function performExtractAndSave(url) {
                             .replaceAll(/\p{P}/gu, '')
                             .replaceAll(/\s+/g, '_')
                             .trim()
-                            .substring(0, 20)}${extension}`;
+                            .substring(0, 20)}`;
                         let index = 1;
-
-                        // Append a number to the file name to make it unique
-                        while (addedFileNames.has(baseFileName)) {
-                            baseFileName = `${date}_${pubName.replaceAll(
-                                /\s/g,
-                                '_'
-                            )}_${author
-                                .replaceAll(/\p{P}/gu, '')
-                                .replaceAll(/\s+/g, '_')
-                                .trim()
-                                .substring(0, 20)}_${index}${extension}`;
-                            index++;
-                        }
 
                         function sanitizeFileName(fileName) {
                             const illegalRe = /[\/\\:*?"<>|]/g;
@@ -616,8 +603,16 @@ async function performExtractAndSave(url) {
                             .normalize('NFD')
                             .replace(/[\u0300-\u036f]/g, '');
 
+                        // Append a number to the file name to make it unique
+                        while (addedFileNames.has(baseFileName)) {
+                            baseFileName = `${baseFileName}_${index}`;
+                            index++;
+                        }
+
                         fetchedUrls.add(url);
                         addedFileNames.add(baseFileName);
+
+                        baseFileName += extension;
 
                         zip.file(baseFileName, fileContent);
                     } catch (error) {

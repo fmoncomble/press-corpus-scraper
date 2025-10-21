@@ -2,8 +2,8 @@
     "manifest_version": 3,
     "name": "__MSG_extName__",
 
-    "version": "0.13.1",
-    "version_name": "0.13.1",
+    "version": "0.13.4",
+    "version_name": "0.13.4",
 
     "description": "__MSG_description__",
     "default_locale": "fr",
@@ -223,7 +223,10 @@
     "browser_specific_settings": {
         "gecko": {
             "id": "{9e9c5f35-dcd0-4eae-b11e-089f14e97361}",
-            "update_url": "https://github.com/fmoncomble/press-corpus-scraper/releases/latest/download/update_manifest.json"
+            "update_url": "https://github.com/fmoncomble/press-corpus-scraper/releases/latest/download/update_manifest.json",
+			"data_collection_permissions": {
+				"required": ["none"]
+			}
         }
     }
 }
