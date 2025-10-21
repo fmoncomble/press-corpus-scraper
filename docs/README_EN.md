@@ -19,6 +19,7 @@ Moncomble, F. (2024). _Press Corpus Scraper_ (Version 0.10) [JavaScript]. Arras,
 [![Firefox add-on](https://github.com/fmoncomble/Figaro_extractor/assets/59739627/e4df008e-1aac-46be-a216-e6304a65ba97)](https://github.com/fmoncomble/press-corpus-scraper/releases/latest/download/pcs.xpi)
   
 Mozilla's add-on review process may take time. If you wish to try the latest (developer) version:
+-   Install [Firefox Developer Edition](https://www.firefox.com/en-GB/channel/desktop/developer/?redirect_source=mozilla-org);
 -   In the address bar, type `about:config` and hit Return;
 -   Click `Accept the Risk and Continue`;
 -   Search for `xpinstall.signatures.required`;
